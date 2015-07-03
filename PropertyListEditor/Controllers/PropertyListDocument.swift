@@ -1,6 +1,6 @@
 //
-//  PropertyListDocument.swift
-//  PropertyListEditor
+//  PlistDocument.swift
+//  PlistEditor
 //
 //  Created by Prachi Gauriar on 7/1/2015.
 //  Copyright © 2015 Quantum Lens Cap. All rights reserved.
@@ -8,7 +8,8 @@
 
 import Cocoa
 
-class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
+
+class PlistDocument: NSDocument, NSOutlineViewDataSource {
     @IBOutlet weak var propertyListOutlineView: NSOutlineView!
 
 
@@ -25,7 +26,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
     }
 
     override var windowNibName: String? {
-        return "PropertyListDocument"
+        return "PlistDocument"
     }
 
     override func dataOfType(typeName: String) throws -> NSData {

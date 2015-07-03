@@ -1,0 +1,16 @@
+/* 
+  Localizable.strings
+  PropertyListEditor
+
+  Created by Prachi Gauriar on 7/3/2015.
+  Copyright © 2015 Quantum Lens Cap. All rights reserved.
+*/
+
+/* Key for array item node */
+"(Item %d)" = "(Item %d)";
+
+/* Label for Boolean false value */
+"NO" = "NO";
+
+/* Label for Boolean true value */
+"YES" = "YES";

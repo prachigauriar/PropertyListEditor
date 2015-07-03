@@ -10,20 +10,44 @@
 		4C4E05C41B445AB000BF69C2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4E05B81B445AB000BF69C2 /* AppDelegate.swift */; };
 		4C4E05C51B445AB000BF69C2 /* PropertyListDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4E05BA1B445AB000BF69C2 /* PropertyListDocument.swift */; };
 		4C4E05C61B445AB000BF69C2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4C4E05BD1B445AB000BF69C2 /* Assets.xcassets */; };
-		4C4E05C71B445AB000BF69C2 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4C4E05BE1B445AB000BF69C2 /* MainMenu.xib */; };
-		4C4E05C81B445AB000BF69C2 /* PropertyListDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4C4E05C01B445AB000BF69C2 /* PropertyListDocument.xib */; };
-		4C4E05CB1B446D3F00BF69C2 /* PropertyListNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4E05CA1B446D3F00BF69C2 /* PropertyListNode.swift */; };
+		4CB7E83D1B47074A0027C0D9 /* PlistDataValueNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CB7E83C1B47074A0027C0D9 /* PlistDataValueNode.swift */; };
+		4CB7E83F1B4707BD0027C0D9 /* PlistBooleanValueNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CB7E83E1B4707BD0027C0D9 /* PlistBooleanValueNode.swift */; };
+		4CF3D93F1B46D74800C76D8D /* PlistNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF3D93D1B46D74800C76D8D /* PlistNode.swift */; };
+		4CF3D9411B46D77C00C76D8D /* PlistValueNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF3D9401B46D77C00C76D8D /* PlistValueNode.swift */; };
+		4CF3D9431B46D85000C76D8D /* PlistContainerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF3D9421B46D85000C76D8D /* PlistContainerNode.swift */; };
+		4CF3D9451B46D97600C76D8D /* PlistArrayNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF3D9441B46D97600C76D8D /* PlistArrayNode.swift */; };
+		4CF3D9471B46D9AF00C76D8D /* PlistDictionaryNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF3D9461B46D9AF00C76D8D /* PlistDictionaryNode.swift */; };
+		4CF3D9621B46DB7100C76D8D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4CF3D9581B46DB7100C76D8D /* Localizable.strings */; };
+		4CF3D9631B46DB7100C76D8D /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 4CF3D95A1B46DB7100C76D8D /* Localizable.stringsdict */; };
+		4CF3D9641B46DB7100C76D8D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4CF3D95C1B46DB7100C76D8D /* MainMenu.xib */; };
+		4CF3D9651B46DB7100C76D8D /* PropertyListDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4CF3D95E1B46DB7100C76D8D /* PropertyListDocument.xib */; };
+		4CF3D9691B46E76700C76D8D /* PlistStringValueNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF3D9681B46E76700C76D8D /* PlistStringValueNode.swift */; };
+		4CF3D96B1B46E89A00C76D8D /* PlistNumberValueNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF3D96A1B46E89A00C76D8D /* PlistNumberValueNode.swift */; };
+		4CF3D96D1B47016900C76D8D /* PlistDateValueNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF3D96C1B47016900C76D8D /* PlistDateValueNode.swift */; };
+		4CF3D9701B4704AA00C76D8D /* Base64DataFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF3D96F1B4704AA00C76D8D /* Base64DataFormatter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		4C4E05A21B4459D700BF69C2 /* PropertyListEditor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PropertyListEditor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C4E05B81B445AB000BF69C2 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4C4E05BA1B445AB000BF69C2 /* PropertyListDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListDocument.swift; sourceTree = "<group>"; };
-		4C4E05BD1B445AB000BF69C2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		4C4E05BF1B445AB000BF69C2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		4C4E05C11B445AB000BF69C2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/PropertyListDocument.xib; sourceTree = "<group>"; };
-		4C4E05C21B445AB000BF69C2 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		4C4E05CA1B446D3F00BF69C2 /* PropertyListNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListNode.swift; sourceTree = "<group>"; };
+		4C4E05BD1B445AB000BF69C2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Resources/Assets.xcassets; sourceTree = "<group>"; };
+		4CB7E83C1B47074A0027C0D9 /* PlistDataValueNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlistDataValueNode.swift; sourceTree = "<group>"; };
+		4CB7E83E1B4707BD0027C0D9 /* PlistBooleanValueNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlistBooleanValueNode.swift; sourceTree = "<group>"; };
+		4CF3D93D1B46D74800C76D8D /* PlistNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlistNode.swift; sourceTree = "<group>"; };
+		4CF3D9401B46D77C00C76D8D /* PlistValueNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlistValueNode.swift; sourceTree = "<group>"; };
+		4CF3D9421B46D85000C76D8D /* PlistContainerNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlistContainerNode.swift; sourceTree = "<group>"; };
+		4CF3D9441B46D97600C76D8D /* PlistArrayNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlistArrayNode.swift; sourceTree = "<group>"; };
+		4CF3D9461B46D9AF00C76D8D /* PlistDictionaryNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlistDictionaryNode.swift; sourceTree = "<group>"; };
+		4CF3D9591B46DB7100C76D8D /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
+		4CF3D95B1B46DB7100C76D8D /* Base */ = {isa = PBXFileReference; explicitFileType = text.plist.xml; name = Base; path = Base.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
+		4CF3D95D1B46DB7100C76D8D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		4CF3D95F1B46DB7100C76D8D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/PropertyListDocument.xib; sourceTree = "<group>"; };
+		4CF3D9601B46DB7100C76D8D /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4CF3D9681B46E76700C76D8D /* PlistStringValueNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlistStringValueNode.swift; sourceTree = "<group>"; };
+		4CF3D96A1B46E89A00C76D8D /* PlistNumberValueNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlistNumberValueNode.swift; sourceTree = "<group>"; };
+		4CF3D96C1B47016900C76D8D /* PlistDateValueNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlistDateValueNode.swift; sourceTree = "<group>"; };
+		4CF3D96F1B4704AA00C76D8D /* Base64DataFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Base64DataFormatter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,10 +81,13 @@
 			isa = PBXGroup;
 			children = (
 				4C4E05B71B445AB000BF69C2 /* Application */,
+				4CF3D9381B46D0D500C76D8D /* Extensions */,
 				4C4E05BB1B445AB000BF69C2 /* Models */,
 				4C4E05B91B445AB000BF69C2 /* Controllers */,
-				4C4E05BC1B445AB000BF69C2 /* Resources */,
 				4C4E05C31B445AB000BF69C2 /* Views */,
+				4CF3D9671B46DB9400C76D8D /* User Interfaces */,
+				4CF3D9571B46DB7100C76D8D /* Supporting Files */,
+				4C4E05BD1B445AB000BF69C2 /* Assets.xcassets */,
 			);
 			path = PropertyListEditor;
 			sourceTree = "<group>";
@@ -84,20 +111,10 @@
 		4C4E05BB1B445AB000BF69C2 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				4C4E05CA1B446D3F00BF69C2 /* PropertyListNode.swift */,
+				4CF3D96E1B47041900C76D8D /* Base64 Data Formatter */,
+				4CF3D93B1B46D74800C76D8D /* Property List Nodes */,
 			);
 			path = Models;
-			sourceTree = "<group>";
-		};
-		4C4E05BC1B445AB000BF69C2 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				4C4E05C21B445AB000BF69C2 /* Info.plist */,
-				4C4E05BD1B445AB000BF69C2 /* Assets.xcassets */,
-				4C4E05BE1B445AB000BF69C2 /* MainMenu.xib */,
-				4C4E05C01B445AB000BF69C2 /* PropertyListDocument.xib */,
-			);
-			path = Resources;
 			sourceTree = "<group>";
 		};
 		4C4E05C31B445AB000BF69C2 /* Views */ = {
@@ -105,6 +122,73 @@
 			children = (
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		4CF3D9381B46D0D500C76D8D /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		4CF3D93B1B46D74800C76D8D /* Property List Nodes */ = {
+			isa = PBXGroup;
+			children = (
+				4CF3D93D1B46D74800C76D8D /* PlistNode.swift */,
+				4CF3D93E1B46D74800C76D8D /* Value Nodes */,
+				4CF3D93C1B46D74800C76D8D /* Container Nodes */,
+			);
+			path = "Property List Nodes";
+			sourceTree = "<group>";
+		};
+		4CF3D93C1B46D74800C76D8D /* Container Nodes */ = {
+			isa = PBXGroup;
+			children = (
+				4CF3D9421B46D85000C76D8D /* PlistContainerNode.swift */,
+				4CF3D9441B46D97600C76D8D /* PlistArrayNode.swift */,
+				4CF3D9461B46D9AF00C76D8D /* PlistDictionaryNode.swift */,
+			);
+			path = "Container Nodes";
+			sourceTree = "<group>";
+		};
+		4CF3D93E1B46D74800C76D8D /* Value Nodes */ = {
+			isa = PBXGroup;
+			children = (
+				4CF3D9401B46D77C00C76D8D /* PlistValueNode.swift */,
+				4CB7E83E1B4707BD0027C0D9 /* PlistBooleanValueNode.swift */,
+				4CB7E83C1B47074A0027C0D9 /* PlistDataValueNode.swift */,
+				4CF3D96C1B47016900C76D8D /* PlistDateValueNode.swift */,
+				4CF3D96A1B46E89A00C76D8D /* PlistNumberValueNode.swift */,
+				4CF3D9681B46E76700C76D8D /* PlistStringValueNode.swift */,
+			);
+			path = "Value Nodes";
+			sourceTree = "<group>";
+		};
+		4CF3D9571B46DB7100C76D8D /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				4CF3D9601B46DB7100C76D8D /* Info.plist */,
+				4CF3D9581B46DB7100C76D8D /* Localizable.strings */,
+				4CF3D95A1B46DB7100C76D8D /* Localizable.stringsdict */,
+			);
+			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		4CF3D9671B46DB9400C76D8D /* User Interfaces */ = {
+			isa = PBXGroup;
+			children = (
+				4CF3D95C1B46DB7100C76D8D /* MainMenu.xib */,
+				4CF3D95E1B46DB7100C76D8D /* PropertyListDocument.xib */,
+			);
+			name = "User Interfaces";
+			sourceTree = "<group>";
+		};
+		4CF3D96E1B47041900C76D8D /* Base64 Data Formatter */ = {
+			isa = PBXGroup;
+			children = (
+				4CF3D96F1B4704AA00C76D8D /* Base64DataFormatter.swift */,
+			);
+			path = "Base64 Data Formatter";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -164,9 +248,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4CF3D9641B46DB7100C76D8D /* MainMenu.xib in Resources */,
+				4CF3D9631B46DB7100C76D8D /* Localizable.stringsdict in Resources */,
+				4CF3D9621B46DB7100C76D8D /* Localizable.strings in Resources */,
 				4C4E05C61B445AB000BF69C2 /* Assets.xcassets in Resources */,
-				4C4E05C71B445AB000BF69C2 /* MainMenu.xib in Resources */,
-				4C4E05C81B445AB000BF69C2 /* PropertyListDocument.xib in Resources */,
+				4CF3D9651B46DB7100C76D8D /* PropertyListDocument.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -177,29 +263,57 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4CF3D9701B4704AA00C76D8D /* Base64DataFormatter.swift in Sources */,
+				4CF3D96B1B46E89A00C76D8D /* PlistNumberValueNode.swift in Sources */,
 				4C4E05C41B445AB000BF69C2 /* AppDelegate.swift in Sources */,
-				4C4E05CB1B446D3F00BF69C2 /* PropertyListNode.swift in Sources */,
+				4CF3D9431B46D85000C76D8D /* PlistContainerNode.swift in Sources */,
+				4CB7E83D1B47074A0027C0D9 /* PlistDataValueNode.swift in Sources */,
+				4CF3D93F1B46D74800C76D8D /* PlistNode.swift in Sources */,
+				4CF3D96D1B47016900C76D8D /* PlistDateValueNode.swift in Sources */,
+				4CB7E83F1B4707BD0027C0D9 /* PlistBooleanValueNode.swift in Sources */,
+				4CF3D9691B46E76700C76D8D /* PlistStringValueNode.swift in Sources */,
+				4CF3D9411B46D77C00C76D8D /* PlistValueNode.swift in Sources */,
+				4CF3D9451B46D97600C76D8D /* PlistArrayNode.swift in Sources */,
 				4C4E05C51B445AB000BF69C2 /* PropertyListDocument.swift in Sources */,
+				4CF3D9471B46D9AF00C76D8D /* PlistDictionaryNode.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		4C4E05BE1B445AB000BF69C2 /* MainMenu.xib */ = {
+		4CF3D9581B46DB7100C76D8D /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				4C4E05BF1B445AB000BF69C2 /* Base */,
+				4CF3D9591B46DB7100C76D8D /* Base */,
 			);
-			name = MainMenu.xib;
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
-		4C4E05C01B445AB000BF69C2 /* PropertyListDocument.xib */ = {
+		4CF3D95A1B46DB7100C76D8D /* Localizable.stringsdict */ = {
 			isa = PBXVariantGroup;
 			children = (
-				4C4E05C11B445AB000BF69C2 /* Base */,
+				4CF3D95B1B46DB7100C76D8D /* Base */,
+			);
+			name = Localizable.stringsdict;
+			sourceTree = "<group>";
+		};
+		4CF3D95C1B46DB7100C76D8D /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4CF3D95D1B46DB7100C76D8D /* Base */,
+			);
+			name = MainMenu.xib;
+			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		4CF3D95E1B46DB7100C76D8D /* PropertyListDocument.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4CF3D95F1B46DB7100C76D8D /* Base */,
 			);
 			name = PropertyListDocument.xib;
+			path = "Supporting Files";
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -216,6 +330,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
@@ -236,6 +351,7 @@
 					"$(inherited)",
 				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
@@ -260,6 +376,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
@@ -274,6 +391,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
@@ -290,7 +408,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = "$(SRCROOT)/PropertyListEditor/Resources/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/PropertyListEditor/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.quantumlenscap.PListEditor;
 				PRODUCT_NAME = PropertyListEditor;
@@ -302,7 +420,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = "$(SRCROOT)/PropertyListEditor/Resources/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/PropertyListEditor/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.quantumlenscap.PListEditor;
 				PRODUCT_NAME = PropertyListEditor;

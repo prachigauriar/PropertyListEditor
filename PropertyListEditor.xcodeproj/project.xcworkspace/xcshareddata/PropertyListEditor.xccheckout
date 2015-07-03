@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>EC4AE89C-16D2-4355-A2E4-5DFC02486CF1</string>
+	<key>IDESourceControlProjectName</key>
+	<string>PropertyListEditor</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>9E843EAE85D55FDD1005C60DA544FE0F7AEE63CC</key>
+		<string>github.com:prachigauriar/PropertyListEditor.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>PropertyListEditor.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>9E843EAE85D55FDD1005C60DA544FE0F7AEE63CC</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>github.com:prachigauriar/PropertyListEditor.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>9E843EAE85D55FDD1005C60DA544FE0F7AEE63CC</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>9E843EAE85D55FDD1005C60DA544FE0F7AEE63CC</string>
+			<key>IDESourceControlWCCName</key>
+			<string>PropertyListEditor</string>
+		</dict>
+	</array>
+</dict>
+</plist>
