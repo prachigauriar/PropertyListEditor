@@ -11,7 +11,7 @@ import Foundation
 
 struct PropertyListValidValue {
     let value: AnyObject
-    let description: String
+    let title: String
 }
 
 
@@ -22,17 +22,17 @@ enum PropertyListValueConstraint {
 
 
 enum PropertyListValue: CustomStringConvertible {
-    case BooleanValue(Bool)
+    case BooleanValue(NSNumber)
     case DataValue(NSData)
     case DateValue(NSDate)
     case NumberValue(NSNumber)
-    case StringValue(String)
+    case StringValue(NSString)
 
 
     var description: String {
         switch self {
         case let .BooleanValue(boolean):
-            return boolean.description
+            return boolean.boolValue ? "YES" : "NO"
         case let .DataValue(data):
             return data.description
         case let .DateValue(date):
@@ -40,7 +40,7 @@ enum PropertyListValue: CustomStringConvertible {
         case let .NumberValue(number):
             return number.description
         case let .StringValue(string):
-            return string
+            return string.description
         }
     }
 
@@ -48,8 +48,8 @@ enum PropertyListValue: CustomStringConvertible {
     var valueConstraint: PropertyListValueConstraint? {
         switch self {
         case .BooleanValue:
-            let falseValidValue = PropertyListValidValue(value: false, description: NSLocalizedString("NO", comment: "Label for Boolean false value"))
-            let trueValidValue = PropertyListValidValue(value: true, description: NSLocalizedString("YES", comment: "Label for Boolean true value"))
+            let falseValidValue = PropertyListValidValue(value: NSNumber(bool: false), title: NSLocalizedString("NO", comment: "Title for Boolean false value"))
+            let trueValidValue = PropertyListValidValue(value: NSNumber(bool: true), title: NSLocalizedString("YES", comment: "Title for Boolean true value"))
             return .ValueArray([falseValidValue, trueValidValue])
         case .DataValue:
             return nil

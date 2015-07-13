@@ -29,21 +29,43 @@ class PropertyListRootNode: PropertyListItemNode {
 }
 
 
-enum PropertyListParserError: ErrorType {
-    case InvalidPropertyListObject
+enum PropertyListParserError: ErrorType, CustomStringConvertible {
+    case NonStringDictionaryKey(dictionary: NSDictionary, key: AnyObject)
+    case UnsupportedObjectType(AnyObject)
+
+    var description: String {
+        switch self {
+        case let .NonStringDictionaryKey(dictionary: _, key: key):
+            return "Non-string key \(key) in dictionary"
+        case let .UnsupportedObjectType(object):
+            return "Unsupported object \(object) of type (\(object.dynamicType))"
+        }
+    }
 }
 
 
-// MARK: - PropertyListValueObject Extensions
+// MARK: - PropertyListObject Extensions
 
 protocol PropertyListObject {
     func propertyListItem() throws -> PropertyListItem
 }
 
 
-extension Bool: PropertyListObject {
+extension NSArray: PropertyListObject {
     func propertyListItem() throws -> PropertyListItem {
-        return .Value(.BooleanValue(self))
+        let arrayNode = PropertyListArrayNode()
+
+        for element in self {
+            guard let propertyListObject = element as? PropertyListObject else {
+                throw PropertyListParserError.UnsupportedObjectType(element)
+            }
+
+            let item = try propertyListObject.propertyListItem()
+            let arrayItem = PropertyListArrayItemNode(item: item)
+            arrayNode.children.append(arrayItem)
+        }
+
+        return .ArrayNode(arrayNode)
     }
 }
 
@@ -62,55 +84,39 @@ extension NSDate: PropertyListObject {
 }
 
 
-extension NSNumber: PropertyListObject {
-    func propertyListItem() throws -> PropertyListItem {
-        return .Value(.NumberValue(self))
-    }
-}
-
-
-extension String: PropertyListObject {
-    func propertyListItem() throws -> PropertyListItem {
-        return .Value(.StringValue(self))
-    }
-}
-
-
-// MARK: - PropertyListCollectionObject
-
-extension NSArray: PropertyListObject {
-    func propertyListItem() throws -> PropertyListItem {
-        let arrayNode = PropertyListArrayNode()
-
-        for element in self {
-            guard let propertyListObject = element as? PropertyListObject else {
-                throw PropertyListParserError.InvalidPropertyListObject
-            }
-
-            let item = try propertyListObject.propertyListItem()
-            let arrayItem = PropertyListArrayItemNode(item: item)
-            arrayNode.children.append(arrayItem)
-        }
-
-        return .ArrayNode(arrayNode)
-    }
-}
-
-
 extension NSDictionary: PropertyListObject {
     func propertyListItem() throws -> PropertyListItem {
         let dictionaryNode = PropertyListDictionaryNode()
 
         for (key, value) in self {
-            guard let key = key as? String, propertyListObject = value as? PropertyListObject else {
-                throw PropertyListParserError.InvalidPropertyListObject
+            guard let stringKey = key as? String else {
+                throw PropertyListParserError.NonStringDictionaryKey(dictionary: self, key: key)
+            }
+
+            guard let propertyListObject = value as? PropertyListObject else {
+                throw PropertyListParserError.UnsupportedObjectType(value)
             }
 
             let item = try propertyListObject.propertyListItem()
-            let dictionaryItem = PropertyListDictionaryItemNode(key: key, item: item)
+            let dictionaryItem = PropertyListDictionaryItemNode(key: stringKey, item: item)
             dictionaryNode.children.append(dictionaryItem)
         }
 
         return .DictionaryNode(dictionaryNode)
+    }
+}
+
+
+extension NSNumber: PropertyListObject {
+    func propertyListItem() throws -> PropertyListItem {
+        let value: PropertyListValue = NSNumber(bool: true).objCType == self.objCType ? .BooleanValue(self) : .NumberValue(self)
+        return .Value(value)
+    }
+}
+
+
+extension NSString: PropertyListObject {
+    func propertyListItem() throws -> PropertyListItem {
+        return .Value(.StringValue(self))
     }
 }
