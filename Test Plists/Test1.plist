@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Array</key>
+	<array>
+		<array>
+			<false/>
+		</array>
+		<false/>
+		<data>3q2+7w==</data>
+		<date>1982-07-27T07:30:00Z</date>
+		<dict>
+			<key>Boolean</key>
+			<false/>
+		</dict>
+		<integer>123</integer>
+		<string>foobar</string>
+		<real>123.456</real>
+	</array>
+	<key>Boolean</key>
+	<false/>
+	<key>Data</key>
+	<data>3q2+78r+</data>
+	<key>Date</key>
+	<date>1982-07-27T07:30:00Z</date>
+	<key>Dictionary</key>
+	<dict>
+		<key>Array</key>
+		<array>
+			<false/>
+		</array>
+		<key>Boolean</key>
+		<false/>
+		<key>Data</key>
+		<data>3q2+7w==</data>
+		<key>Date</key>
+		<date>1982-07-27T07:30:00Z</date>
+		<key>Dictionary</key>
+		<dict>
+			<key>Boolean</key>
+			<false/>
+		</dict>
+		<key>Integer</key>
+		<integer>123</integer>
+		<key>String</key>
+		<string>foobar</string>
+		<key>Real</key>
+		<real>123.456</real>
+	</dict>
+	<key>Integer</key>
+	<integer>123</integer>
+	<key>String</key>
+	<string>foobar</string>
+	<key>Real</key>
+	<real>123.456</real>
+</dict>
+</plist>

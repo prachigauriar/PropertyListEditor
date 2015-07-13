@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="8121.17" systemVersion="14E46" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="8152.3" systemVersion="14E46" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="8121.17"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="8152.3"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="PropertyListDocument" customModule="PropertyListEditor" customModuleProvider="target">
@@ -20,7 +20,7 @@
             <value key="minSize" type="size" width="94" height="86"/>
             <view key="contentView" id="gIp-Ho-8D9">
                 <rect key="frame" x="0.0" y="0.0" width="506" height="413"/>
-                <autoresizingMask key="autoresizingMask"/>
+                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
                     <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cWZ-x2-6GV">
                         <rect key="frame" x="0.0" y="0.0" width="506" height="413"/>
@@ -28,14 +28,14 @@
                             <rect key="frame" x="1" y="17" width="238" height="117"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" multipleSelection="NO" autosaveColumns="NO" headerView="R2l-SY-AJ6" indentationPerLevel="16" autoresizesOutlineColumn="YES" outlineTableColumn="z2J-oB-xLt" id="ts0-c4-8yk">
-                                    <rect key="frame" x="0.0" y="0.0" width="504" height="19"/>
+                                <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" multipleSelection="NO" autosaveColumns="NO" headerView="R2l-SY-AJ6" indentationPerLevel="16" autoresizesOutlineColumn="YES" outlineTableColumn="Pt7-WV-HB9" id="ts0-c4-8yk">
+                                    <rect key="frame" x="0.0" y="0.0" width="506" height="395"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <size key="intercellSpacing" width="3" height="2"/>
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                     <tableColumns>
-                                        <tableColumn width="116" minWidth="40" maxWidth="1000" id="Pt7-WV-HB9">
+                                        <tableColumn identifier="key" width="116" minWidth="40" maxWidth="1000" id="Pt7-WV-HB9">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Key">
                                                 <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -48,31 +48,35 @@
                                             </textFieldCell>
                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                         </tableColumn>
-                                        <tableColumn width="133.6171875" minWidth="40" maxWidth="1000" id="z2J-oB-xLt">
+                                        <tableColumn identifier="type" width="101" minWidth="10" maxWidth="3.4028234663852886e+38" id="xCv-2I-kNE">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Type">
                                                 <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                             </tableHeaderCell>
-                                            <popUpButtonCell key="dataCell" type="bevel" title="String" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="bezel" imageScaling="proportionallyDown" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="rQN-hD-2Uq" id="e1F-dh-H1O">
+                                            <popUpButtonCell key="dataCell" type="bevel" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="bezel" imageScaling="proportionallyDown" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" id="28w-ZI-Ifr">
                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" metaFont="menu"/>
-                                                <menu key="menu" id="YGD-3E-f3A">
+                                                <font key="font" metaFont="system"/>
+                                                <menu key="menu" id="HwT-S8-r6j">
                                                     <items>
-                                                        <menuItem title="Array" id="xde-nM-Tby"/>
-                                                        <menuItem title="Dictionary" id="ysb-Hf-ZEg"/>
-                                                        <menuItem isSeparatorItem="YES" id="n4H-RA-P5c"/>
-                                                        <menuItem title="Boolean" id="0KB-CE-d8p">
+                                                        <menuItem title="Array" id="61W-L7-adE">
                                                             <modifierMask key="keyEquivalentModifierMask"/>
                                                         </menuItem>
-                                                        <menuItem title="Data" id="2kr-lf-OEw"/>
-                                                        <menuItem title="Date" id="XJY-PY-i76">
+                                                        <menuItem title="Dictionary" id="VAk-XG-jHJ">
                                                             <modifierMask key="keyEquivalentModifierMask"/>
                                                         </menuItem>
-                                                        <menuItem title="Number" id="aoM-aw-wp8">
+                                                        <menuItem isSeparatorItem="YES" id="rpX-Sb-Kkj"/>
+                                                        <menuItem title="Boolean" id="axz-fA-inq">
                                                             <modifierMask key="keyEquivalentModifierMask"/>
                                                         </menuItem>
-                                                        <menuItem title="String" state="on" id="rQN-hD-2Uq">
+                                                        <menuItem title="Date" id="KJ9-RO-sL8">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Date" id="PB4-0i-Ced"/>
+                                                        <menuItem title="Number" id="6m5-Ao-UUV">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="String" id="aVP-BT-qgN">
                                                             <modifierMask key="keyEquivalentModifierMask"/>
                                                         </menuItem>
                                                     </items>
@@ -80,13 +84,13 @@
                                             </popUpButtonCell>
                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                         </tableColumn>
-                                        <tableColumn width="244.5" minWidth="10" maxWidth="3.4028234663852886e+38" id="B14-5L-9fg">
+                                        <tableColumn identifier="value" width="280" minWidth="10" maxWidth="3.4028234663852886e+38" id="Ej3-rJ-vaZ">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Value">
                                                 <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                             </tableHeaderCell>
-                                            <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="ADd-Fy-1MG">
+                                            <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="dxW-43-C7g">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -94,11 +98,15 @@
                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                         </tableColumn>
                                     </tableColumns>
+                                    <connections>
+                                        <outlet property="dataSource" destination="-2" id="kvu-JR-iGK"/>
+                                        <outlet property="delegate" destination="-2" id="Gu6-zd-L9r"/>
+                                    </connections>
                                 </outlineView>
                             </subviews>
                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </clipView>
-                        <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="wZ2-xm-Opx">
+                        <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="wZ2-xm-Opx">
                             <rect key="frame" x="1" y="396" width="504" height="16"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
@@ -107,7 +115,7 @@
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <tableHeaderView key="headerView" id="R2l-SY-AJ6">
-                            <rect key="frame" x="0.0" y="0.0" width="504" height="17"/>
+                            <rect key="frame" x="0.0" y="0.0" width="506" height="17"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </tableHeaderView>
                     </scrollView>

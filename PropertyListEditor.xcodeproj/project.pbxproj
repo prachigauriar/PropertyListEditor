@@ -7,47 +7,37 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4C48C3BB1B474FD500CDDCCB /* Test1.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4C48C3BA1B474FD500CDDCCB /* Test1.plist */; };
 		4C4E05C41B445AB000BF69C2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4E05B81B445AB000BF69C2 /* AppDelegate.swift */; };
 		4C4E05C51B445AB000BF69C2 /* PropertyListDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4E05BA1B445AB000BF69C2 /* PropertyListDocument.swift */; };
 		4C4E05C61B445AB000BF69C2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4C4E05BD1B445AB000BF69C2 /* Assets.xcassets */; };
-		4CB7E83D1B47074A0027C0D9 /* PlistDataValueNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CB7E83C1B47074A0027C0D9 /* PlistDataValueNode.swift */; };
-		4CB7E83F1B4707BD0027C0D9 /* PlistBooleanValueNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CB7E83E1B4707BD0027C0D9 /* PlistBooleanValueNode.swift */; };
-		4CF3D93F1B46D74800C76D8D /* PlistNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF3D93D1B46D74800C76D8D /* PlistNode.swift */; };
-		4CF3D9411B46D77C00C76D8D /* PlistValueNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF3D9401B46D77C00C76D8D /* PlistValueNode.swift */; };
-		4CF3D9431B46D85000C76D8D /* PlistContainerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF3D9421B46D85000C76D8D /* PlistContainerNode.swift */; };
-		4CF3D9451B46D97600C76D8D /* PlistArrayNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF3D9441B46D97600C76D8D /* PlistArrayNode.swift */; };
-		4CF3D9471B46D9AF00C76D8D /* PlistDictionaryNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF3D9461B46D9AF00C76D8D /* PlistDictionaryNode.swift */; };
+		4C70C3A81B4F1E8600D8ECAB /* PropertyListNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C70C3A51B4F1E8600D8ECAB /* PropertyListNode.swift */; };
+		4C70C3A91B4F1E8600D8ECAB /* PropertyListParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C70C3A61B4F1E8600D8ECAB /* PropertyListParser.swift */; };
+		4C70C3AA1B4F1E8600D8ECAB /* PropertyListValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C70C3A71B4F1E8600D8ECAB /* PropertyListValue.swift */; };
+		4C70C3B01B50487200D8ECAB /* DataFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C70C3AF1B50487200D8ECAB /* DataFormatter.swift */; };
+		4CEE45691B517F48007EC780 /* NSMutableData+AppendByte.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CEE45681B517F48007EC780 /* NSMutableData+AppendByte.swift */; };
 		4CF3D9621B46DB7100C76D8D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4CF3D9581B46DB7100C76D8D /* Localizable.strings */; };
 		4CF3D9631B46DB7100C76D8D /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 4CF3D95A1B46DB7100C76D8D /* Localizable.stringsdict */; };
 		4CF3D9641B46DB7100C76D8D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4CF3D95C1B46DB7100C76D8D /* MainMenu.xib */; };
 		4CF3D9651B46DB7100C76D8D /* PropertyListDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4CF3D95E1B46DB7100C76D8D /* PropertyListDocument.xib */; };
-		4CF3D9691B46E76700C76D8D /* PlistStringValueNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF3D9681B46E76700C76D8D /* PlistStringValueNode.swift */; };
-		4CF3D96B1B46E89A00C76D8D /* PlistNumberValueNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF3D96A1B46E89A00C76D8D /* PlistNumberValueNode.swift */; };
-		4CF3D96D1B47016900C76D8D /* PlistDateValueNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF3D96C1B47016900C76D8D /* PlistDateValueNode.swift */; };
-		4CF3D9701B4704AA00C76D8D /* Base64DataFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF3D96F1B4704AA00C76D8D /* Base64DataFormatter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4C48C3BA1B474FD500CDDCCB /* Test1.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Test1.plist; sourceTree = "<group>"; };
 		4C4E05A21B4459D700BF69C2 /* PropertyListEditor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PropertyListEditor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C4E05B81B445AB000BF69C2 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4C4E05BA1B445AB000BF69C2 /* PropertyListDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListDocument.swift; sourceTree = "<group>"; };
 		4C4E05BD1B445AB000BF69C2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Resources/Assets.xcassets; sourceTree = "<group>"; };
-		4CB7E83C1B47074A0027C0D9 /* PlistDataValueNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlistDataValueNode.swift; sourceTree = "<group>"; };
-		4CB7E83E1B4707BD0027C0D9 /* PlistBooleanValueNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlistBooleanValueNode.swift; sourceTree = "<group>"; };
-		4CF3D93D1B46D74800C76D8D /* PlistNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlistNode.swift; sourceTree = "<group>"; };
-		4CF3D9401B46D77C00C76D8D /* PlistValueNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlistValueNode.swift; sourceTree = "<group>"; };
-		4CF3D9421B46D85000C76D8D /* PlistContainerNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlistContainerNode.swift; sourceTree = "<group>"; };
-		4CF3D9441B46D97600C76D8D /* PlistArrayNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlistArrayNode.swift; sourceTree = "<group>"; };
-		4CF3D9461B46D9AF00C76D8D /* PlistDictionaryNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlistDictionaryNode.swift; sourceTree = "<group>"; };
+		4C70C3A51B4F1E8600D8ECAB /* PropertyListNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListNode.swift; sourceTree = "<group>"; };
+		4C70C3A61B4F1E8600D8ECAB /* PropertyListParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListParser.swift; sourceTree = "<group>"; };
+		4C70C3A71B4F1E8600D8ECAB /* PropertyListValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListValue.swift; sourceTree = "<group>"; };
+		4C70C3AF1B50487200D8ECAB /* DataFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataFormatter.swift; sourceTree = "<group>"; };
+		4CEE45681B517F48007EC780 /* NSMutableData+AppendByte.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSMutableData+AppendByte.swift"; sourceTree = "<group>"; };
 		4CF3D9591B46DB7100C76D8D /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4CF3D95B1B46DB7100C76D8D /* Base */ = {isa = PBXFileReference; explicitFileType = text.plist.xml; name = Base; path = Base.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		4CF3D95D1B46DB7100C76D8D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		4CF3D95F1B46DB7100C76D8D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/PropertyListDocument.xib; sourceTree = "<group>"; };
 		4CF3D9601B46DB7100C76D8D /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		4CF3D9681B46E76700C76D8D /* PlistStringValueNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlistStringValueNode.swift; sourceTree = "<group>"; };
-		4CF3D96A1B46E89A00C76D8D /* PlistNumberValueNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlistNumberValueNode.swift; sourceTree = "<group>"; };
-		4CF3D96C1B47016900C76D8D /* PlistDateValueNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlistDateValueNode.swift; sourceTree = "<group>"; };
-		4CF3D96F1B4704AA00C76D8D /* Base64DataFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Base64DataFormatter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,10 +51,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4C48C3B91B474FD500CDDCCB /* Test Plists */ = {
+			isa = PBXGroup;
+			children = (
+				4C48C3BA1B474FD500CDDCCB /* Test1.plist */,
+			);
+			path = "Test Plists";
+			sourceTree = "<group>";
+		};
 		4C4E05991B4459D700BF69C2 = {
 			isa = PBXGroup;
 			children = (
 				4C4E05A41B4459D700BF69C2 /* PropertyListEditor */,
+				4C48C3B91B474FD500CDDCCB /* Test Plists */,
 				4C4E05A31B4459D700BF69C2 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -111,8 +110,8 @@
 		4C4E05BB1B445AB000BF69C2 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				4CF3D96E1B47041900C76D8D /* Base64 Data Formatter */,
-				4CF3D93B1B46D74800C76D8D /* Property List Nodes */,
+				4C70C3AE1B50487200D8ECAB /* Data Formatter */,
+				4C70C3A41B4F1E8600D8ECAB /* Property Lists */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -124,44 +123,30 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		4C70C3A41B4F1E8600D8ECAB /* Property Lists */ = {
+			isa = PBXGroup;
+			children = (
+				4C70C3A61B4F1E8600D8ECAB /* PropertyListParser.swift */,
+				4C70C3A51B4F1E8600D8ECAB /* PropertyListNode.swift */,
+				4C70C3A71B4F1E8600D8ECAB /* PropertyListValue.swift */,
+			);
+			path = "Property Lists";
+			sourceTree = "<group>";
+		};
+		4C70C3AE1B50487200D8ECAB /* Data Formatter */ = {
+			isa = PBXGroup;
+			children = (
+				4C70C3AF1B50487200D8ECAB /* DataFormatter.swift */,
+			);
+			path = "Data Formatter";
+			sourceTree = "<group>";
+		};
 		4CF3D9381B46D0D500C76D8D /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				4CEE45681B517F48007EC780 /* NSMutableData+AppendByte.swift */,
 			);
 			path = Extensions;
-			sourceTree = "<group>";
-		};
-		4CF3D93B1B46D74800C76D8D /* Property List Nodes */ = {
-			isa = PBXGroup;
-			children = (
-				4CF3D93D1B46D74800C76D8D /* PlistNode.swift */,
-				4CF3D93E1B46D74800C76D8D /* Value Nodes */,
-				4CF3D93C1B46D74800C76D8D /* Container Nodes */,
-			);
-			path = "Property List Nodes";
-			sourceTree = "<group>";
-		};
-		4CF3D93C1B46D74800C76D8D /* Container Nodes */ = {
-			isa = PBXGroup;
-			children = (
-				4CF3D9421B46D85000C76D8D /* PlistContainerNode.swift */,
-				4CF3D9441B46D97600C76D8D /* PlistArrayNode.swift */,
-				4CF3D9461B46D9AF00C76D8D /* PlistDictionaryNode.swift */,
-			);
-			path = "Container Nodes";
-			sourceTree = "<group>";
-		};
-		4CF3D93E1B46D74800C76D8D /* Value Nodes */ = {
-			isa = PBXGroup;
-			children = (
-				4CF3D9401B46D77C00C76D8D /* PlistValueNode.swift */,
-				4CB7E83E1B4707BD0027C0D9 /* PlistBooleanValueNode.swift */,
-				4CB7E83C1B47074A0027C0D9 /* PlistDataValueNode.swift */,
-				4CF3D96C1B47016900C76D8D /* PlistDateValueNode.swift */,
-				4CF3D96A1B46E89A00C76D8D /* PlistNumberValueNode.swift */,
-				4CF3D9681B46E76700C76D8D /* PlistStringValueNode.swift */,
-			);
-			path = "Value Nodes";
 			sourceTree = "<group>";
 		};
 		4CF3D9571B46DB7100C76D8D /* Supporting Files */ = {
@@ -181,14 +166,6 @@
 				4CF3D95E1B46DB7100C76D8D /* PropertyListDocument.xib */,
 			);
 			name = "User Interfaces";
-			sourceTree = "<group>";
-		};
-		4CF3D96E1B47041900C76D8D /* Base64 Data Formatter */ = {
-			isa = PBXGroup;
-			children = (
-				4CF3D96F1B4704AA00C76D8D /* Base64DataFormatter.swift */,
-			);
-			path = "Base64 Data Formatter";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -250,6 +227,7 @@
 			files = (
 				4CF3D9641B46DB7100C76D8D /* MainMenu.xib in Resources */,
 				4CF3D9631B46DB7100C76D8D /* Localizable.stringsdict in Resources */,
+				4C48C3BB1B474FD500CDDCCB /* Test1.plist in Resources */,
 				4CF3D9621B46DB7100C76D8D /* Localizable.strings in Resources */,
 				4C4E05C61B445AB000BF69C2 /* Assets.xcassets in Resources */,
 				4CF3D9651B46DB7100C76D8D /* PropertyListDocument.xib in Resources */,
@@ -263,19 +241,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4CF3D9701B4704AA00C76D8D /* Base64DataFormatter.swift in Sources */,
-				4CF3D96B1B46E89A00C76D8D /* PlistNumberValueNode.swift in Sources */,
 				4C4E05C41B445AB000BF69C2 /* AppDelegate.swift in Sources */,
-				4CF3D9431B46D85000C76D8D /* PlistContainerNode.swift in Sources */,
-				4CB7E83D1B47074A0027C0D9 /* PlistDataValueNode.swift in Sources */,
-				4CF3D93F1B46D74800C76D8D /* PlistNode.swift in Sources */,
-				4CF3D96D1B47016900C76D8D /* PlistDateValueNode.swift in Sources */,
-				4CB7E83F1B4707BD0027C0D9 /* PlistBooleanValueNode.swift in Sources */,
-				4CF3D9691B46E76700C76D8D /* PlistStringValueNode.swift in Sources */,
-				4CF3D9411B46D77C00C76D8D /* PlistValueNode.swift in Sources */,
-				4CF3D9451B46D97600C76D8D /* PlistArrayNode.swift in Sources */,
+				4C70C3A91B4F1E8600D8ECAB /* PropertyListParser.swift in Sources */,
+				4CEE45691B517F48007EC780 /* NSMutableData+AppendByte.swift in Sources */,
+				4C70C3B01B50487200D8ECAB /* DataFormatter.swift in Sources */,
+				4C70C3AA1B4F1E8600D8ECAB /* PropertyListValue.swift in Sources */,
+				4C70C3A81B4F1E8600D8ECAB /* PropertyListNode.swift in Sources */,
 				4C4E05C51B445AB000BF69C2 /* PropertyListDocument.swift in Sources */,
-				4CF3D9471B46D9AF00C76D8D /* PlistDictionaryNode.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
