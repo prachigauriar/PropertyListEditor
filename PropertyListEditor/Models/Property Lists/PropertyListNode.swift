@@ -22,10 +22,16 @@ protocol PropertyListNode {
 }
 
 
+/// PropertyListTypes
+enum PropertyListType: String {
+    case ArrayType, BooleanType, DataType, DateType, DictionaryType, NumberType, StringType
+}
+
+
 // MARK: Items and Item Nodes
 
 /// PropertyListItems contain the data that is stored in a property list node. An item contains either
-/// a PropertyListValue or a PropertyListCollectionNode, which in turn contains more items.
+/// a PropertyListValue, a PropertyListArrayNode, or a PropertyListDictionaryNode
 enum PropertyListItem {
     /// Indicates that the item is a value type, i.e., a boolean, data, date, number, or string.
     case Value(PropertyListValue)
@@ -35,6 +41,30 @@ enum PropertyListItem {
 
     /// Indicates that the item is a dictionary node
     case DictionaryNode(PropertyListDictionaryNode)
+
+
+    /// Indicates the property list type of the item
+    var propertyListType: PropertyListType {
+        switch self {
+        case .ArrayNode:
+            return .ArrayType
+        case .DictionaryNode:
+            return .DictionaryType
+        case let .Value(value):
+            switch value {
+            case .BooleanValue:
+                return .BooleanType
+            case .DataValue:
+                return .DataType
+            case .DateValue:
+                return .DateType
+            case .NumberValue:
+                return .NumberType
+            case .StringValue:
+                return .StringType
+            }
+        }
+    }
 }
 
 
@@ -43,6 +73,9 @@ enum PropertyListItem {
 protocol PropertyListItemNode: PropertyListNode {
     /// The node’s item.
     var item: PropertyListItem { get set }
+
+    /// The node’s item’s type
+    var propertyListType: PropertyListType { get }
 }
 
 
@@ -84,6 +117,11 @@ extension PropertyListItemNode {
         case let .DictionaryNode(dictionaryNode):
             return dictionaryNode.childAtIndex(index)
         }
+    }
+
+
+    var propertyListType: PropertyListType {
+        return self.item.propertyListType
     }
 }
 

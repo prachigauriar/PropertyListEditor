@@ -46,7 +46,7 @@ enum PropertyListParserError: ErrorType, CustomStringConvertible {
 
 // MARK: - PropertyListObject Extensions
 
-protocol PropertyListObject {
+protocol PropertyListObject: NSObjectProtocol {
     func propertyListItem() throws -> PropertyListItem
 }
 

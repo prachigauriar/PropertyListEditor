@@ -10,7 +10,7 @@ import Foundation
 
 
 struct PropertyListValidValue {
-    let value: AnyObject
+    let value: PropertyListObject
     let title: String
 }
 
@@ -32,7 +32,11 @@ enum PropertyListValue: CustomStringConvertible {
     var description: String {
         switch self {
         case let .BooleanValue(boolean):
-            return boolean.boolValue ? "YES" : "NO"
+            if boolean.boolValue {
+                return NSLocalizedString("YES", comment: "Title for Boolean true value")
+            } else {
+                return NSLocalizedString("NO", comment: "Title for Boolean false value")
+            }
         case let .DataValue(data):
             return data.description
         case let .DateValue(date):
@@ -44,7 +48,23 @@ enum PropertyListValue: CustomStringConvertible {
         }
     }
 
-    
+
+    var objectValue: AnyObject {
+        switch self {
+        case let .BooleanValue(boolean):
+            return boolean
+        case let .DataValue(data):
+            return data
+        case let .DateValue(date):
+            return date
+        case let .NumberValue(number):
+            return number
+        case let .StringValue(string):
+            return string
+        }
+    }
+
+
     var valueConstraint: PropertyListValueConstraint? {
         switch self {
         case .BooleanValue:
@@ -52,16 +72,30 @@ enum PropertyListValue: CustomStringConvertible {
             let trueValidValue = PropertyListValidValue(value: NSNumber(bool: true), title: NSLocalizedString("YES", comment: "Title for Boolean true value"))
             return .ValueArray([falseValidValue, trueValidValue])
         case .DataValue:
-            return nil
+            return .Formatter(PropertyListDataFormatter())
         case .DateValue:
-            let dateFormatter = NSDateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
-            dateFormatter.timeZone = NSTimeZone(name: "UTC")
-            return .Formatter(dateFormatter)
+            return .Formatter(NSDateFormatter.propertyListDateFormatter())
         case .NumberValue:
-            return .Formatter(NSNumberFormatter())
+            return .Formatter(NSNumberFormatter.propertyListNumberFormatter())
         case .StringValue:
             return nil
         }
+    }
+}
+
+
+extension NSDateFormatter {
+    class func propertyListDateFormatter() -> NSDateFormatter {
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss 'UTC'"
+        dateFormatter.timeZone = NSTimeZone(name: "UTC")
+        return dateFormatter
+    }
+}
+
+
+extension NSNumberFormatter {
+    class func propertyListNumberFormatter() -> NSNumberFormatter {
+        return NSNumberFormatter()
     }
 }

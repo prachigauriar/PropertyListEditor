@@ -10,39 +10,6 @@ import Cocoa
 
 
 class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
-    enum TypePopUpButtonTag: Int {
-        case Array = 10001
-        case Dictionary = 10002
-        case Boolean = 10003
-        case Data = 10004
-        case Date = 10005
-        case Number = 10006
-        case String = 10007
-
-        init(itemNode: PropertyListItemNode) {
-            switch itemNode.item {
-            case .ArrayNode:
-                self = .Array
-            case .DictionaryNode:
-                self = .Dictionary
-            case let .Value(value):
-                switch value {
-                case .BooleanValue:
-                    self = .Boolean
-                case .DataValue:
-                    self = .Data
-                case .DateValue:
-                    self = .Date
-                case .NumberValue:
-                    self = .Number
-                case .StringValue:
-                    self = .String
-                }
-            }
-        }
-    }
-
-    
     enum TableColumn: String {
         case Key
         case Type
@@ -64,8 +31,8 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
 
 
     @IBOutlet weak var propertyListOutlineView: NSOutlineView!
-    @IBOutlet weak var keyTextFieldCell: NSTextFieldCell!
-    @IBOutlet weak var typePopUpButtonCell: NSPopUpButtonCell!
+    @IBOutlet weak var keyTextFieldPrototypeCell: NSTextFieldCell!
+    @IBOutlet weak var typePopUpButtonPrototypeCell: NSPopUpButtonCell!
 
     var rootNode: PropertyListRootNode! {
         didSet {
@@ -165,11 +132,11 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
         case .Key:
             return "Key"
         case .Type:
-            return "Type"
+            return itemNode.propertyListType.typePopUpMenuItemIndex
         case .Value:
             switch itemNode.item {
             case let .Value(value):
-                return value.description
+                return value.objectValue
             case .ArrayNode:
                 return "Array"
             case .DictionaryNode:
@@ -179,12 +146,45 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
     }
 
 
-//    func outlineView(outlineView: NSOutlineView, setObjectValue object: AnyObject?, forTableColumn tableColumn: NSTableColumn?, byItem item: AnyObject?) {
-//
-//    }
+    func outlineView(outlineView: NSOutlineView, setObjectValue object: AnyObject?, forTableColumn tableColumn: NSTableColumn?, byItem item: AnyObject?) {
+        guard let tableColumnIdentifier = tableColumn?.identifier, var itemNode = item as? PropertyListItemNode else {
+            return
+        }
+
+        guard let tableColumn = TableColumn(identifier: tableColumnIdentifier) else {
+            assert(false, "Object value set for invalid table column identifier \(tableColumnIdentifier)")
+        }
+
+        guard let propertyListObject = object as? PropertyListObject else {
+            assert(false, "object value (\(object)) is not a property list object")
+        }
+
+        switch tableColumn {
+        case .Key:
+            break
+        case .Type:
+            if let popUpButtonMenuItemIndex = object as? Int, type = PropertyListType(typePopUpMenuItemIndex: popUpButtonMenuItemIndex) {
+                itemNode.item = type.propertyListItemWithStringValue("")
+            }
+        case .Value:
+            if let popUpButtonMenuItemIndex = object as? Int,
+                case let .Value(value) = itemNode.item,
+                let valueConstraint = value.valueConstraint,
+                case let .ValueArray(valueArray) = valueConstraint {
+                    itemNode.item = try! valueArray[popUpButtonMenuItemIndex].value.propertyListItem()
+            } else {
+                itemNode.item = try! propertyListObject.propertyListItem()
+            }
+        }
+
+        outlineView.reloadItem(item)
+
+        print("item \(itemNode) tableColumn \(tableColumn) = \(object) \(object.dynamicType)")
+    }
 
 
     // MARK: - NSOutlineView Delegate
+
     func outlineView(outlineView: NSOutlineView, dataCellForTableColumn tableColumn: NSTableColumn?, item: AnyObject) -> NSCell? {
         guard let tableColumnIdentifier = tableColumn?.identifier, itemNode = item as? PropertyListItemNode else {
             return nil
@@ -196,18 +196,14 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
 
         switch tableColumn {
         case .Key:
-            return self.keyTextFieldCell
+            return self.keyTextFieldPrototypeCell.copy() as! NSTextFieldCell
         case .Type:
-            self.typePopUpButtonCell.selectItemWithTag(TypePopUpButtonTag(itemNode: itemNode).rawValue)
-            self.typePopUpButtonCell.synchronizeTitleAndSelectedItem()
-            return self.typePopUpButtonCell
+            return self.typePopUpButtonPrototypeCell.copy() as! NSPopUpButtonCell
         case .Value:
             switch itemNode.item {
             case let .Value(value):
                 return self.valueCellForPropertyListValue(value)
-            case .ArrayNode:
-                fallthrough
-            case .DictionaryNode:
+            case .ArrayNode, .DictionaryNode:
                 return NSTextFieldCell()
             }
         }
@@ -239,3 +235,67 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
 }
 
 
+// MARK: - PropertyListType ⟺ typePopUpMenuItemIndex Conversion
+
+private extension PropertyListType {
+    init?(typePopUpMenuItemIndex index: Int) {
+        switch index {
+        case 0:
+            self = .ArrayType
+        case 1:
+            self = .DictionaryType
+        case 3:
+            self = .BooleanType
+        case 4:
+            self = .DataType
+        case 5:
+            self = .DateType
+        case 6:
+            self = .NumberType
+        case 7:
+            self = .StringType
+        default:
+            return nil
+        }
+    }
+
+
+    var typePopUpMenuItemIndex: Int {
+        switch self {
+        case .ArrayType:
+            return 0
+        case .DictionaryType:
+            return 1
+        case .BooleanType:
+            return 3
+        case .DataType:
+            return 4
+        case .DateType:
+            return 5
+        case .NumberType:
+            return 6
+        case .StringType:
+            return 7
+        }
+    }
+
+
+    func propertyListItemWithStringValue(stringValue: NSString) -> PropertyListItem {
+        switch self {
+        case .ArrayType:
+            return .ArrayNode(PropertyListArrayNode())
+        case .BooleanType:
+            return .Value(.BooleanValue(false))
+        case .DataType:
+            return .Value(.DataValue(PropertyListDataFormatter().dataFromString(stringValue as String) ?? NSData()))
+        case .DateType:
+            return .Value(.DateValue(NSDateFormatter.propertyListDateFormatter().dateFromString(stringValue as String) ?? NSDate()))
+        case .DictionaryType:
+            return .DictionaryNode(PropertyListDictionaryNode())
+        case .NumberType:
+            return .Value(.NumberValue(NSNumber(double: stringValue.doubleValue)))
+        case .StringType:
+            return try! stringValue.propertyListItem()
+        }
+    }
+}

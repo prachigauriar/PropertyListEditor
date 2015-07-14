@@ -1,5 +1,5 @@
 //
-//  DataFormatter.swift
+//  PropertyListDataFormatter.swift
 //  PropertyListEditor
 //
 //  Created by Prachi Gauriar on 7/9/2015.
@@ -9,7 +9,14 @@
 import Cocoa
 
 
-class DataFormatter: NSFormatter {
+class PropertyListDataFormatter: NSFormatter {
+    func dataFromString(string: NSString) -> NSData? {
+        var data: AnyObject?
+        self.getObjectValue(&data, forString: string as String, errorDescription: nil)
+        return data as? NSData
+    }
+
+
     override func stringForObjectValue(obj: AnyObject) -> String? {
         if let data = obj as? NSData {
             return data.description
@@ -59,6 +66,4 @@ class DataFormatter: NSFormatter {
             obj.memory = data.copy()
             return true
     }
-
-//    func isPartialStringValid(partialStringPtr: AutoreleasingUnsafeMutablePointer<NSString?>, proposedSelectedRange proposedSelRangePtr: NSRangePointer, originalString origString: String, originalSelectedRange origSelRange: NSRange, errorDescription error: AutoreleasingUnsafeMutablePointer<NSString?>) -> Bool
 }
