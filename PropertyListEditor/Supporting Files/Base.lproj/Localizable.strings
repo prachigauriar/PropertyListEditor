@@ -6,11 +6,15 @@
   Copyright © 2015 Quantum Lens Cap. All rights reserved.
 */
 
+
+/* Key for root node */
+"Root" = "Root";
+
 /* Key for array item node */
 "(Item %d)" = "(Item %d)";
 
-/* Label for Boolean false value */
+/* Title for Boolean false value */
 "NO" = "NO";
 
-/* Label for Boolean true value */
+/* Title for Boolean true value */
 "YES" = "YES";

@@ -119,7 +119,7 @@ extension PropertyListItemNode {
         }
     }
 
-
+    
     var propertyListType: PropertyListType {
         return self.item.propertyListType
     }

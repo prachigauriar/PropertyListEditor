@@ -30,7 +30,7 @@
                             <rect key="frame" x="1" y="17" width="238" height="117"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" multipleSelection="NO" autosaveColumns="NO" headerView="R2l-SY-AJ6" indentationPerLevel="16" autoresizesOutlineColumn="YES" outlineTableColumn="Pt7-WV-HB9" id="ts0-c4-8yk">
+                                <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" multipleSelection="NO" autosaveColumns="NO" headerView="R2l-SY-AJ6" indentationPerLevel="16" autoresizesOutlineColumn="YES" outlineTableColumn="Pt7-WV-HB9" id="ts0-c4-8yk">
                                     <rect key="frame" x="0.0" y="0.0" width="504" height="19"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <size key="intercellSpacing" width="3" height="2"/>

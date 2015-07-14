@@ -96,6 +96,9 @@ extension NSDateFormatter {
 
 extension NSNumberFormatter {
     class func propertyListNumberFormatter() -> NSNumberFormatter {
-        return NSNumberFormatter()
+        let numberFormatter = NSNumberFormatter()
+        numberFormatter.minimumFractionDigits = 0
+        numberFormatter.maximumFractionDigits = 10
+        return numberFormatter
     }
 }

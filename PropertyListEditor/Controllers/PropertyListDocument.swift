@@ -77,6 +77,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
             self.rootNode = try PropertyListRootNode(propertyListObject: propertyList as! PropertyListObject)
         } catch let error {
             print("Error reading document: \(error)")
+            throw error
         }
     }
 
@@ -130,7 +131,16 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
 
         switch tableColumn {
         case .Key:
-            return "Key"
+            switch itemNode {
+            case is PropertyListRootNode:
+                return NSLocalizedString("Root", comment: "Key for root node")
+            case is PropertyListArrayItemNode:
+                return NSString.localizedStringWithFormat(NSLocalizedString("(Item %d)", comment: "Key for array item node"), 0)
+            case let dictionaryNode as PropertyListDictionaryItemNode:
+                return dictionaryNode.key
+            default:
+                return nil
+            }
         case .Type:
             return itemNode.propertyListType.typePopUpMenuItemIndex
         case .Value:
