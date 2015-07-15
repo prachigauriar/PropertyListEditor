@@ -11,28 +11,14 @@ import Cocoa
 
 class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
     enum TableColumn: String {
-        case Key
-        case Type
-        case Value
-
-        init?(identifier: String) {
-            switch identifier {
-            case "key":
-                self = .Key
-            case "type":
-                self = .Type
-            case "value":
-                self = .Value
-            default:
-                return nil
-            }
-        }
+        case Key, Type, Value
     }
 
 
     @IBOutlet weak var propertyListOutlineView: NSOutlineView!
     @IBOutlet weak var keyTextFieldPrototypeCell: NSTextFieldCell!
     @IBOutlet weak var typePopUpButtonPrototypeCell: NSPopUpButtonCell!
+    @IBOutlet weak var valueTextFieldPrototypeCell: NSTextFieldCell!
 
     var rootNode: PropertyListRootNode! {
         didSet {
@@ -124,7 +110,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
             return nil
         }
 
-        guard let tableColumn = TableColumn(identifier: tableColumnIdentifier) else {
+        guard let tableColumn = TableColumn(rawValue: tableColumnIdentifier) else {
             assert(false, "Object value requested for invalid table column identifier \(tableColumnIdentifier)")
         }
 
@@ -161,7 +147,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
             return
         }
 
-        guard let tableColumn = TableColumn(identifier: tableColumnIdentifier) else {
+        guard let tableColumn = TableColumn(rawValue: tableColumnIdentifier) else {
             assert(false, "Object value set for invalid table column identifier \(tableColumnIdentifier)")
         }
 
@@ -200,7 +186,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
             return nil
         }
 
-        guard let tableColumn = TableColumn(identifier: tableColumnIdentifier) else {
+        guard let tableColumn = TableColumn(rawValue: tableColumnIdentifier) else {
             assert(false, "Object value requested for invalid table column identifier \(tableColumnIdentifier)")
         }
 
@@ -214,7 +200,9 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
             case let .Value(value):
                 return self.valueCellForPropertyListValue(value)
             case .ArrayNode, .DictionaryNode:
-                return NSTextFieldCell()
+                let cell = self.valueTextFieldPrototypeCell.copy() as! NSTextFieldCell
+                cell.editable = false
+                return cell
             }
         }
     }
@@ -222,17 +210,18 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
 
     func valueCellForPropertyListValue(value: PropertyListValue) -> NSCell {
         guard let valueConstraint = value.valueConstraint else {
-            return NSTextFieldCell()
+            return self.valueTextFieldPrototypeCell.copy() as! NSTextFieldCell
         }
 
         switch valueConstraint {
         case let .Formatter(formatter):
-            let cell = NSTextFieldCell()
+            let cell = self.valueTextFieldPrototypeCell.copy() as! NSTextFieldCell
             cell.formatter = formatter
             return cell
         case let .ValueArray(validValues):
             let cell = NSPopUpButtonCell()
             cell.bordered = false
+            cell.font = NSFont.systemFontOfSize(NSFont.systemFontSizeForControlSize(.SmallControlSize))
 
             for validValue in validValues {
                 cell.addItemWithTitle(validValue.title)

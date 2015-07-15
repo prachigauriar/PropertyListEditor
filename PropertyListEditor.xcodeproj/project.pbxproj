@@ -126,9 +126,9 @@
 		4C70C3A41B4F1E8600D8ECAB /* Property Lists */ = {
 			isa = PBXGroup;
 			children = (
-				4C70C3A61B4F1E8600D8ECAB /* PropertyListParser.swift */,
-				4C70C3A51B4F1E8600D8ECAB /* PropertyListNode.swift */,
 				4C70C3A71B4F1E8600D8ECAB /* PropertyListValue.swift */,
+				4C70C3A51B4F1E8600D8ECAB /* PropertyListNode.swift */,
+				4C70C3A61B4F1E8600D8ECAB /* PropertyListParser.swift */,
 			);
 			path = "Property Lists";
 			sourceTree = "<group>";

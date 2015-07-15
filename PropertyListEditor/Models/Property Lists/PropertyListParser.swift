@@ -22,6 +22,9 @@ class PropertyListRootNode: PropertyListItemNode {
     }
 
 
+    /// Creates a new PropertyListRootNode with the specified property list object.
+    /// Throws if the property list object can’t be converted into a property list item.
+    /// :propertyListObject: The property list object whose item representation should be the root node’s item.
     convenience init(propertyListObject: PropertyListObject) throws {
         let item = try propertyListObject.propertyListItem()
         self.init(item: item)
@@ -44,7 +47,7 @@ enum PropertyListParserError: ErrorType, CustomStringConvertible {
 }
 
 
-// MARK: - PropertyListObject Extensions
+// MARK: - PropertyListObject Protocol and Extensions
 
 protocol PropertyListObject: NSObjectProtocol {
     func propertyListItem() throws -> PropertyListItem
