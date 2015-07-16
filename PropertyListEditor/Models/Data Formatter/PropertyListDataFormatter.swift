@@ -65,4 +65,40 @@ class PropertyListDataFormatter: NSFormatter {
             obj.memory = NSData(bytes: &byteBuffer, length: byteBuffer.count)
             return true
     }
+
+
+    override func isPartialStringValid(partialStringPtr: AutoreleasingUnsafeMutablePointer<NSString?>,
+        proposedSelectedRange proposedSelRangePtr: NSRangePointer,
+        originalString origString: String,
+        originalSelectedRange origSelRange: NSRange,
+        errorDescription error: AutoreleasingUnsafeMutablePointer<NSString?>) -> Bool {
+            guard let partialString = partialStringPtr.memory as? String else {
+                return false
+            }
+
+            let scanner = NSScanner(string: partialString)
+            scanner.charactersToBeSkipped = NSCharacterSet(charactersInString: " ")
+
+            if scanner.atEnd {
+                // The string is empty
+                return true
+            } else if !scanner.scanString("<", intoString: nil) {
+                // The string does not begin with a <
+                return false
+            }
+
+            let hexadecimalDigitCharacterSet = NSCharacterSet(charactersInString: "0123456789abcdefABCDEF")
+
+            // Scan hex digits until there are none left or we hit a >. This is structured as a repeat-while
+            // instead of a while so that we can handle the empty string case "<" and "<>" in a single code 
+            // path
+            repeat {
+                // If we hit a >, we’re done with our loop
+                if scanner.scanString(">", intoString: nil) {
+                    break
+                }
+            } while scanner.scanCharactersFromSet(hexadecimalDigitCharacterSet, intoString: nil)
+
+            return scanner.atEnd
+    }
 }
