@@ -6,7 +6,7 @@
 //  Copyright © 2015 Quantum Lens Cap. All rights reserved.
 //
 
-import Cocoa
+import Foundation
 
 
 class PropertyListDataFormatter: NSFormatter {

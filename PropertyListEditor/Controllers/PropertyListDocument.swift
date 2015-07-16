@@ -33,6 +33,14 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
         self.rootNode = PropertyListRootNode(item: emptyDictionaryItem)
     }
 
+    
+    static let dateFormatter: NSDateFormatter = {
+        let formatter = NSDateFormatter()
+        formatter.timeStyle = .ShortStyle
+        formatter.dateStyle = .MediumStyle
+        return formatter
+    }()
+
 
     // MARK: - NSDocument Methods
 
@@ -190,7 +198,9 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
 
         switch tableColumn {
         case .Key:
-            return self.keyTextFieldPrototypeCell.copy() as! NSTextFieldCell
+            let cell = self.keyTextFieldPrototypeCell.copy() as! NSTextFieldCell
+            cell.editable = (itemNode as? PropertyListDictionaryItemNode) != nil
+            return cell
         case .Type:
             return self.typePopUpButtonPrototypeCell.copy() as! NSPopUpButtonCell
         case .Value:
@@ -286,7 +296,7 @@ private extension PropertyListType {
         case .DataType:
             return .Value(.DataValue(PropertyListDataFormatter().dataFromString(stringValue as String) ?? NSData()))
         case .DateType:
-            return .Value(.DateValue(NSDateFormatter.propertyListDateFormatter().dateFromString(stringValue as String) ?? NSDate()))
+            return .Value(.DateValue(LenientDateFormatter().dateFromString(stringValue as String) ?? NSDate()))
         case .DictionaryType:
             return .DictionaryNode(PropertyListDictionaryNode())
         case .NumberType:

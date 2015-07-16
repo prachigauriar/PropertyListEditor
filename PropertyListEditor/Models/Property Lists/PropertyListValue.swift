@@ -74,7 +74,7 @@ enum PropertyListValue: CustomStringConvertible {
         case .DataValue:
             return .Formatter(PropertyListDataFormatter())
         case .DateValue:
-            return .Formatter(NSDateFormatter.propertyListDateFormatter())
+            return .Formatter(LenientDateFormatter())
         case .NumberValue:
             return .Formatter(NSNumberFormatter.propertyListNumberFormatter())
         case .StringValue:
@@ -84,21 +84,17 @@ enum PropertyListValue: CustomStringConvertible {
 }
 
 
-extension NSDateFormatter {
-    class func propertyListDateFormatter() -> NSDateFormatter {
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss 'UTC'"
-        dateFormatter.timeZone = NSTimeZone(name: "UTC")
-        return dateFormatter
-    }
-}
-
-
 extension NSNumberFormatter {
     class func propertyListNumberFormatter() -> NSNumberFormatter {
-        let numberFormatter = NSNumberFormatter()
-        numberFormatter.minimumFractionDigits = 0
-        numberFormatter.maximumFractionDigits = 10
-        return numberFormatter
+        struct SharedFormatter {
+            static let numberFormatter: NSNumberFormatter = {
+                let numberFormatter = NSNumberFormatter()
+                numberFormatter.minimumFractionDigits = 0
+                numberFormatter.maximumFractionDigits = 10
+                return numberFormatter
+            }()
+        }
+
+        return SharedFormatter.numberFormatter
     }
 }

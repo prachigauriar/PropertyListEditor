@@ -15,6 +15,7 @@
 		4C70C3A91B4F1E8600D8ECAB /* PropertyListParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C70C3A61B4F1E8600D8ECAB /* PropertyListParser.swift */; };
 		4C70C3AA1B4F1E8600D8ECAB /* PropertyListValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C70C3A71B4F1E8600D8ECAB /* PropertyListValue.swift */; };
 		4C70C3B01B50487200D8ECAB /* PropertyListDataFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C70C3AF1B50487200D8ECAB /* PropertyListDataFormatter.swift */; };
+		4CBDDBD81B58276C00131559 /* LenientDateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CBDDBD71B58276C00131559 /* LenientDateFormatter.swift */; };
 		4CF3D9621B46DB7100C76D8D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4CF3D9581B46DB7100C76D8D /* Localizable.strings */; };
 		4CF3D9631B46DB7100C76D8D /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 4CF3D95A1B46DB7100C76D8D /* Localizable.stringsdict */; };
 		4CF3D9641B46DB7100C76D8D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4CF3D95C1B46DB7100C76D8D /* MainMenu.xib */; };
@@ -31,6 +32,7 @@
 		4C70C3A61B4F1E8600D8ECAB /* PropertyListParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListParser.swift; sourceTree = "<group>"; };
 		4C70C3A71B4F1E8600D8ECAB /* PropertyListValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListValue.swift; sourceTree = "<group>"; };
 		4C70C3AF1B50487200D8ECAB /* PropertyListDataFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListDataFormatter.swift; sourceTree = "<group>"; };
+		4CBDDBD71B58276C00131559 /* LenientDateFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LenientDateFormatter.swift; sourceTree = "<group>"; };
 		4CF3D9591B46DB7100C76D8D /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4CF3D95B1B46DB7100C76D8D /* Base */ = {isa = PBXFileReference; explicitFileType = text.plist.xml; name = Base; path = Base.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		4CF3D95D1B46DB7100C76D8D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
@@ -109,6 +111,7 @@
 			isa = PBXGroup;
 			children = (
 				4C70C3AE1B50487200D8ECAB /* Data Formatter */,
+				4CBDDBD61B58273000131559 /* Lenient Date Formatter */,
 				4C70C3A41B4F1E8600D8ECAB /* Property Lists */,
 			);
 			path = Models;
@@ -137,6 +140,14 @@
 				4C70C3AF1B50487200D8ECAB /* PropertyListDataFormatter.swift */,
 			);
 			path = "Data Formatter";
+			sourceTree = "<group>";
+		};
+		4CBDDBD61B58273000131559 /* Lenient Date Formatter */ = {
+			isa = PBXGroup;
+			children = (
+				4CBDDBD71B58276C00131559 /* LenientDateFormatter.swift */,
+			);
+			path = "Lenient Date Formatter";
 			sourceTree = "<group>";
 		};
 		4CF3D9381B46D0D500C76D8D /* Extensions */ = {
@@ -241,6 +252,7 @@
 				4C4E05C41B445AB000BF69C2 /* AppDelegate.swift in Sources */,
 				4C70C3A91B4F1E8600D8ECAB /* PropertyListParser.swift in Sources */,
 				4C70C3B01B50487200D8ECAB /* PropertyListDataFormatter.swift in Sources */,
+				4CBDDBD81B58276C00131559 /* LenientDateFormatter.swift in Sources */,
 				4C70C3AA1B4F1E8600D8ECAB /* PropertyListValue.swift in Sources */,
 				4C70C3A81B4F1E8600D8ECAB /* PropertyListNode.swift in Sources */,
 				4C4E05C51B445AB000BF69C2 /* PropertyListDocument.swift in Sources */,
