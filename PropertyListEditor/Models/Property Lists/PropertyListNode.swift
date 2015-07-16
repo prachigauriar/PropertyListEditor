@@ -130,7 +130,7 @@ extension PropertyListItemNode {
 
 protocol PropertyListCollectionNode: PropertyListNode {
     typealias ItemNodeType: PropertyListItemNode, AnyObject
-    var children: [ItemNodeType] { get set }
+    var children: [ItemNodeType] { get }
 }
 
 
@@ -154,10 +154,12 @@ extension PropertyListCollectionNode {
 // MARK: - Arrays
 
 class PropertyListArrayItemNode: PropertyListItemNode {
+    var index: Int
     var item: PropertyListItem
 
 
-    init(item: PropertyListItem) {
+    init(index: Int, item: PropertyListItem) {
+        self.index = index
         self.item = item
     }
 }

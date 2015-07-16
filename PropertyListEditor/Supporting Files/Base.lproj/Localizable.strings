@@ -10,8 +10,8 @@
 /* Key for root node */
 "Root" = "Root";
 
-/* Key for array item node */
-"(Item %d)" = "(Item %d)";
+/* Format string for array item node key */
+"Item %d" = "Item %d";
 
 /* Title for Boolean false value */
 "NO" = "NO";

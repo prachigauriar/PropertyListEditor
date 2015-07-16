@@ -120,8 +120,8 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
             switch itemNode {
             case is PropertyListRootNode:
                 return NSLocalizedString("Root", comment: "Key for root node")
-            case is PropertyListArrayItemNode:
-                return NSString.localizedStringWithFormat(NSLocalizedString("(Item %d)", comment: "Key for array item node"), 0)
+            case let arrayNode as PropertyListArrayItemNode:
+                return NSString.localizedStringWithFormat(NSLocalizedString("Item %d", comment: "Format string for array item node key"), arrayNode.index)
             case let dictionaryNode as PropertyListDictionaryItemNode:
                 return dictionaryNode.key
             default:
@@ -174,8 +174,6 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
         }
 
         outlineView.reloadItem(item)
-
-        print("item \(itemNode) tableColumn \(tableColumn) = \(object) \(object.dynamicType)")
     }
 
 

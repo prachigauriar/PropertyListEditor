@@ -31,8 +31,7 @@ class PropertyListDataFormatter: NSFormatter {
         errorDescription error: AutoreleasingUnsafeMutablePointer<NSString?>) -> Bool {
             // Start by removing all spaces in the string and getting a character generator that we can
             // use to iterate over each character
-            let string = description.stringByReplacingOccurrencesOfString(" ", withString: "")
-            var characterGenerator = string.characters.generate()
+            var characterGenerator = string.stringByReplacingOccurrencesOfString(" ", withString: "").characters.generate()
 
             // If the string didn’t start with a <, it’s invalid
             guard let firstCharacter = characterGenerator.next() where firstCharacter == "<" else {
@@ -40,7 +39,7 @@ class PropertyListDataFormatter: NSFormatter {
             }
 
             // Otherwise, build up our data by continuously appending bytes until we reach a >
-            let data = NSMutableData()
+            var byteBuffer: [UInt8] = []
             repeat {
                 // Read the first character. If there wasn’t one, return false
                 guard let char1 = characterGenerator.next() else {
@@ -60,10 +59,10 @@ class PropertyListDataFormatter: NSFormatter {
                 }
 
                 // Otherwise, everything went fine, so add our byte to our data object
-                data.appendByte(byte)
+                byteBuffer.append(byte)
             } while true
 
-            obj.memory = data.copy()
+            obj.memory = NSData(bytes: &byteBuffer, length: byteBuffer.count)
             return true
     }
 }

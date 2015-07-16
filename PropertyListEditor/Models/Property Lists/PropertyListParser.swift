@@ -58,13 +58,13 @@ extension NSArray: PropertyListObject {
     func propertyListItem() throws -> PropertyListItem {
         let arrayNode = PropertyListArrayNode()
 
-        for element in self {
+        for (i, element) in self.enumerate() {
             guard let propertyListObject = element as? PropertyListObject else {
                 throw PropertyListParserError.UnsupportedObjectType(element)
             }
 
             let item = try propertyListObject.propertyListItem()
-            let arrayItem = PropertyListArrayItemNode(item: item)
+            let arrayItem = PropertyListArrayItemNode(index: i, item: item)
             arrayNode.children.append(arrayItem)
         }
 
