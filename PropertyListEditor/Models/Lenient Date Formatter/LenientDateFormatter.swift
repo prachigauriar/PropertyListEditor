@@ -18,7 +18,7 @@ class LenientDateFormatter: NSFormatter {
 
 
     override func stringForObjectValue(obj: AnyObject) -> String? {
-        return self.propertyListDateFormatter().stringForObjectValue(obj)
+        return NSDateFormatter.propertyListDateOutputFormatter().stringForObjectValue(obj)
     }
 
 
@@ -37,21 +37,6 @@ class LenientDateFormatter: NSFormatter {
                 return false
             }
 
-
             return false
-    }
-
-
-    private func propertyListDateFormatter() -> NSDateFormatter {
-        struct SharedFormatter {
-            static let dateFormatter: NSDateFormatter = {
-                let dateFormatter = NSDateFormatter()
-                dateFormatter.dateStyle = .LongStyle
-                dateFormatter.timeStyle = .MediumStyle
-                return dateFormatter
-            }()
-        }
-
-        return SharedFormatter.dateFormatter
     }
 }

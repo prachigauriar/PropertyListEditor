@@ -130,10 +130,42 @@
                     <constraint firstAttribute="bottom" secondItem="cWZ-x2-6GV" secondAttribute="bottom" id="zid-mb-7by"/>
                 </constraints>
             </view>
+            <toolbar key="toolbar" implicitIdentifier="20A4ECA8-219A-4FA3-BF1E-6339E8F25F49" autosavesConfiguration="NO" displayMode="iconAndLabel" sizeMode="regular" id="pvT-hJ-IgW">
+                <allowedToolbarItems>
+                    <toolbarItem implicitItemIdentifier="EA95739C-0953-4766-B6AB-851BF5400416" explicitItemIdentifier="AddChild" label="Add Child" paletteLabel="Add Child" tag="-1" image="ic_newChild" id="Euc-ga-TQo">
+                        <connections>
+                            <action selector="addChild:" target="-2" id="n8R-nO-wdi"/>
+                        </connections>
+                    </toolbarItem>
+                    <toolbarItem implicitItemIdentifier="F1214A9A-73BA-4191-BDB1-2D9157D1B4CA" explicitItemIdentifier="AddSibling" label="Add Sibling" paletteLabel="Add Sibling" tag="-1" image="ic_newSibling" id="H1i-YW-IQd">
+                        <connections>
+                            <action selector="addSibling:" target="-2" id="0fx-JC-vvG"/>
+                        </connections>
+                    </toolbarItem>
+                    <toolbarItem implicitItemIdentifier="F468DE40-629B-434A-9733-F55C5D16ADF6" explicitItemIdentifier="DeleteItem" label="Delete Item" paletteLabel="Delete Item" tag="-1" image="ic_delete" id="odP-1F-GyW">
+                        <connections>
+                            <action selector="deleteItem:" target="-2" id="x1J-uv-0dD"/>
+                        </connections>
+                    </toolbarItem>
+                    <toolbarItem implicitItemIdentifier="NSToolbarSpaceItem" id="4ll-Vf-DrG"/>
+                    <toolbarItem implicitItemIdentifier="NSToolbarFlexibleSpaceItem" id="pdR-Rn-ifE"/>
+                </allowedToolbarItems>
+                <defaultToolbarItems>
+                    <toolbarItem reference="Euc-ga-TQo"/>
+                    <toolbarItem reference="H1i-YW-IQd"/>
+                    <toolbarItem reference="pdR-Rn-ifE"/>
+                    <toolbarItem reference="odP-1F-GyW"/>
+                </defaultToolbarItems>
+            </toolbar>
             <connections>
                 <outlet property="delegate" destination="-2" id="0bl-1N-x8E"/>
             </connections>
-            <point key="canvasLocation" x="844" y="669.5"/>
+            <point key="canvasLocation" x="663" y="454.5"/>
         </window>
     </objects>
+    <resources>
+        <image name="ic_delete" width="32" height="32"/>
+        <image name="ic_newChild" width="158" height="163"/>
+        <image name="ic_newSibling" width="158" height="163"/>
+    </resources>
 </document>

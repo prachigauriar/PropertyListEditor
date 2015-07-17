@@ -74,27 +74,15 @@ enum PropertyListValue: CustomStringConvertible {
         case .DataValue:
             return .Formatter(PropertyListDataFormatter())
         case .DateValue:
-            return .Formatter(LenientDateFormatter())
+            struct SharedFormatter {
+                static let dateFormatter = LenientDateFormatter()
+            }
+
+            return .Formatter(SharedFormatter.dateFormatter)
         case .NumberValue:
             return .Formatter(NSNumberFormatter.propertyListNumberFormatter())
         case .StringValue:
             return nil
         }
-    }
-}
-
-
-extension NSNumberFormatter {
-    class func propertyListNumberFormatter() -> NSNumberFormatter {
-        struct SharedFormatter {
-            static let numberFormatter: NSNumberFormatter = {
-                let numberFormatter = NSNumberFormatter()
-                numberFormatter.minimumFractionDigits = 0
-                numberFormatter.maximumFractionDigits = 10
-                return numberFormatter
-            }()
-        }
-
-        return SharedFormatter.numberFormatter
     }
 }

@@ -167,6 +167,12 @@ class PropertyListArrayItemNode: PropertyListItemNode {
 
 class PropertyListArrayNode: PropertyListCollectionNode {
     var children: [PropertyListArrayItemNode] = []
+
+    func updateChildIndexes() {
+        for (i, child) in self.children.enumerate() {
+            child.index = i
+        }
+    }
 }
 
 

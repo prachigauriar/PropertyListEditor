@@ -76,6 +76,120 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
     }
 
 
+    // MARK: - Action Methods
+
+    @IBAction func addChild(sender: AnyObject?) {
+        let selectedRow = self.propertyListOutlineView.selectedRow
+        guard selectedRow != -1, let selectedItem = self.propertyListOutlineView.itemAtRow(selectedRow),
+            itemNode = selectedItem as? PropertyListItemNode else {
+                return
+        }
+
+        switch itemNode.item {
+        case let .ArrayNode(arrayNode):
+            arrayNode.children.append(PropertyListArrayItemNode(index: arrayNode.numberOfChildren, item: self.defaultValue()))
+        case let .DictionaryNode(dictionaryNode):
+            dictionaryNode.children.append(PropertyListDictionaryItemNode(key: self.defaultKey(), item: self.defaultValue()))
+        default:
+            return
+        }
+
+        self.propertyListOutlineView.reloadItem(selectedItem, reloadChildren: true)
+    }
+
+
+    @IBAction func addSibling(sender: AnyObject?) {
+        let selectedRow = self.propertyListOutlineView.selectedRow
+        guard selectedRow != -1, let selectedItem = self.propertyListOutlineView.itemAtRow(selectedRow),
+            parent = self.propertyListOutlineView.parentForItem(selectedItem),
+            parentNode = parent as? PropertyListItemNode else {
+                return
+        }
+
+        // TODO: Get index correctly
+        let insertionIndex = selectedRow + 1
+
+        switch parentNode.item {
+        case let .ArrayNode(arrayNode):
+            let arrayItemNode = PropertyListArrayItemNode(index: insertionIndex, item: self.defaultValue())
+            arrayNode.children.insert(arrayItemNode, atIndex: selectedRow)
+            arrayNode.updateChildIndexes()
+        case let .DictionaryNode(dictionaryNode):
+            let dictionaryItemNode = PropertyListDictionaryItemNode(key: self.defaultKey(), item: self.defaultValue())
+            dictionaryNode.children.insert(dictionaryItemNode, atIndex: insertionIndex)
+        default:
+            return
+        }
+
+        self.propertyListOutlineView.reloadItem(parent, reloadChildren: true)
+    }
+
+
+    @IBAction func deleteItem(sender: AnyObject?) {
+        let selectedRow = self.propertyListOutlineView.selectedRow
+        guard selectedRow != -1, let selectedItem = self.propertyListOutlineView.itemAtRow(selectedRow),
+            parent = self.propertyListOutlineView.parentForItem(selectedItem),
+            parentNode = parent as? PropertyListItemNode else {
+                return
+        }
+
+        // TODO: Get index correctly
+
+        switch parentNode.item {
+        case let .ArrayNode(arrayNode):
+            arrayNode.children.removeAtIndex(selectedRow)
+            arrayNode.updateChildIndexes()
+        case let .DictionaryNode(dictionaryNode):
+            dictionaryNode.children.removeAtIndex(selectedRow)
+        default:
+            return
+        }
+
+        self.propertyListOutlineView.reloadItem(parent, reloadChildren: true)
+    }
+
+
+    override func validateMenuItem(menuItem: NSMenuItem) -> Bool {
+        return self.validateAction(menuItem.action)
+    }
+
+
+    override func validateToolbarItem(toolbarItem: NSToolbarItem) -> Bool {
+        return self.validateAction(toolbarItem.action)
+    }
+
+
+    func validateAction(selector: Selector) -> Bool {
+        let outlineView = self.propertyListOutlineView
+        guard outlineView.numberOfSelectedRows > 0, let itemNode = outlineView.itemAtRow(outlineView.selectedRow) as? PropertyListItemNode else {
+            return false
+        }
+
+        switch selector {
+        case "addChild:":
+            if case .Value(_) = itemNode.item {
+                return false
+            }
+
+            return true
+        case "addSibling:", "deleteItem:":
+            return !(itemNode is PropertyListRootNode)
+        default:
+            return false
+        }
+    }
+
+
+    func defaultKey() -> String {
+        return "Key"
+    }
+
+
+    func defaultValue() -> PropertyListItem {
+        return .Value(.StringValue("Lorem ipsum"))
+    }
+
+
     // MARK: - NSOutlineView Data Source
     
     func outlineView(outlineView: NSOutlineView, numberOfChildrenOfItem item: AnyObject?) -> Int {
@@ -165,7 +279,9 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
 
         switch tableColumn {
         case .Key:
-            break
+            if let dictionaryItemNode = itemNode as? PropertyListDictionaryItemNode, stringValue = object as? String {
+                dictionaryItemNode.key = stringValue
+            }
         case .Type:
             if let popUpButtonMenuItemIndex = object as? Int, type = PropertyListType(typePopUpMenuItemIndex: popUpButtonMenuItemIndex) {
                 itemNode.item = type.propertyListItemWithStringValue("")
