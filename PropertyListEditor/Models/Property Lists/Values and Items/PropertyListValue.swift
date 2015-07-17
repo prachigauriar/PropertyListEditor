@@ -10,7 +10,7 @@ import Foundation
 
 
 struct PropertyListValidValue {
-    let value: PropertyListObject
+    let value: PropertyListItemConvertible
     let title: String
 }
 
@@ -21,7 +21,7 @@ enum PropertyListValueConstraint {
 }
 
 
-enum PropertyListValue: CustomStringConvertible {
+enum PropertyListValue: CustomStringConvertible, Hashable {
     case BooleanValue(NSNumber)
     case DataValue(NSData)
     case DateValue(NSDate)
@@ -33,9 +33,9 @@ enum PropertyListValue: CustomStringConvertible {
         switch self {
         case let .BooleanValue(boolean):
             if boolean.boolValue {
-                return NSLocalizedString("YES", comment: "Title for Boolean true value")
+                return NSLocalizedString("PropertyListValue.Boolean.TrueTitle", comment: "Title for Boolean true value")
             } else {
-                return NSLocalizedString("NO", comment: "Title for Boolean false value")
+                return NSLocalizedString("PropertyListValue.Boolean.FalseTitle", comment: "Title for Boolean false value")
             }
         case let .DataValue(data):
             return data.description
@@ -68,8 +68,10 @@ enum PropertyListValue: CustomStringConvertible {
     var valueConstraint: PropertyListValueConstraint? {
         switch self {
         case .BooleanValue:
-            let falseValidValue = PropertyListValidValue(value: NSNumber(bool: false), title: NSLocalizedString("NO", comment: "Title for Boolean false value"))
-            let trueValidValue = PropertyListValidValue(value: NSNumber(bool: true), title: NSLocalizedString("YES", comment: "Title for Boolean true value"))
+            let falseTitle = NSLocalizedString("PropertyListValue.Boolean.FalseTitle", comment: "Title for Boolean false value")
+            let falseValidValue = PropertyListValidValue(value: NSNumber(bool: false), title: falseTitle)
+            let trueTitle = NSLocalizedString("PropertyListValue.Boolean.TrueTitle", comment: "Title for Boolean true value")
+            let trueValidValue = PropertyListValidValue(value: NSNumber(bool: true), title: trueTitle)
             return .ValueArray([falseValidValue, trueValidValue])
         case .DataValue:
             return .Formatter(PropertyListDataFormatter())
@@ -84,5 +86,41 @@ enum PropertyListValue: CustomStringConvertible {
         case .StringValue:
             return nil
         }
+    }
+
+
+    // MARK: - Hashable
+    
+    var hashValue: Int {
+        switch self {
+        case let .BooleanValue(boolean):
+            return boolean.hashValue
+        case let .DataValue(data):
+            return data.hashValue
+        case let .DateValue(date):
+            return date.hashValue
+        case let .NumberValue(number):
+            return number.hashValue
+        case let .StringValue(string):
+            return string.hashValue
+        }
+    }
+}
+
+
+func ==(lhs: PropertyListValue, rhs: PropertyListValue) -> Bool {
+    switch (lhs, rhs) {
+    case let (.BooleanValue(left), .BooleanValue(right)):
+        return left == right
+    case let (.DataValue(left), .DataValue(right)):
+        return left == right
+    case let (.DateValue(left), .DateValue(right)):
+        return left == right
+    case let (.NumberValue(left), .NumberValue(right)):
+        return left == right
+    case let (.StringValue(left), .StringValue(right)):
+        return left == right
+    default:
+        return false
     }
 }

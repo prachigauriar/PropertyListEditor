@@ -2,20 +2,36 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>(%d item(s))</key>
+	<key>PropertyListDocument.CollectionValueFormat</key>
 	<dict>
-		<key>NSStringFormatSpecTypeKey</key>
-		<string>NSStringPluralRuleType</string>
-		<key>NSStringFormatValueTypeKey</key>
-		<string>d</string>
 		<key>NSStringLocalizedFormatKey</key>
 		<string>%#@items@</string>
 		<key>items</key>
 		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
 			<key>one</key>
 			<string>(%d item)</string>
 			<key>other</key>
 			<string>(%d items)</string>
+		</dict>
+	</dict>
+	<key>PropertyListDocument.KeyForAddingFormat</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>Key</string>
+			<key>other</key>
+			<string>Key %d</string>
 		</dict>
 	</dict>
 </dict>

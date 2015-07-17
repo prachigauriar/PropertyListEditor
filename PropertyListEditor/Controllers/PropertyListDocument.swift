@@ -10,7 +10,7 @@ import Cocoa
 
 
 class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
-    enum TableColumn: String {
+    private enum TableColumn: String {
         case Key, Type, Value
     }
 
@@ -20,7 +20,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
     @IBOutlet weak var typePopUpButtonPrototypeCell: NSPopUpButtonCell!
     @IBOutlet weak var valueTextFieldPrototypeCell: NSTextFieldCell!
 
-    var rootNode: PropertyListRootNode! {
+    private var rootNode: PropertyListRootNode! {
         didSet {
             self.propertyListOutlineView?.reloadData()
         }
@@ -34,7 +34,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
     }
 
     
-    static let dateFormatter: NSDateFormatter = {
+    static private let dateFormatter: NSDateFormatter = {
         let formatter = NSDateFormatter()
         formatter.timeStyle = .ShortStyle
         formatter.dateStyle = .MediumStyle
@@ -68,7 +68,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
         let propertyList = try NSPropertyListSerialization.propertyListWithData(data, options: [], format: nil)
 
         do {
-            self.rootNode = try PropertyListRootNode(propertyListObject: propertyList as! PropertyListObject)
+            self.rootNode = try PropertyListRootNode(propertyListObject: propertyList as! PropertyListItemConvertible)
         } catch let error {
             print("Error reading document: \(error)")
             throw error
@@ -87,9 +87,9 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
 
         switch itemNode.item {
         case let .ArrayNode(arrayNode):
-            arrayNode.children.append(PropertyListArrayItemNode(index: arrayNode.numberOfChildren, item: self.defaultValue()))
+            arrayNode.addChildNodeWithItem(self.itemForAdding())
         case let .DictionaryNode(dictionaryNode):
-            dictionaryNode.children.append(PropertyListDictionaryItemNode(key: self.defaultKey(), item: self.defaultValue()))
+            dictionaryNode.addChildNodeWithKey(self.keyForAddingItemToDictionaryNode(dictionaryNode), item: self.itemForAdding())
         default:
             return
         }
@@ -111,12 +111,9 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
 
         switch parentNode.item {
         case let .ArrayNode(arrayNode):
-            let arrayItemNode = PropertyListArrayItemNode(index: insertionIndex, item: self.defaultValue())
-            arrayNode.children.insert(arrayItemNode, atIndex: selectedRow)
-            arrayNode.updateChildIndexes()
+            arrayNode.insertChildNodeWithItem(self.itemForAdding(), atIndex: insertionIndex)
         case let .DictionaryNode(dictionaryNode):
-            let dictionaryItemNode = PropertyListDictionaryItemNode(key: self.defaultKey(), item: self.defaultValue())
-            dictionaryNode.children.insert(dictionaryItemNode, atIndex: insertionIndex)
+            dictionaryNode.insertChildNodeWithKey(self.keyForAddingItemToDictionaryNode(dictionaryNode), item: self.itemForAdding(), atIndex: insertionIndex)
         default:
             return
         }
@@ -134,13 +131,13 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
         }
 
         // TODO: Get index correctly
+        let index = 0
 
         switch parentNode.item {
         case let .ArrayNode(arrayNode):
-            arrayNode.children.removeAtIndex(selectedRow)
-            arrayNode.updateChildIndexes()
+            arrayNode.removeChildNodeAtIndex(index)
         case let .DictionaryNode(dictionaryNode):
-            dictionaryNode.children.removeAtIndex(selectedRow)
+            dictionaryNode.removeChildNodeAtIndex(index)
         default:
             return
         }
@@ -159,7 +156,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
     }
 
 
-    func validateAction(selector: Selector) -> Bool {
+    private func validateAction(selector: Selector) -> Bool {
         let outlineView = self.propertyListOutlineView
         guard outlineView.numberOfSelectedRows > 0, let itemNode = outlineView.itemAtRow(outlineView.selectedRow) as? PropertyListItemNode else {
             return false
@@ -180,13 +177,23 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
     }
 
 
-    func defaultKey() -> String {
-        return "Key"
+    // MARK: - Keys and Values for Adding Items
+
+    private func keyForAddingItemToDictionaryNode(dictionaryNode: PropertyListDictionaryNode) -> String {
+        let formatString = NSLocalizedString("PropertyListDocument.KeyForAddingFormat", comment: "Format string for key generated when adding a dictionary item")
+
+        var key: String
+        var counter: Int = 1
+        repeat {
+            key = NSString.localizedStringWithFormat(formatString, counter++) as String
+        } while dictionaryNode.containsChildNodeWithKey(key)
+
+        return key
     }
 
 
-    func defaultValue() -> PropertyListItem {
-        return .Value(.StringValue("Lorem ipsum"))
+    private func itemForAdding() -> PropertyListItem {
+        return .Value(.StringValue(NSLocalizedString("PropertyListDocument.ItemForAddingStringValue", comment: "Default value when adding a new item")))
     }
 
 
@@ -201,7 +208,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
             assert(false, "item must be a PropertyListNode")
         }
 
-        return node.numberOfChildren
+        return node.numberOfChildNodes
     }
 
 
@@ -214,7 +221,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
             assert(false, "item must be a PropertyListNode")
         }
 
-        return node.childAtIndex(index)
+        return node.childNodeAtIndex(index) as AnyObject
     }
 
 
@@ -233,7 +240,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
         }
 
         guard let tableColumn = TableColumn(rawValue: tableColumnIdentifier) else {
-            assert(false, "Object value requested for invalid table column identifier \(tableColumnIdentifier)")
+            assert(false, "invalid table column identifier \(tableColumnIdentifier)")
         }
 
 
@@ -241,9 +248,10 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
         case .Key:
             switch itemNode {
             case is PropertyListRootNode:
-                return NSLocalizedString("Root", comment: "Key for root node")
+                return NSLocalizedString("PropertyListDocument.RootNodeKey", comment: "Key for root node")
             case let arrayNode as PropertyListArrayItemNode:
-                return NSString.localizedStringWithFormat(NSLocalizedString("Item %d", comment: "Format string for array item node key"), arrayNode.index)
+                let formatString = NSLocalizedString("PropertyListDocument.ArrayItemKeyFormat", comment: "Format string for array item node key")
+                return NSString.localizedStringWithFormat(formatString, arrayNode.index)
             case let dictionaryNode as PropertyListDictionaryItemNode:
                 return dictionaryNode.key
             default:
@@ -265,27 +273,31 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
 
 
     func outlineView(outlineView: NSOutlineView, setObjectValue object: AnyObject?, forTableColumn tableColumn: NSTableColumn?, byItem item: AnyObject?) {
-        guard let tableColumnIdentifier = tableColumn?.identifier, var itemNode = item as? PropertyListItemNode else {
+        guard let tableColumnIdentifier = tableColumn?.identifier, let itemNode = item as? PropertyListItemNode else {
             return
         }
 
         guard let tableColumn = TableColumn(rawValue: tableColumnIdentifier) else {
-            assert(false, "Object value set for invalid table column identifier \(tableColumnIdentifier)")
+            assert(false, "invalid table column identifier \(tableColumnIdentifier)")
         }
 
-        guard let propertyListObject = object as? PropertyListObject else {
+        guard let propertyListObject = object as? PropertyListItemConvertible else {
             assert(false, "object value (\(object)) is not a property list object")
         }
 
         switch tableColumn {
         case .Key:
-            if let dictionaryItemNode = itemNode as? PropertyListDictionaryItemNode, stringValue = object as? String {
-                dictionaryItemNode.key = stringValue
+            if let dictionaryItemNode = itemNode as? PropertyListDictionaryItemNode,
+                key = object as? String where !dictionaryItemNode.parent.containsChildNodeWithKey(key),
+                let index = dictionaryItemNode.parent.indexOfChildNode(dictionaryItemNode) {
+                    dictionaryItemNode.parent.setKey(key, forChildNodeAtIndex: index)
             }
         case .Type:
             if let popUpButtonMenuItemIndex = object as? Int, type = PropertyListType(typePopUpMenuItemIndex: popUpButtonMenuItemIndex) {
                 itemNode.item = type.propertyListItemWithStringValue("")
             }
+
+            outlineView.reloadItem(item, reloadChildren: true)
         case .Value:
             if let popUpButtonMenuItemIndex = object as? Int,
                 case let .Value(value) = itemNode.item,
@@ -296,8 +308,6 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
                 itemNode.item = try! propertyListObject.propertyListItem()
             }
         }
-
-        outlineView.reloadItem(item)
     }
 
 
@@ -309,7 +319,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
         }
 
         guard let tableColumn = TableColumn(rawValue: tableColumnIdentifier) else {
-            assert(false, "Object value requested for invalid table column identifier \(tableColumnIdentifier)")
+            assert(false, "invalid table column identifier \(tableColumnIdentifier)")
         }
 
         switch tableColumn {
@@ -353,6 +363,26 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
             }
 
             return cell
+        }
+    }
+
+
+    func outlineView(outlineView: NSOutlineView, shouldEditTableColumn tableColumn: NSTableColumn?, item: AnyObject) -> Bool {
+        guard let tableColumnIdentifier = tableColumn?.identifier, itemNode = item as? PropertyListItemNode else {
+            return false
+        }
+
+        guard let tableColumn = TableColumn(rawValue: tableColumnIdentifier) else {
+            assert(false, "invalid table column identifier \(tableColumnIdentifier)")
+        }
+
+        switch tableColumn {
+        case .Key:
+            return itemNode is PropertyListDictionaryItemNode
+        case .Type:
+            return true
+        case .Value:
+            return itemNode.propertyListType != .ArrayType && itemNode.propertyListType != .DictionaryType
         }
     }
 }

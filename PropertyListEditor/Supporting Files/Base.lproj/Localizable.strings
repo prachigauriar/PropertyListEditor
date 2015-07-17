@@ -8,13 +8,16 @@
 
 
 /* Key for root node */
-"Root" = "Root";
+"PropertyListDocument.RootNodeKey" = "Root";
 
 /* Format string for array item node key */
-"Item %d" = "Item %d";
+"PropertyListDocument.ArrayItemKeyFormat" = "Item %d";
+
+/* Default value when adding a new item */
+"PropertyListDocument.ItemForAddingStringValue" = "«value»";
 
 /* Title for Boolean false value */
-"NO" = "NO";
+"PropertyListValue.Boolean.FalseTitle" = "NO";
 
 /* Title for Boolean true value */
-"YES" = "YES";
+"PropertyListValue.Boolean.TrueTitle" = "YES";
