@@ -29,4 +29,17 @@ class PropertyListRootNode: PropertyListItemNode {
         let item = try propertyListObject.propertyListItem()
         self.init(item: item)
     }
+
+
+    func XMLData() -> NSData {
+        let baseXMLString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                            "<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n" +
+                            "<plist version=\"1.0\"></plist>"
+
+
+        let document = try! NSXMLDocument(XMLString: baseXMLString, options: 0)
+        self.item.appendXMLNodeToParentElement(document.rootElement()!)
+        NSLog("%@", document.XMLStringWithOptions(NSXMLNodePrettyPrint | NSXMLNodeCompactEmptyElement) as NSString)
+        return document.XMLDataWithOptions(NSXMLNodePrettyPrint | NSXMLNodeCompactEmptyElement)
+    }
 }

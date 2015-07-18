@@ -33,24 +33,11 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
         self.rootNode = PropertyListRootNode(item: emptyDictionaryItem)
     }
 
-    
-    static private let dateFormatter: NSDateFormatter = {
-        let formatter = NSDateFormatter()
-        formatter.timeStyle = .ShortStyle
-        formatter.dateStyle = .MediumStyle
-        return formatter
-    }()
-
 
     // MARK: - NSDocument Methods
 
     override func windowControllerDidLoadNib(aController: NSWindowController) {
         super.windowControllerDidLoadNib(aController)
-    }
-
-
-    override class func autosavesInPlace() -> Bool {
-        return true
     }
 
 
@@ -60,7 +47,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
 
 
     override func dataOfType(typeName: String) throws -> NSData {
-        throw NSError(domain: NSOSStatusErrorDomain, code: unimpErr, userInfo: nil)
+        return self.rootNode.XMLData()
     }
 
 
@@ -94,6 +81,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
             return
         }
 
+        self.updateChangeCount(.ChangeDone)
         self.propertyListOutlineView.reloadItem(selectedItem, reloadChildren: true)
     }
 
@@ -106,18 +94,19 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
                 return
         }
 
-        // TODO: Get index correctly
-        let insertionIndex = selectedRow + 1
 
         switch parentNode.item {
         case let .ArrayNode(arrayNode):
-            arrayNode.insertChildNodeWithItem(self.itemForAdding(), atIndex: insertionIndex)
+            let index: Int! = arrayNode.indexOfChildNode(selectedItem as! PropertyListArrayItemNode)
+            arrayNode.insertChildNodeWithItem(self.itemForAdding(), atIndex: index + 1)
         case let .DictionaryNode(dictionaryNode):
-            dictionaryNode.insertChildNodeWithKey(self.keyForAddingItemToDictionaryNode(dictionaryNode), item: self.itemForAdding(), atIndex: insertionIndex)
+            let index: Int! = dictionaryNode.indexOfChildNode(selectedItem as! PropertyListDictionaryItemNode)
+            dictionaryNode.insertChildNodeWithKey(self.keyForAddingItemToDictionaryNode(dictionaryNode), item: self.itemForAdding(), atIndex: index + 1)
         default:
             return
         }
 
+        self.updateChangeCount(.ChangeDone)
         self.propertyListOutlineView.reloadItem(parent, reloadChildren: true)
     }
 
@@ -130,24 +119,26 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
                 return
         }
 
-        // TODO: Get index correctly
-        let index = 0
-
         switch parentNode.item {
         case let .ArrayNode(arrayNode):
+            let index: Int! = arrayNode.indexOfChildNode(selectedItem as! PropertyListArrayItemNode)
             arrayNode.removeChildNodeAtIndex(index)
         case let .DictionaryNode(dictionaryNode):
+            let index: Int! = dictionaryNode.indexOfChildNode(selectedItem as! PropertyListDictionaryItemNode)
             dictionaryNode.removeChildNodeAtIndex(index)
         default:
             return
         }
 
+        self.updateChangeCount(.ChangeDone)
         self.propertyListOutlineView.reloadItem(parent, reloadChildren: true)
     }
 
 
     override func validateMenuItem(menuItem: NSMenuItem) -> Bool {
-        return self.validateAction(menuItem.action)
+        let selectors = Set<Selector>(arrayLiteral: "addChild:", "addSibling:", "deleteItem:")
+
+        return selectors.contains(menuItem.action) ? self.validateAction(menuItem.action) : super.validateMenuItem(menuItem)
     }
 
 
@@ -197,7 +188,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
     }
 
 
-    // MARK: - NSOutlineView Data Source
+    // MARK: - Outline View Data Source
     
     func outlineView(outlineView: NSOutlineView, numberOfChildrenOfItem item: AnyObject?) -> Int {
         if item == nil {
@@ -263,10 +254,9 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
             switch itemNode.item {
             case let .Value(value):
                 return value.objectValue
-            case .ArrayNode:
-                return "Array"
-            case .DictionaryNode:
-                return "Dictionary"
+            default:
+                let formatString = NSLocalizedString("PropertyListDocument.CollectionValueFormat", comment: "Format string for values of collections")
+                return NSString.localizedStringWithFormat(formatString, itemNode.numberOfChildNodes)
             }
         }
     }
@@ -291,13 +281,14 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
                 key = object as? String where !dictionaryItemNode.parent.containsChildNodeWithKey(key),
                 let index = dictionaryItemNode.parent.indexOfChildNode(dictionaryItemNode) {
                     dictionaryItemNode.parent.setKey(key, forChildNodeAtIndex: index)
+                    self.updateChangeCount(.ChangeDone)
             }
         case .Type:
             if let popUpButtonMenuItemIndex = object as? Int, type = PropertyListType(typePopUpMenuItemIndex: popUpButtonMenuItemIndex) {
                 itemNode.item = type.propertyListItemWithStringValue("")
+                self.updateChangeCount(.ChangeDone)
+                outlineView.reloadItem(item, reloadChildren: true)
             }
-
-            outlineView.reloadItem(item, reloadChildren: true)
         case .Value:
             if let popUpButtonMenuItemIndex = object as? Int,
                 case let .Value(value) = itemNode.item,
@@ -307,11 +298,13 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
             } else {
                 itemNode.item = try! propertyListObject.propertyListItem()
             }
+
+            self.updateChangeCount(.ChangeDone)
         }
     }
 
 
-    // MARK: - NSOutlineView Delegate
+    // MARK: - Outline View Delegate
 
     func outlineView(outlineView: NSOutlineView, dataCellForTableColumn tableColumn: NSTableColumn?, item: AnyObject) -> NSCell? {
         guard let tableColumnIdentifier = tableColumn?.identifier, itemNode = item as? PropertyListItemNode else {
@@ -335,7 +328,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
                 return self.valueCellForPropertyListValue(value)
             case .ArrayNode, .DictionaryNode:
                 let cell = self.valueTextFieldPrototypeCell.copy() as! NSTextFieldCell
-                cell.editable = false
+                cell.textColor = NSColor.disabledControlTextColor()
                 return cell
             }
         }
@@ -388,7 +381,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
 }
 
 
-// MARK: - PropertyListType ⟺ typePopUpMenuItemIndex Conversion
+// MARK: - Private PropertyListType Extensions
 
 private extension PropertyListType {
     init?(typePopUpMenuItemIndex index: Int) {

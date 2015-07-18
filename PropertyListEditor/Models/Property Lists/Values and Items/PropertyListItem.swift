@@ -49,4 +49,37 @@ enum PropertyListItem {
             }
         }
     }
+
+
+    func appendXMLNodeToParentElement(parentElement: NSXMLElement) {
+        switch self {
+        case let .Value(value):
+            let valueElement: NSXMLElement
+
+            switch value {
+            case let .BooleanValue(boolean):
+                valueElement = NSXMLElement(name: boolean.boolValue ? "true" : "false")
+            case let .DataValue(data):
+                valueElement = NSXMLElement(name: "data", stringValue: data.base64EncodedStringWithOptions([]))
+            case let .DateValue(date):
+                valueElement = NSXMLElement(name: "date", stringValue: NSDateFormatter.propertyListXMLDateFormatter().stringFromDate(date))
+            case let .NumberValue(number):
+                let doubleValue = number.doubleValue
+                if trunc(doubleValue) == doubleValue {
+                    valueElement = NSXMLElement(name: "integer", stringValue: "\(number.integerValue)")
+                } else {
+                    valueElement = NSXMLElement(name: "real", stringValue: "\(doubleValue)")
+                }
+            case let .StringValue(string):
+                valueElement = NSXMLElement(name: "string", stringValue: string as String)
+            }
+
+            parentElement.addChild(valueElement)
+        case let .ArrayNode(arrayNode):
+            arrayNode.appendXMLNodeToParentElement(parentElement)
+        case let .DictionaryNode(dictionaryNode):
+            dictionaryNode.appendXMLNodeToParentElement(parentElement)
+        }
+    }
+
 }

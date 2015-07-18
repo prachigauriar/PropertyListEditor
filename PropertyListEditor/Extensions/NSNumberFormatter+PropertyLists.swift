@@ -1,5 +1,5 @@
 //
-//  NSNumber+PropertyListNumberFormatter.swift
+//  NSNumberFormatter+PropertyLists.swift
 //  PropertyListEditor
 //
 //  Created by Prachi Gauriar on 7/16/2015.

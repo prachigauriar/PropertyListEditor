@@ -47,6 +47,16 @@ class PropertyListArrayNode: PropertyListNode {
     }
 
 
+    func appendXMLNodeToParentElement(parentElement: NSXMLElement) {
+        let arrayElement = NSXMLElement(name: "array")
+        for childNode in self.children {
+            childNode.appendXMLNodeToParentElement(arrayElement)
+        }
+
+        parentElement.addChild(arrayElement)
+    }
+    
+
     // MARK: - Child Node Management
 
     func addChildNodeWithItem(item: PropertyListItem) -> PropertyListArrayItemNode {

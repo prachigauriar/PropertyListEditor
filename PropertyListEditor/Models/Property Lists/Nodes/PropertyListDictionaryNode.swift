@@ -20,6 +20,12 @@ class PropertyListDictionaryItemNode: PropertyListItemNode {
         self.item = item
         self.parent = parent
     }
+
+
+    func appendXMLNodeToParentElement(parentElement: NSXMLElement) {
+        parentElement.addChild(NSXMLElement(name: "key", stringValue: self.key))
+        self.item.appendXMLNodeToParentElement(parentElement)
+    }
 }
 
 
@@ -45,6 +51,16 @@ class PropertyListDictionaryNode: PropertyListNode {
         }
 
         return self.children.indexOf { childNode === $0 }
+    }
+
+
+    func appendXMLNodeToParentElement(parentElement: NSXMLElement) {
+        let dictionaryElement = NSXMLElement(name: "dict")
+        for childNode in self.children {
+            childNode.appendXMLNodeToParentElement(dictionaryElement)
+        }
+        
+        parentElement.addChild(dictionaryElement)
     }
 
 
@@ -85,6 +101,8 @@ class PropertyListDictionaryNode: PropertyListNode {
 
     func setKey(key: String, forChildNodeAtIndex index: Int) {
         assert(!self.keySet.contains(key), "dictionary contains key \(key)")
+        self.keySet.remove(self.children[index].key)
         self.children[index].key = key
+        self.keySet.insert(key)
     }
 }

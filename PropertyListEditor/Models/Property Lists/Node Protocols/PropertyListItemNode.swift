@@ -76,4 +76,9 @@ extension PropertyListItemNode {
             return dictionaryNode.indexOfChildNode(childNode)
         }
     }
+
+
+    func appendXMLNodeToParentElement(parentElement: NSXMLElement) {
+        self.item.appendXMLNodeToParentElement(parentElement)
+    }
 }

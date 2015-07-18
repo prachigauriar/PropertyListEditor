@@ -18,7 +18,14 @@ protocol PropertyListNode: AnyObject {
     /// The number of children the node has.
     var numberOfChildNodes: Int { get }
 
+    /// Returns the child node at the specified index.
+    /// :index: The index of the requested child. Asserts if the index is beyond the node’s bounds.
     func childNodeAtIndex(index: Int) -> PropertyListNode
 
+    /// Returns the index of the specified child node. Returns nil if the child node cannot be found.
+    /// :childNode: The child node to search for.
     func indexOfChildNode(childNode: PropertyListNode) -> Int?
+
+    /// Returns an XML node representation of the node.
+    func appendXMLNodeToParentElement(parentElement: NSXMLElement)
 }
