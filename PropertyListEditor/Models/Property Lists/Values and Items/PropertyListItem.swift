@@ -81,5 +81,4 @@ enum PropertyListItem {
             dictionaryNode.appendXMLNodeToParentElement(parentElement)
         }
     }
-
 }

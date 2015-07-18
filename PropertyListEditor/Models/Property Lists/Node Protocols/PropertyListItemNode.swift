@@ -52,7 +52,7 @@ extension PropertyListItemNode {
     }
 
 
-    func childNodeAtIndex(index: Int) -> PropertyListNode {
+    func childNodeAtIndex(index: Int) -> PropertyListItemNode {
         assert(index >= 0 && index < self.numberOfChildNodes, "index out of bounds")
 
         switch self.item {
@@ -66,7 +66,7 @@ extension PropertyListItemNode {
     }
     
 
-    func indexOfChildNode(childNode: PropertyListNode) -> Int? {
+    func indexOfChildNode(childNode: PropertyListItemNode) -> Int? {
         switch self.item {
         case .Value:
             return nil

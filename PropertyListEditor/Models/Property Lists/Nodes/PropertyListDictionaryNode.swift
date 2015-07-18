@@ -40,12 +40,12 @@ class PropertyListDictionaryNode: PropertyListNode {
     }
     
 
-    func childNodeAtIndex(index: Int) -> PropertyListNode {
+    func childNodeAtIndex(index: Int) -> PropertyListItemNode {
         return self.children[index]
     }
 
 
-    func indexOfChildNode(childNode: PropertyListNode) -> Int? {
+    func indexOfChildNode(childNode: PropertyListItemNode) -> Int? {
         guard let childNode = childNode as? PropertyListDictionaryItemNode else {
             return nil
         }
@@ -99,6 +99,13 @@ class PropertyListDictionaryNode: PropertyListNode {
     }
 
 
+    func removeChildNode(childNode: PropertyListItemNode) {
+        if let index = self.indexOfChildNode(childNode) {
+            self.removeChildNodeAtIndex(index)
+        }
+    }
+
+    
     func setKey(key: String, forChildNodeAtIndex index: Int) {
         assert(!self.keySet.contains(key), "dictionary contains key \(key)")
         self.keySet.remove(self.children[index].key)

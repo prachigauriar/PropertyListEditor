@@ -23,6 +23,7 @@
 		4CBDDBF71B59547F00131559 /* PropertyListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CBDDBEE1B59547F00131559 /* PropertyListItem.swift */; };
 		4CBDDBF81B59547F00131559 /* PropertyListItemConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CBDDBEF1B59547F00131559 /* PropertyListItemConvertible.swift */; };
 		4CBDDBF91B59547F00131559 /* PropertyListValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CBDDBF01B59547F00131559 /* PropertyListValue.swift */; };
+		4CE4955D1B5AE3F2009EE029 /* NSUndoManager+Blocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CE4955C1B5AE3F2009EE029 /* NSUndoManager+Blocks.swift */; };
 		4CF3D9621B46DB7100C76D8D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4CF3D9581B46DB7100C76D8D /* Localizable.strings */; };
 		4CF3D9631B46DB7100C76D8D /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 4CF3D95A1B46DB7100C76D8D /* Localizable.stringsdict */; };
 		4CF3D9641B46DB7100C76D8D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4CF3D95C1B46DB7100C76D8D /* MainMenu.xib */; };
@@ -47,6 +48,7 @@
 		4CBDDBEE1B59547F00131559 /* PropertyListItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListItem.swift; sourceTree = "<group>"; };
 		4CBDDBEF1B59547F00131559 /* PropertyListItemConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListItemConvertible.swift; sourceTree = "<group>"; };
 		4CBDDBF01B59547F00131559 /* PropertyListValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListValue.swift; sourceTree = "<group>"; };
+		4CE4955C1B5AE3F2009EE029 /* NSUndoManager+Blocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSUndoManager+Blocks.swift"; sourceTree = "<group>"; };
 		4CF3D9591B46DB7100C76D8D /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4CF3D95B1B46DB7100C76D8D /* Base */ = {isa = PBXFileReference; explicitFileType = text.plist.xml; name = Base; path = Base.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		4CF3D95D1B46DB7100C76D8D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
@@ -198,6 +200,7 @@
 			children = (
 				4C8829F51B5892B60023BCB7 /* NSDateFormatter+PropertyLists.swift */,
 				4C8829F31B58927E0023BCB7 /* NSNumberFormatter+PropertyLists.swift */,
+				4CE4955C1B5AE3F2009EE029 /* NSUndoManager+Blocks.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -247,6 +250,7 @@
 		4C4E059A1B4459D700BF69C2 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0700;
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Quantum Lens Cap";
 				TargetAttributes = {
@@ -305,6 +309,7 @@
 				4CBDDBF61B59547F00131559 /* PropertyListRootNode.swift in Sources */,
 				4C4E05C51B445AB000BF69C2 /* PropertyListDocument.swift in Sources */,
 				4CBDDBF81B59547F00131559 /* PropertyListItemConvertible.swift in Sources */,
+				4CE4955D1B5AE3F2009EE029 /* NSUndoManager+Blocks.swift in Sources */,
 				4CBDDBF91B59547F00131559 /* PropertyListValue.swift in Sources */,
 				4CBDDBF31B59547F00131559 /* PropertyListNode.swift in Sources */,
 				4C8829F61B5892B60023BCB7 /* NSDateFormatter+PropertyLists.swift in Sources */,
@@ -439,11 +444,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/PropertyListEditor/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.quantumlenscap.PListEditor;
 				PRODUCT_NAME = PropertyListEditor;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
@@ -451,6 +458,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/PropertyListEditor/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";

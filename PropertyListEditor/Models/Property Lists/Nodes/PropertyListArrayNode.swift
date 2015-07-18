@@ -33,12 +33,12 @@ class PropertyListArrayNode: PropertyListNode {
     }
 
 
-    func childNodeAtIndex(index: Int) -> PropertyListNode {
+    func childNodeAtIndex(index: Int) -> PropertyListItemNode {
         return self.children[index]
     }
 
 
-    func indexOfChildNode(childNode: PropertyListNode) -> Int? {
+    func indexOfChildNode(childNode: PropertyListItemNode) -> Int? {
         guard let childNode = childNode as? PropertyListArrayItemNode else {
             return nil
         }
@@ -86,6 +86,13 @@ class PropertyListArrayNode: PropertyListNode {
     func removeChildNodeAtIndex(index: Int) {
         self.children.removeAtIndex(index)
         self.updateChildIndexesStartingAtIndex(index)
+    }
+
+
+    func removeChildNode(childNode: PropertyListItemNode) {
+        if let index = self.indexOfChildNode(childNode) {
+            self.removeChildNodeAtIndex(index)
+        }
     }
 
 

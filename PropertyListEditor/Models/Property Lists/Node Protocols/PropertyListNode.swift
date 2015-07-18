@@ -20,11 +20,11 @@ protocol PropertyListNode: AnyObject {
 
     /// Returns the child node at the specified index.
     /// :index: The index of the requested child. Asserts if the index is beyond the node’s bounds.
-    func childNodeAtIndex(index: Int) -> PropertyListNode
+    func childNodeAtIndex(index: Int) -> PropertyListItemNode
 
     /// Returns the index of the specified child node. Returns nil if the child node cannot be found.
     /// :childNode: The child node to search for.
-    func indexOfChildNode(childNode: PropertyListNode) -> Int?
+    func indexOfChildNode(childNode: PropertyListItemNode) -> Int?
 
     /// Returns an XML node representation of the node.
     func appendXMLNodeToParentElement(parentElement: NSXMLElement)
