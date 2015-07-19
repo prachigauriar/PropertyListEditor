@@ -11,12 +11,14 @@ import Foundation
 
 /// PropertyListItemNode declares the data and behavior common to property list nodes that have a single
 /// item. Each item node has a single property called item which stores the item in the node.
-protocol PropertyListItemNode: PropertyListNode {
+protocol PropertyListItemNode: PropertyListNode, NSCopying {
     /// The node’s item.
     var item: PropertyListItem { get set }
 
     /// The node’s item’s type
     var propertyListType: PropertyListType { get }
+
+    func copy() -> AnyObject
 }
 
 
@@ -49,6 +51,11 @@ extension PropertyListItemNode {
 
     var propertyListType: PropertyListType {
         return self.item.propertyListType
+    }
+
+
+    func copy() -> AnyObject {
+        return self.copyWithZone(nil)
     }
 
 

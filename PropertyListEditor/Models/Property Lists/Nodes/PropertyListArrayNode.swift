@@ -9,10 +9,19 @@
 import Foundation
 
 
-class PropertyListArrayItemNode: PropertyListItemNode {
+class PropertyListArrayItemNode: NSObject, PropertyListItemNode, NSCopying {
     private(set) var index: Int
     var item: PropertyListItem
     weak private(set) var parent: PropertyListArrayNode!
+
+    override var hashValue: Int {
+        return self.index ^ self.item.hashValue
+    }
+
+
+    override var description: String {
+        return "[\(self.index)] = \(self.item)"
+    }
 
 
     init(index: Int, item: PropertyListItem, parent: PropertyListArrayNode) {
@@ -20,16 +29,37 @@ class PropertyListArrayItemNode: PropertyListItemNode {
         self.item = item
         self.parent = parent
     }
+
+
+    func copyWithZone(zone: NSZone) -> AnyObject {
+        return PropertyListArrayItemNode(index: self.index, item: self.item, parent: self.parent)
+    }
 }
 
 
-class PropertyListArrayNode: PropertyListNode {
-    private var children: [PropertyListArrayItemNode] = []
+func ==(lhs: PropertyListArrayItemNode, rhs: PropertyListArrayItemNode) -> Bool {
+    return lhs.index == rhs.index && lhs.item == rhs.item && lhs.parent === rhs.parent
+}
 
+
+class PropertyListArrayNode: PropertyListNode, Hashable, CustomStringConvertible {
+    typealias ChildNodeType = PropertyListArrayItemNode
+
+    private var children: [ChildNodeType] = []
     let expandable: Bool = true
 
     var numberOfChildNodes: Int {
         return self.children.count
+    }
+
+
+    var hashValue: Int {
+        return self.children.count
+    }
+
+
+    var description: String {
+        return "PropertyListArrayNode\n\t" + "\n\t".join(children.map{ $0.description })
     }
 
 
@@ -39,11 +69,11 @@ class PropertyListArrayNode: PropertyListNode {
 
 
     func indexOfChildNode(childNode: PropertyListItemNode) -> Int? {
-        guard let childNode = childNode as? PropertyListArrayItemNode else {
+        guard let childNode = childNode as? ChildNodeType else {
             return nil
         }
 
-        return self.children.indexOf { childNode === $0 }
+        return self.children.indexOf { childNode == $0 }
     }
 
 
@@ -59,15 +89,20 @@ class PropertyListArrayNode: PropertyListNode {
 
     // MARK: - Child Node Management
 
-    func addChildNodeWithItem(item: PropertyListItem) -> PropertyListArrayItemNode {
+    func addChildNodeWithItem(item: PropertyListItem) -> ChildNodeType {
         return self.insertChildNodeWithItem(item, atIndex: self.numberOfChildNodes)
     }
 
 
-    func insertChildNodeWithItem(item: PropertyListItem, atIndex index: Int) -> PropertyListArrayItemNode {
-        let childNode = PropertyListArrayItemNode(index: index, item: item, parent: self)
+    func insertChildNode(childNode: ChildNodeType, atIndex index: Int) {
         self.children.insert(childNode, atIndex: index)
         self.updateChildIndexesStartingAtIndex(index)
+    }
+
+
+    func insertChildNodeWithItem(item: PropertyListItem, atIndex index: Int) -> ChildNodeType {
+        let childNode = PropertyListArrayItemNode(index: index, item: item, parent: self)
+        self.insertChildNode(childNode, atIndex: index)
         return childNode
     }
 
@@ -89,7 +124,7 @@ class PropertyListArrayNode: PropertyListNode {
     }
 
 
-    func removeChildNode(childNode: PropertyListItemNode) {
+    func removeChildNode(childNode: ChildNodeType) {
         if let index = self.indexOfChildNode(childNode) {
             self.removeChildNodeAtIndex(index)
         }
@@ -106,4 +141,9 @@ class PropertyListArrayNode: PropertyListNode {
             self.children[i].index = i
         }
     }
+}
+
+
+func ==(lhs: PropertyListArrayNode, rhs: PropertyListArrayNode) -> Bool {
+    return lhs.children == rhs.children
 }

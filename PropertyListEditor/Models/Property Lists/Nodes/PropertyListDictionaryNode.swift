@@ -9,16 +9,30 @@
 import Foundation
 
 
-class PropertyListDictionaryItemNode: PropertyListItemNode {
+class PropertyListDictionaryItemNode: NSObject, PropertyListItemNode, NSCopying {
     private(set) var key: String
     var item: PropertyListItem
     weak private(set) var parent: PropertyListDictionaryNode!
 
-    
+    override var hashValue: Int {
+        return self.key.hashValue ^ self.item.hashValue
+    }
+
+
+    override var description: String {
+        return "[\(self.key)] = \(self.item)"
+    }
+
+
     init(key: String, item: PropertyListItem, parent: PropertyListDictionaryNode) {
         self.key = key
         self.item = item
         self.parent = parent
+    }
+
+
+    func copyWithZone(zone: NSZone) -> AnyObject {
+        return PropertyListDictionaryItemNode(key: self.key, item: self.item, parent: self.parent)
     }
 
 
@@ -29,16 +43,32 @@ class PropertyListDictionaryItemNode: PropertyListItemNode {
 }
 
 
-class PropertyListDictionaryNode: PropertyListNode {
+func ==(lhs: PropertyListDictionaryItemNode, rhs: PropertyListDictionaryItemNode) -> Bool {
+    return lhs.key == rhs.key && lhs.item == rhs.item && lhs.parent === rhs.parent
+}
+
+
+class PropertyListDictionaryNode: PropertyListNode, Hashable, CustomStringConvertible {
+    typealias ChildNodeType = PropertyListDictionaryItemNode
     private var keySet: Set<String> = []
-    private var children: [PropertyListDictionaryItemNode] = []
+    private var children: [ChildNodeType] = []
 
     let expandable: Bool = true
 
     var numberOfChildNodes: Int {
         return self.children.count
     }
-    
+
+
+    var hashValue: Int {
+        return self.children.count
+    }
+
+
+    var description: String {
+        return "PropertyListDictionaryNode\n\t" + "\n\t".join(children.map{ $0.description })
+    }
+
 
     func childNodeAtIndex(index: Int) -> PropertyListItemNode {
         return self.children[index]
@@ -46,11 +76,11 @@ class PropertyListDictionaryNode: PropertyListNode {
 
 
     func indexOfChildNode(childNode: PropertyListItemNode) -> Int? {
-        guard let childNode = childNode as? PropertyListDictionaryItemNode else {
+        guard let childNode = childNode as? ChildNodeType else {
             return nil
         }
 
-        return self.children.indexOf { childNode === $0 }
+        return self.children.indexOf { childNode == $0 }
     }
 
 
@@ -71,17 +101,21 @@ class PropertyListDictionaryNode: PropertyListNode {
     }
 
 
-    func addChildNodeWithKey(key: String, item: PropertyListItem) -> PropertyListDictionaryItemNode {
+    func addChildNodeWithKey(key: String, item: PropertyListItem) -> ChildNodeType {
         return self.insertChildNodeWithKey(key, item: item, atIndex: self.numberOfChildNodes)
     }
 
 
-    func insertChildNodeWithKey(key: String, item: PropertyListItem, atIndex index: Int) -> PropertyListDictionaryItemNode {
-        assert(!self.keySet.contains(key), "dictionary contains key \(key)")
-
-        let childNode = PropertyListDictionaryItemNode(key: key, item: item, parent: self)
+    func insertChildNode(childNode: ChildNodeType, atIndex index: Int) {
+        assert(!self.keySet.contains(childNode.key), "dictionary contains key \(childNode.key)")
         self.children.insert(childNode, atIndex: index)
-        self.keySet.insert(key)
+        self.keySet.insert(childNode.key)
+    }
+
+    
+    func insertChildNodeWithKey(key: String, item: PropertyListItem, atIndex index: Int) -> ChildNodeType {
+        let childNode = PropertyListDictionaryItemNode(key: key, item: item, parent: self)
+        self.insertChildNode(childNode, atIndex: index)
         return childNode
     }
 
@@ -99,7 +133,7 @@ class PropertyListDictionaryNode: PropertyListNode {
     }
 
 
-    func removeChildNode(childNode: PropertyListItemNode) {
+    func removeChildNode(childNode: ChildNodeType) {
         if let index = self.indexOfChildNode(childNode) {
             self.removeChildNodeAtIndex(index)
         }
@@ -113,3 +147,9 @@ class PropertyListDictionaryNode: PropertyListNode {
         self.keySet.insert(key)
     }
 }
+
+
+func ==(lhs: PropertyListDictionaryNode, rhs: PropertyListDictionaryNode) -> Bool {
+    return lhs.children == rhs.children
+}
+

@@ -11,7 +11,7 @@ import Foundation
 
 /// PropertyListRootNode objects represent the root node in a property list. It simply has a single property
 /// list item.
-class PropertyListRootNode: PropertyListItemNode {
+class PropertyListRootNode: NSObject, PropertyListItemNode, NSCopying {
     var item: PropertyListItem
 
 
@@ -28,6 +28,11 @@ class PropertyListRootNode: PropertyListItemNode {
     convenience init(propertyListObject: PropertyListItemConvertible) throws {
         let item = try propertyListObject.propertyListItem()
         self.init(item: item)
+    }
+
+
+    func copyWithZone(zone: NSZone) -> AnyObject {
+        return PropertyListRootNode(item: self.item)
     }
 
 

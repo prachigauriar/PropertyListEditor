@@ -44,6 +44,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
 
     override func windowControllerDidLoadNib(aController: NSWindowController) {
         super.windowControllerDidLoadNib(aController)
+        self.propertyListOutlineView.expandItem(nil, expandChildren: true)
     }
 
 
@@ -137,8 +138,31 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
     }
 
 
+    private func insertChildNode(childNode: PropertyListItemNode, inItemNode itemNode: PropertyListItemNode, atIndex index: Int) {
+        switch itemNode.item {
+        case let .ArrayNode(arrayNode):
+            if let childNode = childNode as? PropertyListArrayNode.ChildNodeType {
+                arrayNode.insertChildNode(childNode, atIndex: index)
+            }
+        case let .DictionaryNode(dictionaryNode):
+            if let childNode = childNode as? PropertyListDictionaryNode.ChildNodeType {
+                dictionaryNode.insertChildNode(childNode, atIndex: index)
+            }
+        default:
+            return
+        }
+
+        let index = itemNode.numberOfChildNodes - 1
+        self.undoManager!.registerUndoWithHandler { [unowned self] in
+            self.removeChildNodeAtIndex(index, fromItemNode: itemNode)
+        }.setActionName("Add Node")
+
+        self.propertyListOutlineView.reloadItem(itemNode, reloadChildren: true)
+    }
+
+
     private func removeChildNodeAtIndex(index: Int, fromItemNode itemNode: PropertyListItemNode) {
-        let item = itemNode.childNodeAtIndex(index).item
+        let childNode = itemNode.childNodeAtIndex(index).copy() as! PropertyListItemNode
 
         switch itemNode.item {
         case let .ArrayNode(arrayNode):
@@ -150,8 +174,8 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
         }
 
         self.undoManager!.registerUndoWithHandler { [unowned self] in
-            self.insertChildNodeWithItem(item, inItemNode: itemNode, atIndex: index)
-        }.setActionName("Delete Item")
+            self.insertChildNode(childNode, inItemNode: itemNode, atIndex: index)
+        }.setActionName("Remove Node")
 
         self.propertyListOutlineView.reloadItem(itemNode, reloadChildren: true)
     }

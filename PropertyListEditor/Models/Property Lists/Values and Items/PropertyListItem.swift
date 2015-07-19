@@ -16,7 +16,7 @@ enum PropertyListType: String {
 
 /// PropertyListItems contain the data that is stored in a property list node. An item contains either
 /// a PropertyListValue, a PropertyListArrayNode, or a PropertyListDictionaryNode
-enum PropertyListItem {
+enum PropertyListItem: Hashable, CustomStringConvertible {
     /// Indicates that the item is a value type, i.e., a boolean, data, date, number, or string.
     case Value(PropertyListValue)
 
@@ -51,6 +51,30 @@ enum PropertyListItem {
     }
 
 
+    var hashValue: Int {
+        switch self {
+        case let .ArrayNode(node):
+            return node.hashValue
+        case let .DictionaryNode(node):
+            return node.hashValue
+        case let .Value(value):
+            return value.hashValue
+        }
+    }
+
+
+    var description: String {
+        switch self {
+        case let .ArrayNode(node):
+            return node.description
+        case let .DictionaryNode(node):
+            return node.description
+        case let .Value(value):
+            return value.description
+        }
+    }
+
+
     func appendXMLNodeToParentElement(parentElement: NSXMLElement) {
         switch self {
         case let .Value(value):
@@ -80,5 +104,19 @@ enum PropertyListItem {
         case let .DictionaryNode(dictionaryNode):
             dictionaryNode.appendXMLNodeToParentElement(parentElement)
         }
+    }
+}
+
+
+func ==(lhs: PropertyListItem, rhs: PropertyListItem) -> Bool {
+    switch (lhs, rhs) {
+    case let (.Value(left), .Value(right)):
+        return left == right
+    case let (.ArrayNode(left), .ArrayNode(right)):
+        return left == right
+    case let (.DictionaryNode(left), .DictionaryNode(right)):
+        return left == right
+    default:
+        return false
     }
 }
