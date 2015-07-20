@@ -17,7 +17,7 @@ class PropertyListTree: NSObject {
     init(rootItem: PropertyListItem) {
         self.rootItem = rootItem
         super.init()
-        self.rootTreeNode = PropertyListTreeNode(tree: self, parentNode: nil, index: nil)
+        self.rootTreeNode = PropertyListTreeNode(tree: self)
     }
 
 
@@ -50,7 +50,7 @@ class PropertyListTree: NSObject {
 
 class PropertyListTreeNode: NSObject {
     unowned let tree: PropertyListTree
-    weak var parentNode: PropertyListTreeNode?
+    private(set) weak var parentNode: PropertyListTreeNode?
     private(set) var index: Int?
     private(set) var children: [PropertyListTreeNode] = []
 
@@ -79,7 +79,14 @@ class PropertyListTreeNode: NSObject {
     }
 
 
+    convenience init(tree: PropertyListTree) {
+        self.init(tree: tree, parentNode: nil, index: nil)
+    }
+
+
     init(tree: PropertyListTree, parentNode: PropertyListTreeNode?, index: Int?) {
+        assert((parentNode != nil) == (index != nil), "parentNode and index must either both be nil or both be non-nil")
+
         self.tree = tree
         self.parentNode = parentNode
         self.index = index
