@@ -40,7 +40,6 @@
 		4C7F860B1B5BFD8B00825B46 /* PropertyListItemConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListItemConvertible.swift; sourceTree = "<group>"; };
 		4C7F860D1B5BFDAC00825B46 /* PropertyListXMLWritable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListXMLWritable.swift; sourceTree = "<group>"; };
 		4C7F86101B5C060600825B46 /* PropertyListTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListTree.swift; sourceTree = "<group>"; };
-		4C7F86121B5C0AAC00825B46 /* PropertyListEditor.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = PropertyListEditor.playground; sourceTree = "<group>"; };
 		4C8829F31B58927E0023BCB7 /* NSNumberFormatter+PropertyLists.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSNumberFormatter+PropertyLists.swift"; sourceTree = "<group>"; };
 		4C8829F51B5892B60023BCB7 /* NSDateFormatter+PropertyLists.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSDateFormatter+PropertyLists.swift"; sourceTree = "<group>"; };
 		4CACB7F51B5BE8510037A18E /* PropertyListItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListItem.swift; sourceTree = "<group>"; };
@@ -81,7 +80,6 @@
 			children = (
 				4C4E05A41B4459D700BF69C2 /* PropertyListEditor */,
 				4C48C3B91B474FD500CDDCCB /* Test Plists */,
-				4C7F86121B5C0AAC00825B46 /* PropertyListEditor.playground */,
 				4C4E05A31B4459D700BF69C2 /* Products */,
 			);
 			sourceTree = "<group>";

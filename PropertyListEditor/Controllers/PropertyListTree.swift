@@ -129,10 +129,19 @@ class PropertyListTreeNode: NSObject {
 
     func insertChildAtIndex(index: Int) {
         self.children.insert(PropertyListTreeNode(tree: self.tree, parentNode: self, index: index), atIndex: index)
+        self.updateIndexesForChildrenInRange(index ..< self.numberOfChildren)
     }
 
 
     func removeChildAtIndex(index: Int) {
         self.children.removeAtIndex(index)
+        self.updateIndexesForChildrenInRange(index ..< self.numberOfChildren)
+    }
+
+
+    private func updateIndexesForChildrenInRange(indexRange: Range<Int>) {
+        for i in indexRange {
+            self.children[i].index = i
+        }
     }
 }
