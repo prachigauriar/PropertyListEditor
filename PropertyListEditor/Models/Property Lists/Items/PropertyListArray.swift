@@ -29,7 +29,7 @@ struct PropertyListArray: PropertyListCollection {
     }
 
 
-    mutating func removeElementAtIndex(index: Int) {
-        self.elements.removeAtIndex(index)
+    mutating func removeElementAtIndex(index: Int) -> ElementType {
+        return self.elements.removeAtIndex(index)
     }
 }

@@ -65,22 +65,21 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
             throw error
         }
     }
-//
-//
-//    // MARK: - Action Methods
-//
-//    @IBAction func addChild(sender: AnyObject?) {
-//        let selectedRow = self.propertyListOutlineView.selectedRow
-//        guard selectedRow != -1,
-//            let selectedItem = self.propertyListOutlineView.itemAtRow(selectedRow),
-//            let itemNode = selectedItem as? PropertyListItemNode else {
-//                return
-//        }
-//
-//        self.insertChildNodeWithItem(self.itemForAdding(), inItemNode: itemNode, atIndex: itemNode.numberOfChildNodes)
-//    }
-//
-//
+
+
+    // MARK: - Action Methods
+
+    @IBAction func addChild(sender: AnyObject?) {
+        var rowIndex = self.propertyListOutlineView.selectedRow
+        if rowIndex == -1 {
+            rowIndex = 0
+        }
+
+        let treeNode = self.propertyListOutlineView.itemAtRow(rowIndex) as! PropertyListTreeNode
+        self.insertItem(self.itemForAdding(), atIndex: treeNode.numberOfChildren, inTreeNode: treeNode)
+    }
+
+
 //    @IBAction func addSibling(sender: AnyObject?) {
 //        let selectedRow = self.propertyListOutlineView.selectedRow
 //        guard selectedRow != -1,
@@ -119,7 +118,68 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
 //        self.propertyListOutlineView.reloadItem(parent, reloadChildren: true)
 //    }
 //
+
+    private func insertItem(item: PropertyListItem, atIndex index: Int, inTreeNode treeNode: PropertyListTreeNode) {
+        let newItem: PropertyListItem
+
+        switch treeNode.item {
+        case var .ArrayItem(array):
+            array.insertElement(item, atIndex: index)
+            newItem = .ArrayItem(array)
+        case var .DictionaryItem(dictionary):
+            dictionary.insertKey(self.keyForAddingItemToDictionary(dictionary), value: item, atIndex: index)
+            newItem = .DictionaryItem(dictionary)
+        default:
+            return
+        }
+
+        self.undoManager!.registerUndoWithHandler { [unowned self] in
+            self.removeItemAtIndex(index, inTreeNode: treeNode)
+        }
+
+        treeNode.item = newItem
+        treeNode.insertChildAtIndex(index)
+        self.propertyListOutlineView.reloadItem(treeNode, reloadChildren: true)
+    }
+
+
+    private func removeItemAtIndex(index: Int, inTreeNode treeNode: PropertyListTreeNode) {
+        let newItem: PropertyListItem
+
+        switch treeNode.item {
+        case var .ArrayItem(array):
+            array.removeElementAtIndex(index)
+            newItem = .ArrayItem(array)
+        case var .DictionaryItem(dictionary):
+            dictionary.removeElementAtIndex(index)
+            newItem = .DictionaryItem(dictionary)
+        default:
+            return
+        }
+
+        // TODO: ADD UNDO
+        self.undoManager!.registerUndoWithHandler { [unowned self] in
+            // self.insertItem(removedItem, atIndex: index, inTreeNode: treeNode)
+        }
+
+        treeNode.item = newItem
+        treeNode.removeChildAtIndex(index)
+        self.propertyListOutlineView.reloadItem(treeNode, reloadChildren: true)
+    }
+
+
+//    private func setItem(newItem: PropertyListItem, inTreeNode treeNode: PropertyListTreeNode) {
+//        let oldItem = treeNode.item
 //
+//        self.undoManager!.registerUndoWithHandler {
+//            treeNode.item = oldItem
+//        }
+//
+//        treeNode.item = newItem
+//        self.propertyListOutlineView.reloadItem(treeNode, reloadChildren: true)
+//    }
+
+
 //    private func insertChildNodeWithItem(item: PropertyListItem, inItemNode itemNode: PropertyListItemNode, atIndex index: Int) {
 //        switch itemNode.item {
 //        case let .ArrayNode(arrayNode):
@@ -137,8 +197,8 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
 //
 //        self.propertyListOutlineView.reloadItem(itemNode, reloadChildren: true)
 //    }
-//
-//
+
+
 //    private func insertChildNode(childNode: PropertyListItemNode, inItemNode itemNode: PropertyListItemNode, atIndex index: Int) {
 //        switch itemNode.item {
 //        case let .ArrayNode(arrayNode):
@@ -182,64 +242,63 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
 //    }
 //
 //
-//    // MARK: - UI Validation
-//
-//    override func validateMenuItem(menuItem: NSMenuItem) -> Bool {
-//        return self.validateAction(menuItem.action, superclassInvocation: super.validateMenuItem(menuItem))
-//    }
-//
-//
-//    override func validateToolbarItem(toolbarItem: NSToolbarItem) -> Bool {
-//        return self.validateAction(toolbarItem.action, superclassInvocation: super.validateToolbarItem(toolbarItem))
-//    }
-//
-//
-//    private func validateAction(action: Selector, @autoclosure superclassInvocation: Void -> Bool) -> Bool {
-//        let selectors = Set<Selector>(arrayLiteral: "addChild:", "addSibling:", "deleteItem:")
-//        if !selectors.contains(action) {
-//            return superclassInvocation()
-//        }
-//
-//        let outlineView = self.propertyListOutlineView
-//        guard outlineView.numberOfSelectedRows > 0, let itemNode = outlineView.itemAtRow(outlineView.selectedRow) as? PropertyListItemNode else {
-//            return false
-//        }
-//
-//        switch action {
-//        case "addChild:":
-//            if case .Value = itemNode.item {
-//                return false
-//            } else {
-//                return true
-//            }
-//        case "addSibling:", "deleteItem:":
-//            return !(itemNode is PropertyListRootNode)
-//        default:
-//            return false
-//        }
-//    }
-//
-//
-//    // MARK: - Keys and Values for Adding Items
-//
-//    private func keyForAddingItemToDictionaryNode(dictionaryNode: PropertyListDictionaryNode) -> String {
-//        let formatString = NSLocalizedString("PropertyListDocument.KeyForAddingFormat",
-//                                             comment: "Format string for key generated when adding a dictionary item")
-//
-//        var key: String
-//        var counter: Int = 1
-//        repeat {
-//            key = NSString.localizedStringWithFormat(formatString, counter++) as String
-//        } while dictionaryNode.containsChildNodeWithKey(key)
-//
-//        return key
-//    }
-//
-//
-//    private func itemForAdding() -> PropertyListItem {
-//        return try! NSLocalizedString("PropertyListDocument.ItemForAddingStringValue",
-//                                      comment: "Default value when adding a new item").propertyListItem()
-//    }
+    // MARK: - UI Validation
+
+    override func validateMenuItem(menuItem: NSMenuItem) -> Bool {
+        return self.validateAction(menuItem.action, superclassInvocation: super.validateMenuItem(menuItem))
+    }
+
+
+    override func validateToolbarItem(toolbarItem: NSToolbarItem) -> Bool {
+        return self.validateAction(toolbarItem.action, superclassInvocation: super.validateToolbarItem(toolbarItem))
+    }
+
+
+    private func validateAction(action: Selector, @autoclosure superclassInvocation: Void -> Bool) -> Bool {
+        let selectors = Set<Selector>(arrayLiteral: "addChild:", "addSibling:", "deleteItem:")
+        if !selectors.contains(action) {
+            return superclassInvocation()
+        }
+
+        let outlineView = self.propertyListOutlineView
+        let treeNode: PropertyListTreeNode
+        if outlineView.numberOfSelectedRows == 0 {
+            treeNode = self.tree.rootTreeNode
+        } else {
+            treeNode = outlineView.itemAtRow(outlineView.selectedRow) as! PropertyListTreeNode 
+        }
+
+        switch action {
+        case "addChild:":
+            return treeNode.item.isCollection
+        case "addSibling:", "deleteItem:":
+            return treeNode.parentNode != nil
+        default:
+            return false
+        }
+    }
+
+
+    // MARK: - Keys and Values for Adding Items
+
+    private func keyForAddingItemToDictionary(dictionary: PropertyListDictionary) -> String {
+        let formatString = NSLocalizedString("PropertyListDocument.KeyForAddingFormat",
+                                             comment: "Format string for key generated when adding a dictionary item")
+
+        var key: String
+        var counter: Int = 1
+        repeat {
+            key = NSString.localizedStringWithFormat(formatString, counter++) as String
+        } while dictionary.containsKey(key)
+
+        return key
+    }
+
+
+    private func itemForAdding() -> PropertyListItem {
+        return try! NSLocalizedString("PropertyListDocument.ItemForAddingStringValue",
+                                      comment: "Default value when adding a new item").propertyListItem()
+    }
 
 
     // MARK: - Outline View Data Source

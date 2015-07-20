@@ -17,7 +17,7 @@ class PropertyListTree: NSObject {
     init(rootItem: PropertyListItem) {
         self.rootItem = rootItem
         super.init()
-        self.rootTreeNode = PropertyListTreeNode(tree: self, indexPath: NSIndexPath())
+        self.rootTreeNode = PropertyListTreeNode(tree: self, parentNode: nil, index: nil)
     }
 
 
@@ -50,35 +50,56 @@ class PropertyListTree: NSObject {
 
 class PropertyListTreeNode: NSObject {
     unowned let tree: PropertyListTree
-    var indexPath: NSIndexPath
-    var children: [PropertyListTreeNode] = []
+    weak var parentNode: PropertyListTreeNode?
+    private(set) var index: Int?
+    private(set) var children: [PropertyListTreeNode] = []
 
 
-    var parentNode: PropertyListTreeNode? {
-        return self.indexPath.length > 0 ? self.tree.nodeAtIndexPath(self.indexPath.indexPathByRemovingLastIndex()) : nil
-    }
+    var indexPath: NSIndexPath {
+        var indexes: [Int] = []
 
+        var node: PropertyListTreeNode! = self
+        while let index = node?.index {
+            indexes.insert(index, atIndex: 0)
+            node = node.parentNode
+        }
 
-    var index: Int? {
-        return self.indexPath.lastIndex
+        return indexes.count > 0 ? NSIndexPath(indexes: &indexes, length: indexes.count) : NSIndexPath()
     }
 
 
     var item: PropertyListItem {
-        return self.tree.itemAtIndexPath(self.indexPath)
+        get {
+            return self.tree.itemAtIndexPath(self.indexPath)
+        }
+
+        set(item) {
+            self.tree.setItem(item, atIndexPath: self.indexPath)
+        }
     }
 
 
-    init(tree: PropertyListTree, indexPath: NSIndexPath) {
+    init(tree: PropertyListTree, parentNode: PropertyListTreeNode?, index: Int?) {
         self.tree = tree
-        self.indexPath = indexPath
+        self.parentNode = parentNode
+        self.index = index
         super.init()
         self.regenerateChildren()
     }
 
 
-    private func regenerateChildren() {
-        self.children = (0 ..< self.numberOfChildren).map { PropertyListTreeNode(tree: self.tree, indexPath: self.indexPath.indexPathByAddingIndex($0)) }
+    func regenerateChildren() {
+        let elementCount: Int
+        switch self.item {
+        case let .ArrayItem(array):
+            elementCount = array.elementCount
+        case let .DictionaryItem(dictionary):
+            elementCount = dictionary.elementCount
+        default:
+            return
+        }
+
+        self.children = (0 ..< elementCount).map { (i: Int) in PropertyListTreeNode(tree: self.tree, parentNode: self, index: i) }
     }
 
 
@@ -95,13 +116,16 @@ class PropertyListTreeNode: NSObject {
 
 
     var numberOfChildren: Int {
-        switch self.item {
-        case let .ArrayItem(array):
-            return array.elementCount
-        case let .DictionaryItem(dictionary):
-            return dictionary.elementCount
-        default:
-            return 0
-        }
+        return self.children.count
+    }
+
+
+    func insertChildAtIndex(index: Int) {
+        self.children.insert(PropertyListTreeNode(tree: self.tree, parentNode: self, index: index), atIndex: index)
+    }
+
+
+    func removeChildAtIndex(index: Int) {
+        self.children.removeAtIndex(index)
     }
 }

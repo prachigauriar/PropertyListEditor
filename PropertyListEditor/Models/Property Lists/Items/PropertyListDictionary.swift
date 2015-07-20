@@ -69,10 +69,10 @@ struct PropertyListDictionary: PropertyListCollection {
     }
 
 
-    mutating func removeElementAtIndex(index: Int) {
+    mutating func removeElementAtIndex(index: Int) -> ElementType {
         let element = self.elements[index]
         self.keySet.remove(element.key)
-        self.elements.removeAtIndex(index)
+        return self.elements.removeAtIndex(index)
     }
 
 

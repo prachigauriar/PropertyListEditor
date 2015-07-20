@@ -21,7 +21,7 @@ protocol PropertyListCollection: CustomStringConvertible, Hashable {
     mutating func insertElement(element: ElementType, atIndex index: Int)
     mutating func moveElementAtIndex(index oldIndex: Int, toIndex newIndex: Int)
     mutating func replaceElementAtIndex(index: Int, withElement element: ElementType)
-    mutating func removeElementAtIndex(index: Int)
+    mutating func removeElementAtIndex(index: Int) -> ElementType
 }
 
 
