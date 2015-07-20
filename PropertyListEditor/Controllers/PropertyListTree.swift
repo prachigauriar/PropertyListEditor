@@ -51,20 +51,30 @@ class PropertyListTree: NSObject {
 class PropertyListTreeNode: NSObject {
     unowned let tree: PropertyListTree
     private(set) weak var parentNode: PropertyListTreeNode?
-    private(set) var index: Int?
+    private(set) var index: Int? {
+        didSet {
+            self.cachedIndexPath = nil
+        }
+    }
+
     private(set) var children: [PropertyListTreeNode] = []
 
+    private var cachedIndexPath: NSIndexPath?
 
     var indexPath: NSIndexPath {
-        var indexes: [Int] = []
+        if self.cachedIndexPath == nil {
+            var indexes: [Int] = []
 
-        var node: PropertyListTreeNode! = self
-        while let index = node?.index {
-            indexes.insert(index, atIndex: 0)
-            node = node.parentNode
+            var node: PropertyListTreeNode? = self
+            while let index = node?.index {
+                indexes.insert(index, atIndex: 0)
+                node = node?.parentNode
+            }
+
+            self.cachedIndexPath = NSIndexPath(indexes: indexes, length: indexes.count)
         }
 
-        return indexes.count > 0 ? NSIndexPath(indexes: &indexes, length: indexes.count) : NSIndexPath()
+        return self.cachedIndexPath!
     }
 
 
