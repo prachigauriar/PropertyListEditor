@@ -10,6 +10,17 @@ import Foundation
 import ObjectiveC.runtime
 
 
+// MARK: - Block-Based Undo
+
+extension NSUndoManager {
+    func registerUndoWithHandler(handler: Void -> Void) -> Self {
+        let target = UndoHandlerTarget(handler: handler)
+        self.registerUndoWithTarget(target, selector: "undo:", object: target)
+        return self
+    }
+}
+
+
 class UndoHandlerTarget: NSObject {
     let handler: Void -> Void
 
@@ -26,6 +37,8 @@ class UndoHandlerTarget: NSObject {
 }
 
 
+// MARK: - Debug Helpers
+
 extension NSUndoManager {
     var undoStackDebugDescription: String? {
         let undoStack = object_getIvar(self, class_getInstanceVariable(NSClassFromString("NSUndoManager"), "_undoStack"));
@@ -36,12 +49,5 @@ extension NSUndoManager {
     var redoStackDebugDescription: String? {
         let redoStack = object_getIvar(self, class_getInstanceVariable(NSClassFromString("NSUndoManager"), "_redoStack"));
         return redoStack.debugDescription
-    }
-
-
-    func registerUndoWithHandler(handler: Void -> Void) -> Self {
-        let target = UndoHandlerTarget(handler: handler)
-        self.registerUndoWithTarget(target, selector: "undo:", object: target)
-        return self
     }
 }

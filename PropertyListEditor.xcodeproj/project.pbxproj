@@ -8,22 +8,22 @@
 
 /* Begin PBXBuildFile section */
 		4C48C3BB1B474FD500CDDCCB /* Test1.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4C48C3BA1B474FD500CDDCCB /* Test1.plist */; };
-		4C4E05C41B445AB000BF69C2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4E05B81B445AB000BF69C2 /* AppDelegate.swift */; };
-		4C4E05C51B445AB000BF69C2 /* PropertyListDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4E05BA1B445AB000BF69C2 /* PropertyListDocument.swift */; };
 		4C4E05C61B445AB000BF69C2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4C4E05BD1B445AB000BF69C2 /* Assets.xcassets */; };
-		4C70C3B01B50487200D8ECAB /* PropertyListDataFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C70C3AF1B50487200D8ECAB /* PropertyListDataFormatter.swift */; };
-		4C8829F41B58927E0023BCB7 /* NSNumberFormatter+PropertyLists.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8829F31B58927E0023BCB7 /* NSNumberFormatter+PropertyLists.swift */; };
-		4C8829F61B5892B60023BCB7 /* NSDateFormatter+PropertyLists.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8829F51B5892B60023BCB7 /* NSDateFormatter+PropertyLists.swift */; };
-		4CBDDBD81B58276C00131559 /* LenientDateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CBDDBD71B58276C00131559 /* LenientDateFormatter.swift */; };
-		4CBDDBF21B59547F00131559 /* PropertyListItemNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CBDDBE71B59547F00131559 /* PropertyListItemNode.swift */; };
-		4CBDDBF31B59547F00131559 /* PropertyListNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CBDDBE81B59547F00131559 /* PropertyListNode.swift */; };
-		4CBDDBF41B59547F00131559 /* PropertyListArrayNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CBDDBEA1B59547F00131559 /* PropertyListArrayNode.swift */; };
-		4CBDDBF51B59547F00131559 /* PropertyListDictionaryNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CBDDBEB1B59547F00131559 /* PropertyListDictionaryNode.swift */; };
-		4CBDDBF61B59547F00131559 /* PropertyListRootNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CBDDBEC1B59547F00131559 /* PropertyListRootNode.swift */; };
-		4CBDDBF71B59547F00131559 /* PropertyListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CBDDBEE1B59547F00131559 /* PropertyListItem.swift */; };
-		4CBDDBF81B59547F00131559 /* PropertyListItemConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CBDDBEF1B59547F00131559 /* PropertyListItemConvertible.swift */; };
-		4CBDDBF91B59547F00131559 /* PropertyListValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CBDDBF01B59547F00131559 /* PropertyListValue.swift */; };
-		4CE4955D1B5AE3F2009EE029 /* NSUndoManager+Blocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CE4955C1B5AE3F2009EE029 /* NSUndoManager+Blocks.swift */; };
+		4C7F860C1B5BFD8B00825B46 /* PropertyListItemConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7F860B1B5BFD8B00825B46 /* PropertyListItemConvertible.swift */; };
+		4C7F860E1B5BFDAC00825B46 /* PropertyListXMLWritable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7F860D1B5BFDAC00825B46 /* PropertyListXMLWritable.swift */; };
+		4C7F86111B5C060600825B46 /* PropertyListTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7F86101B5C060600825B46 /* PropertyListTree.swift */; };
+		4C9B43C11B5C1CA30076C3D8 /* PropertyListDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4E05BA1B445AB000BF69C2 /* PropertyListDocument.swift */; };
+		4CACB7F71B5BE8510037A18E /* PropertyListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CACB7F51B5BE8510037A18E /* PropertyListItem.swift */; };
+		4CACB7FA1B5BE8D70037A18E /* NSIndexPath+Indexes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CACB7F91B5BE8D70037A18E /* NSIndexPath+Indexes.swift */; };
+		4CACB7FB1B5BE9CF0037A18E /* NSDateFormatter+PropertyLists.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8829F51B5892B60023BCB7 /* NSDateFormatter+PropertyLists.swift */; };
+		4CACB7FC1B5BE9D20037A18E /* NSNumberFormatter+PropertyLists.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8829F31B58927E0023BCB7 /* NSNumberFormatter+PropertyLists.swift */; };
+		4CACB7FD1B5BE9D80037A18E /* NSUndoManager+Blocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CE4955C1B5AE3F2009EE029 /* NSUndoManager+Blocks.swift */; };
+		4CACB7FE1B5BEA360037A18E /* PropertyListDataFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C70C3AF1B50487200D8ECAB /* PropertyListDataFormatter.swift */; };
+		4CACB7FF1B5BEA3A0037A18E /* LenientDateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CBDDBD71B58276C00131559 /* LenientDateFormatter.swift */; };
+		4CB59CEB1B5BEB8B0003288F /* PropertyListArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CB59CEA1B5BEB8B0003288F /* PropertyListArray.swift */; };
+		4CB59CED1B5BEB9F0003288F /* PropertyListCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CB59CEC1B5BEB9F0003288F /* PropertyListCollection.swift */; };
+		4CB59CEE1B5BEC910003288F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4E05B81B445AB000BF69C2 /* AppDelegate.swift */; };
+		4CB59CF01B5BED440003288F /* PropertyListDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CB59CEF1B5BED440003288F /* PropertyListDictionary.swift */; };
 		4CF3D9621B46DB7100C76D8D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4CF3D9581B46DB7100C76D8D /* Localizable.strings */; };
 		4CF3D9631B46DB7100C76D8D /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 4CF3D95A1B46DB7100C76D8D /* Localizable.stringsdict */; };
 		4CF3D9641B46DB7100C76D8D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4CF3D95C1B46DB7100C76D8D /* MainMenu.xib */; };
@@ -37,17 +37,18 @@
 		4C4E05BA1B445AB000BF69C2 /* PropertyListDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListDocument.swift; sourceTree = "<group>"; };
 		4C4E05BD1B445AB000BF69C2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Resources/Assets.xcassets; sourceTree = "<group>"; };
 		4C70C3AF1B50487200D8ECAB /* PropertyListDataFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListDataFormatter.swift; sourceTree = "<group>"; };
+		4C7F860B1B5BFD8B00825B46 /* PropertyListItemConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListItemConvertible.swift; sourceTree = "<group>"; };
+		4C7F860D1B5BFDAC00825B46 /* PropertyListXMLWritable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListXMLWritable.swift; sourceTree = "<group>"; };
+		4C7F86101B5C060600825B46 /* PropertyListTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListTree.swift; sourceTree = "<group>"; };
+		4C7F86121B5C0AAC00825B46 /* PropertyListEditor.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = PropertyListEditor.playground; sourceTree = "<group>"; };
 		4C8829F31B58927E0023BCB7 /* NSNumberFormatter+PropertyLists.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSNumberFormatter+PropertyLists.swift"; sourceTree = "<group>"; };
 		4C8829F51B5892B60023BCB7 /* NSDateFormatter+PropertyLists.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSDateFormatter+PropertyLists.swift"; sourceTree = "<group>"; };
+		4CACB7F51B5BE8510037A18E /* PropertyListItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListItem.swift; sourceTree = "<group>"; };
+		4CACB7F91B5BE8D70037A18E /* NSIndexPath+Indexes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSIndexPath+Indexes.swift"; sourceTree = "<group>"; };
+		4CB59CEA1B5BEB8B0003288F /* PropertyListArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListArray.swift; sourceTree = "<group>"; };
+		4CB59CEC1B5BEB9F0003288F /* PropertyListCollection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListCollection.swift; sourceTree = "<group>"; };
+		4CB59CEF1B5BED440003288F /* PropertyListDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListDictionary.swift; sourceTree = "<group>"; };
 		4CBDDBD71B58276C00131559 /* LenientDateFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LenientDateFormatter.swift; sourceTree = "<group>"; };
-		4CBDDBE71B59547F00131559 /* PropertyListItemNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListItemNode.swift; sourceTree = "<group>"; };
-		4CBDDBE81B59547F00131559 /* PropertyListNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListNode.swift; sourceTree = "<group>"; };
-		4CBDDBEA1B59547F00131559 /* PropertyListArrayNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListArrayNode.swift; sourceTree = "<group>"; };
-		4CBDDBEB1B59547F00131559 /* PropertyListDictionaryNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListDictionaryNode.swift; sourceTree = "<group>"; };
-		4CBDDBEC1B59547F00131559 /* PropertyListRootNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListRootNode.swift; sourceTree = "<group>"; };
-		4CBDDBEE1B59547F00131559 /* PropertyListItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListItem.swift; sourceTree = "<group>"; };
-		4CBDDBEF1B59547F00131559 /* PropertyListItemConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListItemConvertible.swift; sourceTree = "<group>"; };
-		4CBDDBF01B59547F00131559 /* PropertyListValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListValue.swift; sourceTree = "<group>"; };
 		4CE4955C1B5AE3F2009EE029 /* NSUndoManager+Blocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSUndoManager+Blocks.swift"; sourceTree = "<group>"; };
 		4CF3D9591B46DB7100C76D8D /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4CF3D95B1B46DB7100C76D8D /* Base */ = {isa = PBXFileReference; explicitFileType = text.plist.xml; name = Base; path = Base.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
@@ -80,6 +81,7 @@
 			children = (
 				4C4E05A41B4459D700BF69C2 /* PropertyListEditor */,
 				4C48C3B91B474FD500CDDCCB /* Test Plists */,
+				4C7F86121B5C0AAC00825B46 /* PropertyListEditor.playground */,
 				4C4E05A31B4459D700BF69C2 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -119,6 +121,7 @@
 			isa = PBXGroup;
 			children = (
 				4C4E05BA1B445AB000BF69C2 /* PropertyListDocument.swift */,
+				4C7F86101B5C060600825B46 /* PropertyListTree.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -143,9 +146,8 @@
 		4C70C3A41B4F1E8600D8ECAB /* Property Lists */ = {
 			isa = PBXGroup;
 			children = (
-				4CBDDBED1B59547F00131559 /* Values and Items */,
-				4CBDDBE51B59547F00131559 /* Node Protocols */,
-				4CBDDBE91B59547F00131559 /* Nodes */,
+				4CACB7F41B5BE8510037A18E /* Items */,
+				4C7F860A1B5BFD8B00825B46 /* Converters */,
 			);
 			path = "Property Lists";
 			sourceTree = "<group>";
@@ -158,6 +160,26 @@
 			path = "Data Formatter";
 			sourceTree = "<group>";
 		};
+		4C7F860A1B5BFD8B00825B46 /* Converters */ = {
+			isa = PBXGroup;
+			children = (
+				4C7F860B1B5BFD8B00825B46 /* PropertyListItemConvertible.swift */,
+				4C7F860D1B5BFDAC00825B46 /* PropertyListXMLWritable.swift */,
+			);
+			path = Converters;
+			sourceTree = "<group>";
+		};
+		4CACB7F41B5BE8510037A18E /* Items */ = {
+			isa = PBXGroup;
+			children = (
+				4CACB7F51B5BE8510037A18E /* PropertyListItem.swift */,
+				4CB59CEC1B5BEB9F0003288F /* PropertyListCollection.swift */,
+				4CB59CEA1B5BEB8B0003288F /* PropertyListArray.swift */,
+				4CB59CEF1B5BED440003288F /* PropertyListDictionary.swift */,
+			);
+			path = Items;
+			sourceTree = "<group>";
+		};
 		4CBDDBD61B58273000131559 /* Lenient Date Formatter */ = {
 			isa = PBXGroup;
 			children = (
@@ -166,39 +188,11 @@
 			path = "Lenient Date Formatter";
 			sourceTree = "<group>";
 		};
-		4CBDDBE51B59547F00131559 /* Node Protocols */ = {
-			isa = PBXGroup;
-			children = (
-				4CBDDBE81B59547F00131559 /* PropertyListNode.swift */,
-				4CBDDBE71B59547F00131559 /* PropertyListItemNode.swift */,
-			);
-			path = "Node Protocols";
-			sourceTree = "<group>";
-		};
-		4CBDDBE91B59547F00131559 /* Nodes */ = {
-			isa = PBXGroup;
-			children = (
-				4CBDDBEC1B59547F00131559 /* PropertyListRootNode.swift */,
-				4CBDDBEA1B59547F00131559 /* PropertyListArrayNode.swift */,
-				4CBDDBEB1B59547F00131559 /* PropertyListDictionaryNode.swift */,
-			);
-			path = Nodes;
-			sourceTree = "<group>";
-		};
-		4CBDDBED1B59547F00131559 /* Values and Items */ = {
-			isa = PBXGroup;
-			children = (
-				4CBDDBF01B59547F00131559 /* PropertyListValue.swift */,
-				4CBDDBEE1B59547F00131559 /* PropertyListItem.swift */,
-				4CBDDBEF1B59547F00131559 /* PropertyListItemConvertible.swift */,
-			);
-			path = "Values and Items";
-			sourceTree = "<group>";
-		};
 		4CF3D9381B46D0D500C76D8D /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
 				4C8829F51B5892B60023BCB7 /* NSDateFormatter+PropertyLists.swift */,
+				4CACB7F91B5BE8D70037A18E /* NSIndexPath+Indexes.swift */,
 				4C8829F31B58927E0023BCB7 /* NSNumberFormatter+PropertyLists.swift */,
 				4CE4955C1B5AE3F2009EE029 /* NSUndoManager+Blocks.swift */,
 			);
@@ -298,21 +292,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4CBDDBF41B59547F00131559 /* PropertyListArrayNode.swift in Sources */,
-				4C8829F41B58927E0023BCB7 /* NSNumberFormatter+PropertyLists.swift in Sources */,
-				4C4E05C41B445AB000BF69C2 /* AppDelegate.swift in Sources */,
-				4CBDDBF51B59547F00131559 /* PropertyListDictionaryNode.swift in Sources */,
-				4CBDDBF21B59547F00131559 /* PropertyListItemNode.swift in Sources */,
-				4C70C3B01B50487200D8ECAB /* PropertyListDataFormatter.swift in Sources */,
-				4CBDDBD81B58276C00131559 /* LenientDateFormatter.swift in Sources */,
-				4CBDDBF71B59547F00131559 /* PropertyListItem.swift in Sources */,
-				4CBDDBF61B59547F00131559 /* PropertyListRootNode.swift in Sources */,
-				4C4E05C51B445AB000BF69C2 /* PropertyListDocument.swift in Sources */,
-				4CBDDBF81B59547F00131559 /* PropertyListItemConvertible.swift in Sources */,
-				4CE4955D1B5AE3F2009EE029 /* NSUndoManager+Blocks.swift in Sources */,
-				4CBDDBF91B59547F00131559 /* PropertyListValue.swift in Sources */,
-				4CBDDBF31B59547F00131559 /* PropertyListNode.swift in Sources */,
-				4C8829F61B5892B60023BCB7 /* NSDateFormatter+PropertyLists.swift in Sources */,
+				4CB59CEE1B5BEC910003288F /* AppDelegate.swift in Sources */,
+				4CACB7F71B5BE8510037A18E /* PropertyListItem.swift in Sources */,
+				4CB59CF01B5BED440003288F /* PropertyListDictionary.swift in Sources */,
+				4C7F860E1B5BFDAC00825B46 /* PropertyListXMLWritable.swift in Sources */,
+				4CACB7FB1B5BE9CF0037A18E /* NSDateFormatter+PropertyLists.swift in Sources */,
+				4CACB7FA1B5BE8D70037A18E /* NSIndexPath+Indexes.swift in Sources */,
+				4CB59CED1B5BEB9F0003288F /* PropertyListCollection.swift in Sources */,
+				4CB59CEB1B5BEB8B0003288F /* PropertyListArray.swift in Sources */,
+				4C7F860C1B5BFD8B00825B46 /* PropertyListItemConvertible.swift in Sources */,
+				4CACB7FC1B5BE9D20037A18E /* NSNumberFormatter+PropertyLists.swift in Sources */,
+				4C9B43C11B5C1CA30076C3D8 /* PropertyListDocument.swift in Sources */,
+				4CACB7FE1B5BEA360037A18E /* PropertyListDataFormatter.swift in Sources */,
+				4C7F86111B5C060600825B46 /* PropertyListTree.swift in Sources */,
+				4CACB7FF1B5BEA3A0037A18E /* LenientDateFormatter.swift in Sources */,
+				4CACB7FD1B5BE9D80037A18E /* NSUndoManager+Blocks.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

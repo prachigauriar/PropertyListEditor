@@ -1,5 +1,5 @@
 //
-//  PropertyListParser.swift
+//  PropertyListItemConvertible.swift
 //  PropertyListEditor
 //
 //  Created by Prachi Gauriar on 7/3/2015.
@@ -9,10 +9,11 @@
 import Foundation
 
 
-enum PropertyListConversionError: ErrorType, CustomStringConvertible {
+enum PropertyListItemConversionError: ErrorType, CustomStringConvertible {
     case NonStringDictionaryKey(dictionary: NSDictionary, key: AnyObject)
     case UnsupportedObjectType(AnyObject)
 
+    
     var description: String {
         switch self {
         case let .NonStringDictionaryKey(dictionary: _, key: key):
@@ -33,66 +34,65 @@ protocol PropertyListItemConvertible: NSObjectProtocol {
 
 extension NSArray: PropertyListItemConvertible {
     func propertyListItem() throws -> PropertyListItem {
-        let arrayNode = PropertyListArrayNode()
+        var array = PropertyListArray()
 
         for element in self {
             guard let propertyListObject = element as? PropertyListItemConvertible else {
-                throw PropertyListConversionError.UnsupportedObjectType(element)
+                throw PropertyListItemConversionError.UnsupportedObjectType(element)
             }
 
-            arrayNode.addChildNodeWithItem(try propertyListObject.propertyListItem())
+            array.addElement(try propertyListObject.propertyListItem())
         }
 
-        return .ArrayNode(arrayNode)
+        return .ArrayItem(array)
     }
 }
 
 
 extension NSData: PropertyListItemConvertible {
     func propertyListItem() throws -> PropertyListItem {
-        return .Value(.DataValue(self))
+        return .DataItem(self)
     }
 }
 
 
 extension NSDate: PropertyListItemConvertible {
     func propertyListItem() throws -> PropertyListItem {
-        return .Value(.DateValue(self))
+        return .DateItem(self)
     }
 }
 
 
 extension NSDictionary: PropertyListItemConvertible {
     func propertyListItem() throws -> PropertyListItem {
-        let dictionaryNode = PropertyListDictionaryNode()
+        var dictionary = PropertyListDictionary()
 
         for (key, value) in self {
             guard let stringKey = key as? String else {
-                throw PropertyListConversionError.NonStringDictionaryKey(dictionary: self, key: key)
+                throw PropertyListItemConversionError.NonStringDictionaryKey(dictionary: self, key: key)
             }
 
             guard let propertyListObject = value as? PropertyListItemConvertible else {
-                throw PropertyListConversionError.UnsupportedObjectType(value)
+                throw PropertyListItemConversionError.UnsupportedObjectType(value)
             }
 
-            dictionaryNode.addChildNodeWithKey(stringKey, item: try propertyListObject.propertyListItem())
+            dictionary.addKey(stringKey, value: try propertyListObject.propertyListItem())
         }
 
-        return .DictionaryNode(dictionaryNode)
+        return .DictionaryItem(dictionary)
     }
 }
 
 
 extension NSNumber: PropertyListItemConvertible {
     func propertyListItem() throws -> PropertyListItem {
-        let value: PropertyListValue = NSNumber(bool: true).objCType == self.objCType ? .BooleanValue(self) : .NumberValue(self)
-        return .Value(value)
+        return NSNumber(bool: true).objCType == self.objCType ? .BooleanItem(self) : .NumberItem(self)
     }
 }
 
 
 extension NSString: PropertyListItemConvertible {
     func propertyListItem() throws -> PropertyListItem {
-        return .Value(.StringValue(self))
+        return .StringItem(self)
     }
 }
