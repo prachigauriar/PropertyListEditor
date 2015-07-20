@@ -15,6 +15,21 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
     }
 
 
+    enum TreeNodeAction {
+        case InsertChildAtIndex(Int)
+        case RemoveChildAtIndex(Int)
+
+        var reverseAction: TreeNodeAction {
+            switch self {
+            case let .InsertChildAtIndex(index):
+                return .RemoveChildAtIndex(index)
+            case let .RemoveChildAtIndex(index):
+                return .InsertChildAtIndex(index)
+            }
+        }
+    }
+
+
     @IBOutlet weak var propertyListOutlineView: NSOutlineView!
     @IBOutlet weak var keyTextFieldPrototypeCell: NSTextFieldCell!
     @IBOutlet weak var typePopUpButtonPrototypeCell: NSPopUpButtonCell!
@@ -80,44 +95,33 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
     }
 
 
-//    @IBAction func addSibling(sender: AnyObject?) {
-//        let selectedRow = self.propertyListOutlineView.selectedRow
-//        guard selectedRow != -1,
-//            let selectedItem = self.propertyListOutlineView.itemAtRow(selectedRow),
-//            let parent = self.propertyListOutlineView.parentForItem(selectedItem),
-//            let parentNode = parent as? PropertyListItemNode else {
-//                return
-//        }
-//
-//        if case .Value = parentNode.item {
-//            return
-//        }
-//
-//        let index: Int! = parentNode.indexOfChildNode(selectedItem as! PropertyListItemNode)
-//        self.insertChildNodeWithItem(self.itemForAdding(), inItemNode: parentNode, atIndex: index + 1)
-//        self.propertyListOutlineView.reloadItem(parent, reloadChildren: true)
-//    }
-//
-//
-//    @IBAction func deleteItem(sender: AnyObject?) {
-//        let selectedRow = self.propertyListOutlineView.selectedRow
-//        guard selectedRow != -1,
-//            let selectedItem = self.propertyListOutlineView.itemAtRow(selectedRow),
-//            let parent = self.propertyListOutlineView.parentForItem(selectedItem),
-//            let parentNode = parent as? PropertyListItemNode else {
-//                return
-//        }
-//
-//        if case .Value = parentNode.item {
-//            return
-//        }
-//
-//
-//        let index: Int! = parentNode.indexOfChildNode(selectedItem as! PropertyListItemNode)
-//        self.removeChildNodeAtIndex(index, fromItemNode: parentNode)
-//        self.propertyListOutlineView.reloadItem(parent, reloadChildren: true)
-//    }
-//
+    @IBAction func addSibling(sender: AnyObject?) {
+        let selectedRow = self.propertyListOutlineView.selectedRow
+
+        guard selectedRow != -1,
+            let selectedNode = self.propertyListOutlineView.itemAtRow(selectedRow) as? PropertyListTreeNode,
+            let parentNode = selectedNode.parentNode where parentNode.item.isCollection else {
+                return
+        }
+
+        let index: Int! = selectedNode.index
+        self.insertItem(self.itemForAdding(), atIndex: index + 1, inTreeNode: parentNode)
+    }
+
+
+    @IBAction func deleteItem(sender: AnyObject?) {
+        let selectedRow = self.propertyListOutlineView.selectedRow
+
+        guard selectedRow != -1,
+            let selectedTreeNode = self.propertyListOutlineView.itemAtRow(selectedRow) as? PropertyListTreeNode,
+            let parentTreeNode = selectedTreeNode.parentNode where parentTreeNode.item.isCollection else {
+                return
+        }
+
+        let index: Int! = selectedTreeNode.index
+        self.removeItemAtIndex(index, inTreeNode: parentTreeNode)
+    }
+
 
     private func insertItem(item: PropertyListItem, atIndex index: Int, inTreeNode treeNode: PropertyListTreeNode) {
         let newItem: PropertyListItem
@@ -133,13 +137,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
             return
         }
 
-        self.undoManager!.registerUndoWithHandler { [unowned self] in
-            self.removeItemAtIndex(index, inTreeNode: treeNode)
-        }
-
-        treeNode.item = newItem
-        treeNode.insertChildAtIndex(index)
-        self.propertyListOutlineView.reloadItem(treeNode, reloadChildren: true)
+        self.setItem(newItem, inTreeNode: treeNode, nodeAction: .InsertChildAtIndex(index))
     }
 
 
@@ -157,91 +155,31 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
             return
         }
 
-        // TODO: ADD UNDO
+        self.setItem(newItem, inTreeNode: treeNode, nodeAction: .RemoveChildAtIndex(index))
+    }
+
+
+    private func setItem(newItem: PropertyListItem, inTreeNode treeNode: PropertyListTreeNode, nodeAction: TreeNodeAction? = nil) {
+        let oldItem = treeNode.item
+
         self.undoManager!.registerUndoWithHandler { [unowned self] in
-            // self.insertItem(removedItem, atIndex: index, inTreeNode: treeNode)
+            self.setItem(oldItem, inTreeNode: treeNode, nodeAction: nodeAction?.reverseAction)
         }
 
         treeNode.item = newItem
-        treeNode.removeChildAtIndex(index)
+        if let nodeAction = nodeAction {
+            switch nodeAction {
+            case let .InsertChildAtIndex(index):
+                treeNode.insertChildAtIndex(index)
+            case let .RemoveChildAtIndex(index):
+                treeNode.removeChildAtIndex(index)
+            }
+        }
+
         self.propertyListOutlineView.reloadItem(treeNode, reloadChildren: true)
     }
 
 
-//    private func setItem(newItem: PropertyListItem, inTreeNode treeNode: PropertyListTreeNode) {
-//        let oldItem = treeNode.item
-//
-//        self.undoManager!.registerUndoWithHandler {
-//            treeNode.item = oldItem
-//        }
-//
-//        treeNode.item = newItem
-//        self.propertyListOutlineView.reloadItem(treeNode, reloadChildren: true)
-//    }
-
-
-//    private func insertChildNodeWithItem(item: PropertyListItem, inItemNode itemNode: PropertyListItemNode, atIndex index: Int) {
-//        switch itemNode.item {
-//        case let .ArrayNode(arrayNode):
-//            arrayNode.insertChildNodeWithItem(item, atIndex: index)
-//        case let .DictionaryNode(dictionaryNode):
-//            dictionaryNode.insertChildNodeWithKey(self.keyForAddingItemToDictionaryNode(dictionaryNode), item: item, atIndex: index)
-//        default:
-//            return
-//        }
-//
-//        let index = itemNode.numberOfChildNodes - 1
-//        self.undoManager!.registerUndoWithHandler { [unowned self] in
-//            self.removeChildNodeAtIndex(index, fromItemNode: itemNode)
-//        }.setActionName("Add Node")
-//
-//        self.propertyListOutlineView.reloadItem(itemNode, reloadChildren: true)
-//    }
-
-
-//    private func insertChildNode(childNode: PropertyListItemNode, inItemNode itemNode: PropertyListItemNode, atIndex index: Int) {
-//        switch itemNode.item {
-//        case let .ArrayNode(arrayNode):
-//            if let childNode = childNode as? PropertyListArrayNode.ChildNodeType {
-//                arrayNode.insertChildNode(childNode, atIndex: index)
-//            }
-//        case let .DictionaryNode(dictionaryNode):
-//            if let childNode = childNode as? PropertyListDictionaryNode.ChildNodeType {
-//                dictionaryNode.insertChildNode(childNode, atIndex: index)
-//            }
-//        default:
-//            return
-//        }
-//
-//        let index = itemNode.numberOfChildNodes - 1
-//        self.undoManager!.registerUndoWithHandler { [unowned self] in
-//            self.removeChildNodeAtIndex(index, fromItemNode: itemNode)
-//        }.setActionName("Add Node")
-//
-//        self.propertyListOutlineView.reloadItem(itemNode, reloadChildren: true)
-//    }
-//
-//
-//    private func removeChildNodeAtIndex(index: Int, fromItemNode itemNode: PropertyListItemNode) {
-//        let childNode = itemNode.childNodeAtIndex(index).copy() as! PropertyListItemNode
-//
-//        switch itemNode.item {
-//        case let .ArrayNode(arrayNode):
-//            arrayNode.removeChildNodeAtIndex(index)
-//        case let .DictionaryNode(dictionaryNode):
-//            dictionaryNode.removeChildNodeAtIndex(index)
-//        default:
-//            return
-//        }
-//
-//        self.undoManager!.registerUndoWithHandler { [unowned self] in
-//            self.insertChildNode(childNode, inItemNode: itemNode, atIndex: index)
-//        }.setActionName("Remove Node")
-//
-//        self.propertyListOutlineView.reloadItem(itemNode, reloadChildren: true)
-//    }
-//
-//
     // MARK: - UI Validation
 
     override func validateMenuItem(menuItem: NSMenuItem) -> Bool {
@@ -357,8 +295,8 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
             return self.valueForTreeNode(treeNode)
         }
     }
-//
-//
+
+
 //    func outlineView(outlineView: NSOutlineView, setObjectValue object: AnyObject?, forTableColumn tableColumn: NSTableColumn?, byItem item: AnyObject?) {
 //        guard let tableColumnIdentifier = tableColumn?.identifier, let itemNode = item as? PropertyListItemNode else {
 //            return
