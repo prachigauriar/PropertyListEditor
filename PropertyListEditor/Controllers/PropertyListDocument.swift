@@ -9,7 +9,7 @@
 import Cocoa
 
 
-class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
+class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDelegate, NSWindowDelegate {
     private enum TableColumn: String {
         case Key, Type, Value
     }
@@ -46,6 +46,15 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
     override init() {
         self.tree = PropertyListTree()
         super.init()
+    }
+
+
+    deinit {
+        // Failing to unset the data source here results in a stray delegate message 
+        // sent to the zombie PropertyListDocument. While there may be a more correct
+        // solution, I’ve yet to find it
+        self.propertyListOutlineView?.setDataSource(nil)
+        self.propertyListOutlineView?.setDelegate(nil)
     }
 
 
@@ -274,20 +283,12 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
 
     // MARK: - UI Validation
 
-    override func validateMenuItem(menuItem: NSMenuItem) -> Bool {
-        return self.validateAction(menuItem.action, superclassInvocation: super.validateMenuItem(menuItem))
-    }
-
-
-    override func validateToolbarItem(toolbarItem: NSToolbarItem) -> Bool {
-        return self.validateAction(toolbarItem.action, superclassInvocation: super.validateToolbarItem(toolbarItem))
-    }
-
-
-    private func validateAction(action: Selector, @autoclosure superclassInvocation: Void -> Bool) -> Bool {
+    override func validateUserInterfaceItem(userInterfaceItem: NSValidatedUserInterfaceItem) -> Bool {
         let selectors = Set<Selector>(arrayLiteral: "addChild:", "addSibling:", "deleteItem:")
-        if !selectors.contains(action) {
-            return superclassInvocation()
+        let action = userInterfaceItem.action()
+
+        guard selectors.contains(action) else {
+            return super.validateUserInterfaceItem(userInterfaceItem)
         }
 
         let outlineView = self.propertyListOutlineView
@@ -472,7 +473,6 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
 
     private func setItem(newItem: PropertyListItem, ofTreeNode treeNode: PropertyListTreeNode, nodeAction: TreeNodeAction? = nil) {
         let oldItem = treeNode.item
-
         self.undoManager!.registerUndoWithHandler { [unowned self] in
             self.setItem(oldItem, ofTreeNode: treeNode, nodeAction: nodeAction?.inverseAction)
         }
