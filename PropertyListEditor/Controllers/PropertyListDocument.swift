@@ -430,7 +430,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
             dictionary.setValue(value, atIndex: index)
             self.setItem(.DictionaryItem(dictionary), ofTreeNode: parentNode)
         default:
-            self.setItem(value, ofTreeNode: parentNode)
+            self.setItem(value, ofTreeNode: treeNode)
         }
     }
 

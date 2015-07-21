@@ -62,6 +62,12 @@ class PropertyListTreeNode: NSObject {
     }
 
 
+    override var description: String {
+        let indexPathString = (self.isRootNode ? "" : ".") + ".".join(self.indexPath.indexes.map { $0.description })
+        return "<PropertyListTreeNode root\(indexPathString)>"
+    }
+
+
     var indexPath: NSIndexPath {
         if self.cachedIndexPath == nil {
             var indexes: [Int] = []
