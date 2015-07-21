@@ -203,7 +203,7 @@ extension PropertyListItem {
 
 
     private func itemBySettingItem(newItem: PropertyListItem, atIndexPath indexPath: NSIndexPath, indexPosition: Int) -> PropertyListItem {
-        if indexPosition == indexPath.length - 1 {
+        if indexPosition == indexPath.length {
             return newItem
         }
 

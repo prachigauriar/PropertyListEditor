@@ -18,6 +18,8 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
     enum TreeNodeAction {
         case InsertChildAtIndex(Int)
         case RemoveChildAtIndex(Int)
+        case RegenerateChildrenAtIndex(Int)
+
 
         var inverseAction: TreeNodeAction {
             switch self {
@@ -25,6 +27,20 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
                 return .RemoveChildAtIndex(index)
             case let .RemoveChildAtIndex(index):
                 return .InsertChildAtIndex(index)
+            case let .RegenerateChildrenAtIndex(index):
+                return RegenerateChildrenAtIndex(index)
+            }
+        }
+
+
+        func performActionOnTreeNode(treeNode: PropertyListTreeNode) {
+            switch self {
+            case let .InsertChildAtIndex(index):
+                treeNode.insertChildAtIndex(index)
+            case let .RemoveChildAtIndex(index):
+                treeNode.removeChildAtIndex(index)
+            case let .RegenerateChildrenAtIndex(index):
+                treeNode.children[index].regenerateChildren()
             }
         }
     }
@@ -398,7 +414,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
 
     func setType(type: PropertyListType, ofTreeNode treeNode: PropertyListTreeNode) {
         let value = type.propertyListItemWithStringValue("")
-        self.setValue(value, ofTreeNode: treeNode)
+        self.setValue(value, ofTreeNode: treeNode, typeChanged: true)
     }
 
 
@@ -413,25 +429,28 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
     }
     
 
-    func setValue(value: PropertyListItem, ofTreeNode treeNode: PropertyListTreeNode) {
+    func setValue(newValue: PropertyListItem, ofTreeNode treeNode: PropertyListTreeNode, typeChanged: Bool = false) {
         guard let parentNode = treeNode.parentNode else {
-            self.setItem(value, ofTreeNode: self.tree.rootNode)
+            self.setItem(newValue, ofTreeNode: self.tree.rootNode)
             return
         }
 
         // index is not nil because parentNode is not nil
         let index = treeNode.index!
+        let item: PropertyListItem
 
         switch parentNode.item {
         case var .ArrayItem(array):
-            array.replaceElementAtIndex(index, withElement: value)
-            self.setItem(.ArrayItem(array), ofTreeNode: parentNode)
+            array.replaceElementAtIndex(index, withElement: newValue)
+            item = .ArrayItem(array)
         case var .DictionaryItem(dictionary):
-            dictionary.setValue(value, atIndex: index)
-            self.setItem(.DictionaryItem(dictionary), ofTreeNode: parentNode)
+            dictionary.setValue(newValue, atIndex: index)
+            item = .DictionaryItem(dictionary)
         default:
-            self.setItem(value, ofTreeNode: treeNode)
+            item = newValue
         }
+
+        self.setItem(item, ofTreeNode: parentNode, nodeAction: typeChanged ? .RegenerateChildrenAtIndex(index) : nil)
     }
 
 
@@ -479,12 +498,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
 
         treeNode.item = newItem
         if let nodeAction = nodeAction {
-            switch nodeAction {
-            case let .InsertChildAtIndex(index):
-                treeNode.insertChildAtIndex(index)
-            case let .RemoveChildAtIndex(index):
-                treeNode.removeChildAtIndex(index)
-            }
+            nodeAction.performActionOnTreeNode(treeNode)
         }
 
         self.propertyListOutlineView.reloadItem(treeNode, reloadChildren: true)

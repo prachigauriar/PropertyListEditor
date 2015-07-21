@@ -23,38 +23,11 @@
 		4C0882501B5DDBF500E8DD71 /* PropertyListDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4E05BA1B445AB000BF69C2 /* PropertyListDocument.swift */; };
 		4C0882511B5DDBF500E8DD71 /* PropertyListTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7F86101B5C060600825B46 /* PropertyListTree.swift */; };
 		4C4E05C61B445AB000BF69C2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4C4E05BD1B445AB000BF69C2 /* Assets.xcassets */; };
-		4CC1B89F1B5DFA8600B2AD4C /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC1B89E1B5DFA8600B2AD4C /* main.swift */; };
-		4CC1B8A31B5DFA9E00B2AD4C /* NSDateFormatter+PropertyLists.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8829F51B5892B60023BCB7 /* NSDateFormatter+PropertyLists.swift */; };
-		4CC1B8A41B5DFA9E00B2AD4C /* NSIndexPath+Indexes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CACB7F91B5BE8D70037A18E /* NSIndexPath+Indexes.swift */; };
-		4CC1B8A51B5DFA9E00B2AD4C /* NSNumberFormatter+PropertyLists.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8829F31B58927E0023BCB7 /* NSNumberFormatter+PropertyLists.swift */; };
-		4CC1B8A61B5DFA9E00B2AD4C /* NSUndoManager+Blocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CE4955C1B5AE3F2009EE029 /* NSUndoManager+Blocks.swift */; };
-		4CC1B8A71B5DFA9E00B2AD4C /* PropertyListDataFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C70C3AF1B50487200D8ECAB /* PropertyListDataFormatter.swift */; };
-		4CC1B8A81B5DFA9E00B2AD4C /* LenientDateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CBDDBD71B58276C00131559 /* LenientDateFormatter.swift */; };
-		4CC1B8A91B5DFA9E00B2AD4C /* PropertyListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CACB7F51B5BE8510037A18E /* PropertyListItem.swift */; };
-		4CC1B8AA1B5DFA9E00B2AD4C /* PropertyListCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CB59CEC1B5BEB9F0003288F /* PropertyListCollection.swift */; };
-		4CC1B8AB1B5DFA9E00B2AD4C /* PropertyListArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CB59CEA1B5BEB8B0003288F /* PropertyListArray.swift */; };
-		4CC1B8AC1B5DFA9E00B2AD4C /* PropertyListDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CB59CEF1B5BED440003288F /* PropertyListDictionary.swift */; };
-		4CC1B8AD1B5DFA9E00B2AD4C /* PropertyListItemConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7F860B1B5BFD8B00825B46 /* PropertyListItemConvertible.swift */; };
-		4CC1B8AE1B5DFA9E00B2AD4C /* PropertyListXMLWritable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7F860D1B5BFDAC00825B46 /* PropertyListXMLWritable.swift */; };
-		4CC1B8AF1B5DFA9E00B2AD4C /* PropertyListDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4E05BA1B445AB000BF69C2 /* PropertyListDocument.swift */; };
-		4CC1B8B01B5DFA9E00B2AD4C /* PropertyListTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7F86101B5C060600825B46 /* PropertyListTree.swift */; };
 		4CF3D9621B46DB7100C76D8D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4CF3D9581B46DB7100C76D8D /* Localizable.strings */; };
 		4CF3D9631B46DB7100C76D8D /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 4CF3D95A1B46DB7100C76D8D /* Localizable.stringsdict */; };
 		4CF3D9641B46DB7100C76D8D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4CF3D95C1B46DB7100C76D8D /* MainMenu.xib */; };
 		4CF3D9651B46DB7100C76D8D /* PropertyListDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4CF3D95E1B46DB7100C76D8D /* PropertyListDocument.xib */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		4CC1B89A1B5DFA8600B2AD4C /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
-			dstSubfolderSpec = 0;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		4C48C3BA1B474FD500CDDCCB /* Test1.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Test1.plist; sourceTree = "<group>"; };
@@ -74,8 +47,6 @@
 		4CB59CEC1B5BEB9F0003288F /* PropertyListCollection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListCollection.swift; sourceTree = "<group>"; };
 		4CB59CEF1B5BED440003288F /* PropertyListDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListDictionary.swift; sourceTree = "<group>"; };
 		4CBDDBD71B58276C00131559 /* LenientDateFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LenientDateFormatter.swift; sourceTree = "<group>"; };
-		4CC1B89C1B5DFA8600B2AD4C /* plistedit */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = plistedit; sourceTree = BUILT_PRODUCTS_DIR; };
-		4CC1B89E1B5DFA8600B2AD4C /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		4CE4955C1B5AE3F2009EE029 /* NSUndoManager+Blocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSUndoManager+Blocks.swift"; sourceTree = "<group>"; };
 		4CF3D9591B46DB7100C76D8D /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4CF3D95B1B46DB7100C76D8D /* Base */ = {isa = PBXFileReference; explicitFileType = text.plist.xml; name = Base; path = Base.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
@@ -86,13 +57,6 @@
 
 /* Begin PBXFrameworksBuildPhase section */
 		4C4E059F1B4459D700BF69C2 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		4CC1B8991B5DFA8600B2AD4C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -114,7 +78,6 @@
 			isa = PBXGroup;
 			children = (
 				4C4E05A41B4459D700BF69C2 /* PropertyListEditor */,
-				4CC1B89D1B5DFA8600B2AD4C /* plistedit */,
 				4C48C3B91B474FD500CDDCCB /* Test Plists */,
 				4C4E05A31B4459D700BF69C2 /* Products */,
 			);
@@ -124,7 +87,6 @@
 			isa = PBXGroup;
 			children = (
 				4C4E05A21B4459D700BF69C2 /* PropertyListEditor.app */,
-				4CC1B89C1B5DFA8600B2AD4C /* plistedit */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -223,14 +185,6 @@
 			path = "Lenient Date Formatter";
 			sourceTree = "<group>";
 		};
-		4CC1B89D1B5DFA8600B2AD4C /* plistedit */ = {
-			isa = PBXGroup;
-			children = (
-				4CC1B89E1B5DFA8600B2AD4C /* main.swift */,
-			);
-			path = plistedit;
-			sourceTree = "<group>";
-		};
 		4CF3D9381B46D0D500C76D8D /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -281,23 +235,6 @@
 			productReference = 4C4E05A21B4459D700BF69C2 /* PropertyListEditor.app */;
 			productType = "com.apple.product-type.application";
 		};
-		4CC1B89B1B5DFA8600B2AD4C /* plistedit */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 4CC1B8A01B5DFA8600B2AD4C /* Build configuration list for PBXNativeTarget "plistedit" */;
-			buildPhases = (
-				4CC1B8981B5DFA8600B2AD4C /* Sources */,
-				4CC1B8991B5DFA8600B2AD4C /* Frameworks */,
-				4CC1B89A1B5DFA8600B2AD4C /* CopyFiles */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = plistedit;
-			productName = plistedit;
-			productReference = 4CC1B89C1B5DFA8600B2AD4C /* plistedit */;
-			productType = "com.apple.product-type.tool";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -309,9 +246,6 @@
 				ORGANIZATIONNAME = "Quantum Lens Cap";
 				TargetAttributes = {
 					4C4E05A11B4459D700BF69C2 = {
-						CreatedOnToolsVersion = 7.0;
-					};
-					4CC1B89B1B5DFA8600B2AD4C = {
 						CreatedOnToolsVersion = 7.0;
 					};
 				};
@@ -330,7 +264,6 @@
 			projectRoot = "";
 			targets = (
 				4C4E05A11B4459D700BF69C2 /* PropertyListEditor */,
-				4CC1B89B1B5DFA8600B2AD4C /* plistedit */,
 			);
 		};
 /* End PBXProject section */
@@ -370,28 +303,6 @@
 				4C08824F1B5DDBF500E8DD71 /* PropertyListXMLWritable.swift in Sources */,
 				4C0882501B5DDBF500E8DD71 /* PropertyListDocument.swift in Sources */,
 				4C0882511B5DDBF500E8DD71 /* PropertyListTree.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		4CC1B8981B5DFA8600B2AD4C /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				4CC1B8A31B5DFA9E00B2AD4C /* NSDateFormatter+PropertyLists.swift in Sources */,
-				4CC1B8A41B5DFA9E00B2AD4C /* NSIndexPath+Indexes.swift in Sources */,
-				4CC1B8A51B5DFA9E00B2AD4C /* NSNumberFormatter+PropertyLists.swift in Sources */,
-				4CC1B8A61B5DFA9E00B2AD4C /* NSUndoManager+Blocks.swift in Sources */,
-				4CC1B8A71B5DFA9E00B2AD4C /* PropertyListDataFormatter.swift in Sources */,
-				4CC1B8A81B5DFA9E00B2AD4C /* LenientDateFormatter.swift in Sources */,
-				4CC1B8A91B5DFA9E00B2AD4C /* PropertyListItem.swift in Sources */,
-				4CC1B8AA1B5DFA9E00B2AD4C /* PropertyListCollection.swift in Sources */,
-				4CC1B8AB1B5DFA9E00B2AD4C /* PropertyListArray.swift in Sources */,
-				4CC1B8AC1B5DFA9E00B2AD4C /* PropertyListDictionary.swift in Sources */,
-				4CC1B8AD1B5DFA9E00B2AD4C /* PropertyListItemConvertible.swift in Sources */,
-				4CC1B8AE1B5DFA9E00B2AD4C /* PropertyListXMLWritable.swift in Sources */,
-				4CC1B8AF1B5DFA9E00B2AD4C /* PropertyListDocument.swift in Sources */,
-				4CC1B8B01B5DFA9E00B2AD4C /* PropertyListTree.swift in Sources */,
-				4CC1B89F1B5DFA8600B2AD4C /* main.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -546,20 +457,6 @@
 			};
 			name = Release;
 		};
-		4CC1B8A11B5DFA8600B2AD4C /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Debug;
-		};
-		4CC1B8A21B5DFA8600B2AD4C /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -580,14 +477,6 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
-		};
-		4CC1B8A01B5DFA8600B2AD4C /* Build configuration list for PBXNativeTarget "plistedit" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				4CC1B8A11B5DFA8600B2AD4C /* Debug */,
-				4CC1B8A21B5DFA8600B2AD4C /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};
