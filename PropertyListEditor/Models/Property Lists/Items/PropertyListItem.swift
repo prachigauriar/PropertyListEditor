@@ -9,22 +9,6 @@
 import Foundation
 
 
-struct PropertyListValidValue {
-    let value: PropertyListItemConvertible
-    let title: String
-}
-
-
-enum PropertyListValueConstraint {
-    case Formatter(NSFormatter)
-    case ValueArray([PropertyListValidValue])
-}
-
-
-enum PropertyListType {
-    case ArrayType, DictionaryType, BooleanType, DataType, DateType, NumberType, StringType
-}
-
 enum PropertyListItem: CustomStringConvertible, Hashable {
     case ArrayItem(PropertyListArray)
     case BooleanItem(NSNumber)
@@ -85,26 +69,6 @@ enum PropertyListItem: CustomStringConvertible, Hashable {
     }
 
 
-    var propertyListType: PropertyListType {
-        switch self {
-        case .ArrayItem:
-            return .ArrayType
-        case .BooleanItem:
-            return .BooleanType
-        case .DataItem:
-            return .DataType
-        case .DateItem:
-            return .DateType
-        case .DictionaryItem:
-            return .DictionaryType
-        case .NumberItem:
-            return .NumberType
-        case .StringItem:
-            return .StringType
-        }
-    }
-
-
     var objectValue: AnyObject {
         switch self {
         case let .ArrayItem(array):
@@ -123,8 +87,46 @@ enum PropertyListItem: CustomStringConvertible, Hashable {
             return value
         }
     }
+}
 
 
+func ==(lhs: PropertyListItem, rhs: PropertyListItem) -> Bool {
+    switch (lhs, rhs) {
+    case let (.ArrayItem(left), .ArrayItem(right)):
+        return left == right
+    case let (.BooleanItem(left), .BooleanItem(right)):
+        return left == right
+    case let (.DataItem(left), .DataItem(right)):
+        return left == right
+    case let (.DateItem(left), .DateItem(right)):
+        return left == right
+    case let (.DictionaryItem(left), .DictionaryItem(right)):
+        return left == right
+    case let (.NumberItem(left), .NumberItem(right)):
+        return left == right
+    case let (.StringItem(left), .StringItem(right)):
+        return left == right
+    default:
+        return false
+    }
+}
+
+
+// MARK: - Value Constraints
+
+struct PropertyListValidValue {
+    let value: PropertyListItemConvertible
+    let title: String
+}
+
+
+enum PropertyListValueConstraint {
+    case Formatter(NSFormatter)
+    case ValueArray([PropertyListValidValue])
+}
+
+
+extension PropertyListItem {
     var valueConstraint: PropertyListValueConstraint? {
         switch self {
         case .BooleanItem:
@@ -150,24 +152,31 @@ enum PropertyListItem: CustomStringConvertible, Hashable {
 }
 
 
-func ==(lhs: PropertyListItem, rhs: PropertyListItem) -> Bool {
-    switch (lhs, rhs) {
-    case let (.ArrayItem(left), .ArrayItem(right)):
-        return left == right
-    case let (.BooleanItem(left), .BooleanItem(right)):
-        return left == right
-    case let (.DataItem(left), .DataItem(right)):
-        return left == right
-    case let (.DateItem(left), .DateItem(right)):
-        return left == right
-    case let (.DictionaryItem(left), .DictionaryItem(right)):
-        return left == right
-    case let (.NumberItem(left), .NumberItem(right)):
-        return left == right
-    case let (.StringItem(left), .StringItem(right)):
-        return left == right
-    default:
-        return false
+// MARK: - Property List Types
+
+enum PropertyListType {
+    case ArrayType, DictionaryType, BooleanType, DataType, DateType, NumberType, StringType
+}
+
+
+extension PropertyListItem {
+    var propertyListType: PropertyListType {
+        switch self {
+        case .ArrayItem:
+            return .ArrayType
+        case .BooleanItem:
+            return .BooleanType
+        case .DataItem:
+            return .DataType
+        case .DateItem:
+            return .DateType
+        case .DictionaryItem:
+            return .DictionaryType
+        case .NumberItem:
+            return .NumberType
+        case .StringItem:
+            return .StringType
+        }
     }
 }
 

@@ -2,20 +2,36 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>PropertyListDocument.CollectionValueFormat</key>
+	<key>PropertyListDocument.ArrayValueFormat</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
-		<string>%#@items@</string>
-		<key>items</key>
+		<string>%#@elements@</string>
+		<key>elements</key>
 		<dict>
 			<key>NSStringFormatSpecTypeKey</key>
 			<string>NSStringPluralRuleType</string>
 			<key>NSStringFormatValueTypeKey</key>
 			<string>d</string>
 			<key>one</key>
-			<string>(%d item)</string>
+			<string>%d ordered object</string>
 			<key>other</key>
-			<string>(%d items)</string>
+			<string>%d ordered objects</string>
+		</dict>
+	</dict>
+	<key>PropertyListDocument.DictionaryValueFormat</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@elements@</string>
+		<key>elements</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%d key/value pair</string>
+			<key>other</key>
+			<string>%d key/value pairs</string>
 		</dict>
 	</dict>
 	<key>PropertyListDocument.KeyForAddingFormat</key>

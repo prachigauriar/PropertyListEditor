@@ -10,9 +10,9 @@ import Foundation
 
 
 class PropertyListDataFormatter: NSFormatter {
-    func dataFromString(string: NSString) -> NSData? {
+    func dataFromString(string: String) -> NSData? {
         var data: AnyObject?
-        self.getObjectValue(&data, forString: string as String, errorDescription: nil)
+        self.getObjectValue(&data, forString: string, errorDescription: nil)
         return data as? NSData
     }
 

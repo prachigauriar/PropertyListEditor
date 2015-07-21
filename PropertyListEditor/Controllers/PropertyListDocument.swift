@@ -319,7 +319,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
         case "addChild:":
             return treeNode.item.isCollection
         case "addSibling:", "deleteItem:":
-            return treeNode.parentNode != nil
+            return !treeNode.isRootNode
         default:
             return false
         }
@@ -399,7 +399,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
             }
 
             dictionary.setKey(key, atIndex: index)
-            self.setItem(.DictionaryItem(dictionary), ofTreeNode: parentNode)
+            self.setItem(.DictionaryItem(dictionary), ofTreeNodeAtIndexPath: parentNode.indexPath)
             return true
         default:
             return false
@@ -413,15 +413,18 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
 
 
     func setType(type: PropertyListType, ofTreeNode treeNode: PropertyListTreeNode) {
-        let value = type.propertyListItemWithStringValue("")
+        let value = treeNode.item.propertyListItemByConvertingToType(type)
         self.setValue(value, ofTreeNode: treeNode, typeChanged: true)
     }
 
 
     func valueOfTreeNode(treeNode: PropertyListTreeNode) -> AnyObject {
         switch treeNode.item {
-        case .ArrayItem, .DictionaryItem:
-            let formatString = NSLocalizedString("PropertyListDocument.CollectionValueFormat", comment: "Format string for values of collections")
+        case .ArrayItem:
+            let formatString = NSLocalizedString("PropertyListDocument.ArrayValueFormat", comment: "Format string for values of arrays")
+            return NSString.localizedStringWithFormat(formatString, treeNode.numberOfChildren)
+        case .DictionaryItem:
+            let formatString = NSLocalizedString("PropertyListDocument.DictionaryValueFormat", comment: "Format string for values of dictionaries")
             return NSString.localizedStringWithFormat(formatString, treeNode.numberOfChildren)
         default:
             return treeNode.item.objectValue
@@ -431,7 +434,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
 
     func setValue(newValue: PropertyListItem, ofTreeNode treeNode: PropertyListTreeNode, typeChanged: Bool = false) {
         guard let parentNode = treeNode.parentNode else {
-            self.setItem(newValue, ofTreeNode: self.tree.rootNode)
+            self.setItem(newValue, ofTreeNodeAtIndexPath: self.tree.rootNode.indexPath)
             return
         }
 
@@ -450,7 +453,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
             item = newValue
         }
 
-        self.setItem(item, ofTreeNode: parentNode, nodeAction: typeChanged ? .RegenerateChildrenAtIndex(index) : nil)
+        self.setItem(item, ofTreeNodeAtIndexPath: parentNode.indexPath, nodeAction: typeChanged ? .RegenerateChildrenAtIndex(index) : nil)
     }
 
 
@@ -462,13 +465,13 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
             array.insertElement(item, atIndex: index)
             newItem = .ArrayItem(array)
         case var .DictionaryItem(dictionary):
-            dictionary.insertKey(self.keyForAddingItemToDictionary(dictionary), value: item, atIndex: index)
+            dictionary.insertKey(dictionary.unusedKey(), value: item, atIndex: index)
             newItem = .DictionaryItem(dictionary)
         default:
             return
         }
 
-        self.setItem(newItem, ofTreeNode: treeNode, nodeAction: .InsertChildAtIndex(index))
+        self.setItem(newItem, ofTreeNodeAtIndexPath: treeNode.indexPath, nodeAction: .InsertChildAtIndex(index))
     }
 
 
@@ -486,14 +489,16 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
             return
         }
 
-        self.setItem(newItem, ofTreeNode: treeNode, nodeAction: .RemoveChildAtIndex(index))
+        self.setItem(newItem, ofTreeNodeAtIndexPath: treeNode.indexPath, nodeAction: .RemoveChildAtIndex(index))
     }
 
 
-    private func setItem(newItem: PropertyListItem, ofTreeNode treeNode: PropertyListTreeNode, nodeAction: TreeNodeAction? = nil) {
+    private func setItem(newItem: PropertyListItem, ofTreeNodeAtIndexPath indexPath: NSIndexPath, nodeAction: TreeNodeAction? = nil) {
+        let treeNode = self.tree.nodeAtIndexPath(indexPath)
         let oldItem = treeNode.item
+
         self.undoManager!.registerUndoWithHandler { [unowned self] in
-            self.setItem(oldItem, ofTreeNode: treeNode, nodeAction: nodeAction?.inverseAction)
+            self.setItem(oldItem, ofTreeNodeAtIndexPath: indexPath, nodeAction: nodeAction?.inverseAction)
         }
 
         treeNode.item = newItem
@@ -505,32 +510,119 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
     }
 
 
-
-    // MARK: - Keys and Values for Adding Items
-
-    private func keyForAddingItemToDictionary(dictionary: PropertyListDictionary) -> String {
-        let formatString = NSLocalizedString("PropertyListDocument.KeyForAddingFormat",
-                                             comment: "Format string for key generated when adding a dictionary item")
-
-        var key: String
-        var counter: Int = 1
-        repeat {
-            key = NSString.localizedStringWithFormat(formatString, counter++) as String
-        } while dictionary.containsKey(key)
-
-        return key
-    }
-
-
     private func itemForAdding() -> PropertyListItem {
-        return .DictionaryItem(PropertyListDictionary())
-//        return try! NSLocalizedString("PropertyListDocument.ItemForAddingStringValue",
-//                                      comment: "Default value when adding a new item").propertyListItem()
+        return PropertyListItem(propertyListType: .StringType)
     }
 }
 
 
-// MARK: - Private PropertyListType Extensions
+// MARK: - PropertyListItem and PropertyListType Extensions
+
+private extension PropertyListItem {
+    init(propertyListType: PropertyListType) {
+        switch propertyListType {
+        case .ArrayType:
+            self = .ArrayItem(PropertyListArray())
+        case .BooleanType:
+            self = .BooleanItem(false)
+        case .DataType:
+            self = .DataItem(NSData())
+        case .DateType:
+            self = .DateItem(NSDate())
+        case .DictionaryType:
+            self = .DictionaryItem(PropertyListDictionary())
+        case .NumberType:
+            self = .NumberItem(NSNumber(integer: 0))
+        case .StringType:
+            let string = NSLocalizedString("PropertyListDocument.ItemForAddingStringValue", comment: "Default value when adding a new item")
+            self = .StringItem(string)
+        }
+    }
+
+
+    func propertyListItemByConvertingToType(type: PropertyListType) -> PropertyListItem {
+        if self.propertyListType == type {
+            return self
+        }
+
+        let defaultItem = PropertyListItem(propertyListType: type)
+
+        switch self {
+        case let .ArrayItem(array):
+            if type == .DictionaryType {
+                var dictionary = PropertyListDictionary()
+
+                for element in array.elements {
+                    dictionary.addKey(dictionary.unusedKey(), value: element)
+                }
+
+                return .DictionaryItem(dictionary)
+            }
+
+            return defaultItem
+        case let .BooleanItem(boolean):
+            switch type {
+            case .NumberType:
+                return .NumberItem(boolean.boolValue ? 1 : 0)
+            case .StringType:
+                return .StringItem(self.description)
+            default:
+                return defaultItem
+            }
+        case let .DictionaryItem(dictionary):
+            if type == .ArrayType {
+                var array = PropertyListArray()
+
+                for element in dictionary.elements {
+                    array.addElement(element.value)
+                }
+
+                return .ArrayItem(array)
+            }
+
+            return defaultItem
+        case let .NumberItem(number):
+            switch type {
+            case .BooleanType:
+                return .BooleanItem(number.boolValue)
+            case .DateType:
+                return .DateItem(NSDate(timeIntervalSince1970: number.doubleValue))
+            case .StringType:
+                return .StringItem(number.description)
+            default:
+                return defaultItem
+            }
+        case let .StringItem(string):
+            switch type {
+            case .BooleanType:
+                return .BooleanItem(string.caseInsensitiveCompare("YES") == .OrderedSame || string.caseInsensitiveCompare("true") == .OrderedSame)
+            case .DataType:
+                if let data = PropertyListDataFormatter().dataFromString(string as String) {
+                    return .DataItem(data)
+                }
+
+                return defaultItem
+            case .DateType:
+                if let date = LenientDateFormatter().dateFromString(string as String) {
+                    return .DateItem(date)
+                }
+
+                return defaultItem
+            case .NumberType:
+                if let number = NSNumberFormatter.propertyListNumberFormatter().numberFromString(string as String) {
+                    return .NumberItem(number)
+                }
+
+                return defaultItem
+            default:
+                return defaultItem
+            }
+        default:
+            return defaultItem
+        }
+    }
+}
+
 
 private extension PropertyListType {
     init?(typePopUpMenuItemIndex index: Int) {
@@ -573,24 +665,22 @@ private extension PropertyListType {
             return 7
         }
     }
+}
 
 
-    func propertyListItemWithStringValue(stringValue: NSString) -> PropertyListItem {
-        switch self {
-        case .ArrayType:
-            return .ArrayItem(PropertyListArray())
-        case .BooleanType:
-            return .BooleanItem(false)
-        case .DataType:
-            return .DataItem(PropertyListDataFormatter().dataFromString(stringValue as String) ?? NSData())
-        case .DateType:
-            return .DateItem(LenientDateFormatter().dateFromString(stringValue as String) ?? NSDate())
-        case .DictionaryType:
-            return .DictionaryItem(PropertyListDictionary())
-        case .NumberType:
-            return .NumberItem(NSNumberFormatter.propertyListNumberFormatter().numberFromString(stringValue as String) ?? NSNumber(integer: 0))
-        case .StringType:
-            return .StringItem(stringValue)
-        }
+// MARK: - Generating Unused Keys
+
+private extension PropertyListDictionary {
+    private func unusedKey() -> String {
+        let formatString = NSLocalizedString("PropertyListDocument.KeyForAddingFormat",
+                                             comment: "Format string for key generated when adding a dictionary item")
+
+        var key: String
+        var counter: Int = 1
+        repeat {
+            key = NSString.localizedStringWithFormat(formatString, counter++) as String
+        } while self.containsKey(key)
+
+        return key
     }
 }

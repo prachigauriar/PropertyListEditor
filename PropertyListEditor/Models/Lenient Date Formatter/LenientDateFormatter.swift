@@ -10,9 +10,9 @@ import Cocoa
 
 
 class LenientDateFormatter: NSFormatter {
-    func dateFromString(string: NSString) -> NSDate? {
+    func dateFromString(string: String) -> NSDate? {
         var date: AnyObject?
-        self.getObjectValue(&date, forString: string as String, errorDescription: nil)
+        self.getObjectValue(&date, forString: string, errorDescription: nil)
         return date as? NSDate
     }
 
