@@ -11,13 +11,13 @@ import Cocoa
 
 class PropertyListTree: NSObject {
     private(set) var rootItem: PropertyListItem
-    private(set) var rootTreeNode: PropertyListTreeNode!
+    private(set) var rootNode: PropertyListTreeNode!
 
 
     init(rootItem: PropertyListItem) {
         self.rootItem = rootItem
         super.init()
-        self.rootTreeNode = PropertyListTreeNode(tree: self)
+        self.rootNode = PropertyListTreeNode(tree: self)
     }
 
 
@@ -27,7 +27,7 @@ class PropertyListTree: NSObject {
 
 
     func nodeAtIndexPath(indexPath: NSIndexPath) -> PropertyListTreeNode {
-        var treeNode = rootTreeNode
+        var treeNode = self.rootNode
 
         for index in indexPath.indexes {
             treeNode = treeNode.children[index]
@@ -51,15 +51,16 @@ class PropertyListTree: NSObject {
 class PropertyListTreeNode: NSObject {
     unowned let tree: PropertyListTree
     private(set) weak var parentNode: PropertyListTreeNode?
+    private(set) var children: [PropertyListTreeNode] = []
+    private var cachedIndexPath: NSIndexPath?
+
+
     private(set) var index: Int? {
         didSet {
             self.cachedIndexPath = nil
         }
     }
 
-    private(set) var children: [PropertyListTreeNode] = []
-
-    private var cachedIndexPath: NSIndexPath?
 
     var indexPath: NSIndexPath {
         if self.cachedIndexPath == nil {
@@ -86,6 +87,11 @@ class PropertyListTreeNode: NSObject {
         set(item) {
             self.tree.setItem(item, atIndexPath: self.indexPath)
         }
+    }
+
+
+    var isRootNode: Bool {
+        return self.parentNode == nil
     }
 
 

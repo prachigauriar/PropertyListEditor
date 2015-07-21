@@ -108,7 +108,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
 
     func outlineView(outlineView: NSOutlineView, child index: Int, ofItem item: AnyObject?) -> AnyObject {
         if item == nil {
-            return self.tree.rootTreeNode
+            return self.tree.rootNode
         }
 
         guard let treeNode = item as? PropertyListTreeNode else {
@@ -293,7 +293,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
         let outlineView = self.propertyListOutlineView
         let treeNode: PropertyListTreeNode
         if outlineView.numberOfSelectedRows == 0 {
-            treeNode = self.tree.rootTreeNode
+            treeNode = self.tree.rootNode
         } else {
             treeNode = outlineView.itemAtRow(outlineView.selectedRow) as! PropertyListTreeNode
         }
@@ -396,26 +396,8 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
 
 
     func setType(type: PropertyListType, ofTreeNode treeNode: PropertyListTreeNode) {
-        let newItem = type.propertyListItemWithStringValue("")
-
-        guard let parentNode = treeNode.parentNode else {
-            self.setItem(newItem, ofTreeNode: self.tree.rootTreeNode)
-            return
-        }
-
-        // index is not nil because parentNode is not nil
-        let index = treeNode.index!
-
-        switch parentNode.item {
-        case var .ArrayItem(array):
-            array.replaceElementAtIndex(index, withElement: newItem)
-            self.setItem(.ArrayItem(array), ofTreeNode: parentNode)
-        case var .DictionaryItem(dictionary):
-            dictionary.setValue(newItem, atIndex: index)
-            self.setItem(.DictionaryItem(dictionary), ofTreeNode: parentNode)
-        default:
-            self.setItem(newItem, ofTreeNode: treeNode)
-        }
+        let value = type.propertyListItemWithStringValue("")
+        self.setValue(value, ofTreeNode: treeNode)
     }
 
 
@@ -432,16 +414,22 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
 
     func setValue(value: PropertyListItem, ofTreeNode treeNode: PropertyListTreeNode) {
         guard let parentNode = treeNode.parentNode else {
-            self.setItem(value, ofTreeNode: self.tree.rootTreeNode)
+            self.setItem(value, ofTreeNode: self.tree.rootNode)
             return
         }
 
+        // index is not nil because parentNode is not nil
+        let index = treeNode.index!
+
         switch parentNode.item {
+        case var .ArrayItem(array):
+            array.replaceElementAtIndex(index, withElement: value)
+            self.setItem(.ArrayItem(array), ofTreeNode: parentNode)
         case var .DictionaryItem(dictionary):
-            dictionary.setValue(value, atIndex: treeNode.index!)
+            dictionary.setValue(value, atIndex: index)
             self.setItem(.DictionaryItem(dictionary), ofTreeNode: parentNode)
         default:
-            self.setItem(value, ofTreeNode: treeNode)
+            self.setItem(value, ofTreeNode: parentNode)
         }
     }
 
@@ -521,8 +509,9 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource {
 
 
     private func itemForAdding() -> PropertyListItem {
-        return try! NSLocalizedString("PropertyListDocument.ItemForAddingStringValue",
-                                      comment: "Default value when adding a new item").propertyListItem()
+        return .DictionaryItem(PropertyListDictionary())
+//        return try! NSLocalizedString("PropertyListDocument.ItemForAddingStringValue",
+//                                      comment: "Default value when adding a new item").propertyListItem()
     }
 }
 

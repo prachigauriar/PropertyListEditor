@@ -7,23 +7,22 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4C48C3BB1B474FD500CDDCCB /* Test1.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4C48C3BA1B474FD500CDDCCB /* Test1.plist */; };
+		4C0882431B5DDBF500E8DD71 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4E05B81B445AB000BF69C2 /* AppDelegate.swift */; };
+		4C0882441B5DDBF500E8DD71 /* NSDateFormatter+PropertyLists.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8829F51B5892B60023BCB7 /* NSDateFormatter+PropertyLists.swift */; };
+		4C0882451B5DDBF500E8DD71 /* NSIndexPath+Indexes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CACB7F91B5BE8D70037A18E /* NSIndexPath+Indexes.swift */; };
+		4C0882461B5DDBF500E8DD71 /* NSNumberFormatter+PropertyLists.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8829F31B58927E0023BCB7 /* NSNumberFormatter+PropertyLists.swift */; };
+		4C0882471B5DDBF500E8DD71 /* NSUndoManager+Blocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CE4955C1B5AE3F2009EE029 /* NSUndoManager+Blocks.swift */; };
+		4C0882481B5DDBF500E8DD71 /* PropertyListDataFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C70C3AF1B50487200D8ECAB /* PropertyListDataFormatter.swift */; };
+		4C0882491B5DDBF500E8DD71 /* LenientDateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CBDDBD71B58276C00131559 /* LenientDateFormatter.swift */; };
+		4C08824A1B5DDBF500E8DD71 /* PropertyListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CACB7F51B5BE8510037A18E /* PropertyListItem.swift */; };
+		4C08824B1B5DDBF500E8DD71 /* PropertyListCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CB59CEC1B5BEB9F0003288F /* PropertyListCollection.swift */; };
+		4C08824C1B5DDBF500E8DD71 /* PropertyListArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CB59CEA1B5BEB8B0003288F /* PropertyListArray.swift */; };
+		4C08824D1B5DDBF500E8DD71 /* PropertyListDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CB59CEF1B5BED440003288F /* PropertyListDictionary.swift */; };
+		4C08824E1B5DDBF500E8DD71 /* PropertyListItemConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7F860B1B5BFD8B00825B46 /* PropertyListItemConvertible.swift */; };
+		4C08824F1B5DDBF500E8DD71 /* PropertyListXMLWritable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7F860D1B5BFDAC00825B46 /* PropertyListXMLWritable.swift */; };
+		4C0882501B5DDBF500E8DD71 /* PropertyListDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4E05BA1B445AB000BF69C2 /* PropertyListDocument.swift */; };
+		4C0882511B5DDBF500E8DD71 /* PropertyListTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7F86101B5C060600825B46 /* PropertyListTree.swift */; };
 		4C4E05C61B445AB000BF69C2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4C4E05BD1B445AB000BF69C2 /* Assets.xcassets */; };
-		4C7F860C1B5BFD8B00825B46 /* PropertyListItemConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7F860B1B5BFD8B00825B46 /* PropertyListItemConvertible.swift */; };
-		4C7F860E1B5BFDAC00825B46 /* PropertyListXMLWritable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7F860D1B5BFDAC00825B46 /* PropertyListXMLWritable.swift */; };
-		4C7F86111B5C060600825B46 /* PropertyListTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7F86101B5C060600825B46 /* PropertyListTree.swift */; };
-		4C9B43C11B5C1CA30076C3D8 /* PropertyListDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4E05BA1B445AB000BF69C2 /* PropertyListDocument.swift */; };
-		4CACB7F71B5BE8510037A18E /* PropertyListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CACB7F51B5BE8510037A18E /* PropertyListItem.swift */; };
-		4CACB7FA1B5BE8D70037A18E /* NSIndexPath+Indexes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CACB7F91B5BE8D70037A18E /* NSIndexPath+Indexes.swift */; };
-		4CACB7FB1B5BE9CF0037A18E /* NSDateFormatter+PropertyLists.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8829F51B5892B60023BCB7 /* NSDateFormatter+PropertyLists.swift */; };
-		4CACB7FC1B5BE9D20037A18E /* NSNumberFormatter+PropertyLists.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8829F31B58927E0023BCB7 /* NSNumberFormatter+PropertyLists.swift */; };
-		4CACB7FD1B5BE9D80037A18E /* NSUndoManager+Blocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CE4955C1B5AE3F2009EE029 /* NSUndoManager+Blocks.swift */; };
-		4CACB7FE1B5BEA360037A18E /* PropertyListDataFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C70C3AF1B50487200D8ECAB /* PropertyListDataFormatter.swift */; };
-		4CACB7FF1B5BEA3A0037A18E /* LenientDateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CBDDBD71B58276C00131559 /* LenientDateFormatter.swift */; };
-		4CB59CEB1B5BEB8B0003288F /* PropertyListArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CB59CEA1B5BEB8B0003288F /* PropertyListArray.swift */; };
-		4CB59CED1B5BEB9F0003288F /* PropertyListCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CB59CEC1B5BEB9F0003288F /* PropertyListCollection.swift */; };
-		4CB59CEE1B5BEC910003288F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4E05B81B445AB000BF69C2 /* AppDelegate.swift */; };
-		4CB59CF01B5BED440003288F /* PropertyListDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CB59CEF1B5BED440003288F /* PropertyListDictionary.swift */; };
 		4CF3D9621B46DB7100C76D8D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4CF3D9581B46DB7100C76D8D /* Localizable.strings */; };
 		4CF3D9631B46DB7100C76D8D /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 4CF3D95A1B46DB7100C76D8D /* Localizable.stringsdict */; };
 		4CF3D9641B46DB7100C76D8D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4CF3D95C1B46DB7100C76D8D /* MainMenu.xib */; };
@@ -276,7 +275,6 @@
 			files = (
 				4CF3D9641B46DB7100C76D8D /* MainMenu.xib in Resources */,
 				4CF3D9631B46DB7100C76D8D /* Localizable.stringsdict in Resources */,
-				4C48C3BB1B474FD500CDDCCB /* Test1.plist in Resources */,
 				4CF3D9621B46DB7100C76D8D /* Localizable.strings in Resources */,
 				4C4E05C61B445AB000BF69C2 /* Assets.xcassets in Resources */,
 				4CF3D9651B46DB7100C76D8D /* PropertyListDocument.xib in Resources */,
@@ -290,21 +288,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4CB59CEE1B5BEC910003288F /* AppDelegate.swift in Sources */,
-				4CACB7F71B5BE8510037A18E /* PropertyListItem.swift in Sources */,
-				4CB59CF01B5BED440003288F /* PropertyListDictionary.swift in Sources */,
-				4C7F860E1B5BFDAC00825B46 /* PropertyListXMLWritable.swift in Sources */,
-				4CACB7FB1B5BE9CF0037A18E /* NSDateFormatter+PropertyLists.swift in Sources */,
-				4CACB7FA1B5BE8D70037A18E /* NSIndexPath+Indexes.swift in Sources */,
-				4CB59CED1B5BEB9F0003288F /* PropertyListCollection.swift in Sources */,
-				4CB59CEB1B5BEB8B0003288F /* PropertyListArray.swift in Sources */,
-				4C7F860C1B5BFD8B00825B46 /* PropertyListItemConvertible.swift in Sources */,
-				4CACB7FC1B5BE9D20037A18E /* NSNumberFormatter+PropertyLists.swift in Sources */,
-				4C9B43C11B5C1CA30076C3D8 /* PropertyListDocument.swift in Sources */,
-				4CACB7FE1B5BEA360037A18E /* PropertyListDataFormatter.swift in Sources */,
-				4C7F86111B5C060600825B46 /* PropertyListTree.swift in Sources */,
-				4CACB7FF1B5BEA3A0037A18E /* LenientDateFormatter.swift in Sources */,
-				4CACB7FD1B5BE9D80037A18E /* NSUndoManager+Blocks.swift in Sources */,
+				4C0882431B5DDBF500E8DD71 /* AppDelegate.swift in Sources */,
+				4C0882441B5DDBF500E8DD71 /* NSDateFormatter+PropertyLists.swift in Sources */,
+				4C0882451B5DDBF500E8DD71 /* NSIndexPath+Indexes.swift in Sources */,
+				4C0882461B5DDBF500E8DD71 /* NSNumberFormatter+PropertyLists.swift in Sources */,
+				4C0882471B5DDBF500E8DD71 /* NSUndoManager+Blocks.swift in Sources */,
+				4C0882481B5DDBF500E8DD71 /* PropertyListDataFormatter.swift in Sources */,
+				4C0882491B5DDBF500E8DD71 /* LenientDateFormatter.swift in Sources */,
+				4C08824A1B5DDBF500E8DD71 /* PropertyListItem.swift in Sources */,
+				4C08824B1B5DDBF500E8DD71 /* PropertyListCollection.swift in Sources */,
+				4C08824C1B5DDBF500E8DD71 /* PropertyListArray.swift in Sources */,
+				4C08824D1B5DDBF500E8DD71 /* PropertyListDictionary.swift in Sources */,
+				4C08824E1B5DDBF500E8DD71 /* PropertyListItemConvertible.swift in Sources */,
+				4C08824F1B5DDBF500E8DD71 /* PropertyListXMLWritable.swift in Sources */,
+				4C0882501B5DDBF500E8DD71 /* PropertyListDocument.swift in Sources */,
+				4C0882511B5DDBF500E8DD71 /* PropertyListTree.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
