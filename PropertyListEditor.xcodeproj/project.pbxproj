@@ -22,6 +22,7 @@
 		4C08824F1B5DDBF500E8DD71 /* PropertyListXMLWritable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7F860D1B5BFDAC00825B46 /* PropertyListXMLWritable.swift */; };
 		4C0882501B5DDBF500E8DD71 /* PropertyListDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4E05BA1B445AB000BF69C2 /* PropertyListDocument.swift */; };
 		4C0882511B5DDBF500E8DD71 /* PropertyListTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7F86101B5C060600825B46 /* PropertyListTree.swift */; };
+		4C1272EA1B5FCFE300EC42D4 /* NSNumber+Types.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C1272E91B5FCFE300EC42D4 /* NSNumber+Types.swift */; };
 		4C4E05C61B445AB000BF69C2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4C4E05BD1B445AB000BF69C2 /* Assets.xcassets */; };
 		4CF3D9621B46DB7100C76D8D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4CF3D9581B46DB7100C76D8D /* Localizable.strings */; };
 		4CF3D9631B46DB7100C76D8D /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 4CF3D95A1B46DB7100C76D8D /* Localizable.stringsdict */; };
@@ -30,6 +31,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4C1272E91B5FCFE300EC42D4 /* NSNumber+Types.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSNumber+Types.swift"; sourceTree = "<group>"; };
 		4C48C3BA1B474FD500CDDCCB /* Test1.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Test1.plist; sourceTree = "<group>"; };
 		4C4E05A21B4459D700BF69C2 /* PropertyListEditor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PropertyListEditor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C4E05B81B445AB000BF69C2 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -190,6 +192,7 @@
 			children = (
 				4C8829F51B5892B60023BCB7 /* NSDateFormatter+PropertyLists.swift */,
 				4CACB7F91B5BE8D70037A18E /* NSIndexPath+Indexes.swift */,
+				4C1272E91B5FCFE300EC42D4 /* NSNumber+Types.swift */,
 				4C8829F31B58927E0023BCB7 /* NSNumberFormatter+PropertyLists.swift */,
 				4CE4955C1B5AE3F2009EE029 /* NSUndoManager+Blocks.swift */,
 			);
@@ -297,6 +300,7 @@
 				4C0882491B5DDBF500E8DD71 /* LenientDateFormatter.swift in Sources */,
 				4C08824A1B5DDBF500E8DD71 /* PropertyListItem.swift in Sources */,
 				4C08824B1B5DDBF500E8DD71 /* PropertyListCollection.swift in Sources */,
+				4C1272EA1B5FCFE300EC42D4 /* NSNumber+Types.swift in Sources */,
 				4C08824C1B5DDBF500E8DD71 /* PropertyListArray.swift in Sources */,
 				4C08824D1B5DDBF500E8DD71 /* PropertyListDictionary.swift in Sources */,
 				4C08824E1B5DDBF500E8DD71 /* PropertyListItemConvertible.swift in Sources */,

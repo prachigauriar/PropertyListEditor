@@ -104,7 +104,7 @@ extension NSDictionary: PropertyListItemConvertible {
 
 extension NSNumber: PropertyListItemConvertible {
     func propertyListItem() throws -> PropertyListItem {
-        return NSNumber(bool: true).objCType == self.objCType ? .BooleanItem(self) : .NumberItem(self)
+        return self.isBoolean ? .BooleanItem(self) : .NumberItem(self)
     }
 }
 

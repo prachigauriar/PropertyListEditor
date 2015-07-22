@@ -59,11 +59,10 @@ extension PropertyListItem: PropertyListXMLWritable {
         case let .DictionaryItem(dictionary):
             dictionary.addPropertyListXMLElementToParentElement(parentXMLElement)
         case let .NumberItem(number):
-            let doubleValue = number.doubleValue
-            if trunc(doubleValue) == doubleValue {
+            if number.isInteger {
                 parentXMLElement.addChild(NSXMLElement(name: "integer", stringValue: "\(number.integerValue)"))
             } else {
-                parentXMLElement.addChild(NSXMLElement(name: "real", stringValue: "\(doubleValue)"))
+                parentXMLElement.addChild(NSXMLElement(name: "real", stringValue: "\(number.doubleValue)"))
             }
         case let .StringItem(string):
             parentXMLElement.addChild(NSXMLElement(name: "string", stringValue: string as String))
