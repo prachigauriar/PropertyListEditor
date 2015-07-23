@@ -351,6 +351,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
 
         let treeNode = self.propertyListOutlineView.itemAtRow(rowIndex) as! PropertyListTreeNode
         self.insertItem(self.itemForAdding(), atIndex: treeNode.numberOfChildren, inTreeNode: treeNode)
+        self.editTreeNode(treeNode.children[treeNode.numberOfChildren - 1])
     }
 
 
@@ -365,6 +366,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
 
         let index: Int! = selectedNode.index
         self.insertItem(self.itemForAdding(), atIndex: index + 1, inTreeNode: parentNode)
+        self.editTreeNode(parentNode.children[index + 1])
     }
 
 
@@ -379,6 +381,23 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
 
         let index: Int! = selectedTreeNode.index
         self.removeItemAtIndex(index, inTreeNode: parentTreeNode)
+    }
+
+
+    func editTreeNode(treeNode: PropertyListTreeNode) {
+        let rowIndex = self.propertyListOutlineView.rowForItem(treeNode)
+
+        let column: TableColumn
+        if treeNode.isRootNode {
+            column = .Value
+        } else {
+            column = treeNode.parentNode!.item.propertyListType == .DictionaryType ? .Key : .Value
+        }
+
+        let columnIndex = self.propertyListOutlineView.tableColumns.indexOf { $0.identifier == column.rawValue }
+        self.propertyListOutlineView.selectRowIndexes(NSIndexSet(index: rowIndex), byExtendingSelection: false)
+        self.propertyListOutlineView.editColumn(columnIndex!, row: rowIndex, withEvent: nil, select: true)
+
     }
 
 
