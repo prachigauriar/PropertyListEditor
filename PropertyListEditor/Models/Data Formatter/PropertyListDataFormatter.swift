@@ -27,7 +27,12 @@
 import Foundation
 
 
+/// PropertyListDataFormatter instances read/write NSData instances in a way that looks like
+/// NSData’s description method.
 class PropertyListDataFormatter: NSFormatter {
+    /// Returns an NSData instance by parsing the specified string.
+    /// - parameter string: The string to parse.
+    /// - returns: The NSData instance that was parsed or `nil` if parsing failed.
     func dataFromString(string: String) -> NSData? {
         var data: AnyObject?
         self.getObjectValue(&data, forString: string, errorDescription: nil)

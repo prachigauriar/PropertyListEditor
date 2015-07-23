@@ -28,6 +28,8 @@ import Foundation
 
 
 extension NSDateFormatter {
+    /// Returns a shared date formatter suitable for reading and writing NSDates in the 
+    /// XML property list format.
     class func propertyListXMLDateFormatter() -> NSDateFormatter {
         struct SharedFormatter {
             static let dateFormatter: NSDateFormatter = {
@@ -42,6 +44,7 @@ extension NSDateFormatter {
     }
 
 
+    /// Returns a shared date formatter suitable for displaying dates to the user.
     class func propertyListDateOutputFormatter() -> NSDateFormatter {
         struct SharedFormatter {
             static let dateFormatter: NSDateFormatter = {
