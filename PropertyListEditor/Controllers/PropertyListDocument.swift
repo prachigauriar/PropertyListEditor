@@ -112,10 +112,17 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
 
     override func readFromData(data: NSData, ofType typeName: String) throws {
         var format: NSPropertyListFormat = .XMLFormat_v1_0
-        let propertyList = try NSPropertyListSerialization.propertyListWithData(data, options: [], format: &format) as! PropertyListItemConvertible
+        let propertyListObject = try NSPropertyListSerialization.propertyListWithData(data, options: [], format: &format) as! PropertyListItemConvertible
 
         do {
-            self.tree = PropertyListTree(rootItem: try propertyList.propertyListItem())
+            let rootItem: PropertyListItem
+            if format == .XMLFormat_v1_0 {
+                rootItem = try PropertyListXMLReader(XMLData: data).readData()
+            } else {
+                rootItem = try propertyListObject.propertyListItem()
+            }
+
+            self.tree = PropertyListTree(rootItem: rootItem)
         } catch let error {
             print("Error reading document: \(error)")
             throw error
