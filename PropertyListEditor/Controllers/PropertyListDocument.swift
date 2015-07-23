@@ -115,8 +115,6 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
         let propertyList = try NSPropertyListSerialization.propertyListWithData(data, options: [], format: &format) as! PropertyListItemConvertible
 
         do {
-            let rootItem = try propertyList.propertyListItem()
-            print("rootItem = \(rootItem)")
             self.tree = PropertyListTree(rootItem: try propertyList.propertyListItem())
         } catch let error {
             print("Error reading document: \(error)")
@@ -170,7 +168,6 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
         guard let tableColumn = TableColumn(rawValue: tableColumnIdentifier) else {
             assert(false, "invalid table column identifier \(tableColumnIdentifier)")
         }
-
 
         switch tableColumn {
         case .Key:
@@ -520,11 +517,22 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
         }
 
         treeNode.item = newItem
-        if let nodeAction = nodeAction {
-            nodeAction.performActionOnTreeNode(treeNode)
-        }
+        nodeAction?.performActionOnTreeNode(treeNode)
 
         self.propertyListOutlineView.reloadItem(treeNode, reloadChildren: true)
+
+        if let nodeAction = nodeAction {
+            switch nodeAction {
+            case let .InsertChildAtIndex(index):
+                self.propertyListOutlineView.expandItem(treeNode.children[index])
+                break
+            case let .RegenerateChildrenAtIndex(index):
+                self.propertyListOutlineView.expandItem(treeNode.children[index])
+                break
+            default:
+                break
+            }
+        }
     }
 
 

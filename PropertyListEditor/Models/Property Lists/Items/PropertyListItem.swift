@@ -78,12 +78,7 @@ enum PropertyListItem: CustomStringConvertible, Hashable {
 
 
     var isCollection: Bool {
-        switch self {
-        case .ArrayItem, .DictionaryItem:
-            return true
-        default:
-            return false
-        }
+        return self.propertyListType == .ArrayType || self.propertyListType == .DictionaryType
     }
 
 
@@ -221,11 +216,7 @@ extension PropertyListItem {
 
 
     func itemBySettingItem(newItem: PropertyListItem, atIndexPath indexPath: NSIndexPath) -> PropertyListItem {
-        if indexPath.length == 0 {
-            return newItem
-        }
-
-        return self.itemBySettingItem(newItem, atIndexPath: indexPath, indexPosition: 0)
+        return indexPath.length > 0 ? self.itemBySettingItem(newItem, atIndexPath: indexPath, indexPosition: 0) : newItem
     }
 
 
