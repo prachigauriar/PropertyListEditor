@@ -2,7 +2,7 @@
 
 PropertyListEditor is an example Mac app written to help me (and others) become more familiar with
 practical Swift. While I’ve read a lot about Swift and understand the language pretty well at an
-academic level, I’ve generally found the information online to be too limited, academic, an/or
+academic level, I’ve generally found the information online to be too limited, academic, and/or
 unrealistic. I wanted to build a full app so that I could identify the gaps in my knowledge and gain
 practical experience with the language and its development patterns.
 
