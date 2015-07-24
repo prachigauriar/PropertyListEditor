@@ -27,8 +27,8 @@
 import Cocoa
 
 
-/// LenientDateFormatter instances read/write NSDate instances in a highly flexible way. Rather 
-/// than specifying an actual format, they use data detectors to parse dates in strings.
+/// LenientDateFormatter instances read/write NSDate instances in a highly flexible way. Rather than
+/// specifying an actual format, they use data detectors to parse dates in strings.
 class LenientDateFormatter: NSFormatter {
     /// Returns an NSDate instance by parsing the specified string.
     /// - parameter string: The string to parse.

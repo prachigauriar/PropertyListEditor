@@ -27,8 +27,7 @@
 import Foundation
 
 
-/// PropertyListItems represent property list types as an enum, with one case
-/// per property list type.
+/// PropertyListItems represent property list types as an enum, with one case per property list type.
 enum PropertyListItem: CustomStringConvertible, Hashable {
     case ArrayItem(PropertyListArray)
     case BooleanItem(NSNumber)
@@ -85,8 +84,8 @@ enum PropertyListItem: CustomStringConvertible, Hashable {
     }
 
 
-    /// Returns an object representation of the receiver that can be used with 
-    /// property list serialization.
+    /// Returns an object representation of the receiver that can be used with property list
+    /// serialization.
     var objectValue: AnyObject {
         switch self {
         case let .ArrayItem(array):
@@ -132,7 +131,7 @@ func ==(lhs: PropertyListItem, rhs: PropertyListItem) -> Bool {
 
 // MARK: - Property List Types
 
-/// PropertyListType is a simple enum that contains cases for each property list type. These are 
+/// PropertyListType is a simple enum that contains cases for each property list type. These are
 /// primarily useful when you need to use the type of a PropertyListItem for use in an arbitrary
 /// boolean expression. For example,
 ///
@@ -174,8 +173,8 @@ extension PropertyListItem {
 // MARK: - Accessing Items with Index Path
 
 extension PropertyListItem {
-    /// Returns the item at the specified index path relative to the instance. Asserts if any element
-    /// of the index path indexes into a scalar.
+    /// Returns the item at the specified index path relative to the instance. Raises an assertion
+    /// if any element of the index path indexes into a scalar.
     ///
     /// - parameter indexPath: The index path
     func itemAtIndexPath(indexPath: NSIndexPath) -> PropertyListItem {
@@ -196,8 +195,8 @@ extension PropertyListItem {
     }
 
 
-    /// Returns a copy of the instance in which the item at `indexPath` is set to `newItem`. Asserts
-    /// if any element of the index path indexes into a scalar.
+    /// Returns a copy of the instance in which the item at `indexPath` is set to `newItem`. Raises
+    /// an assertion if any element of the index path indexes into a scalar.
     ///
     /// - parameter newItem: The new item to set at the specified index path relative to the instance
     /// - parameter indexPath: The index path
@@ -206,6 +205,13 @@ extension PropertyListItem {
     }
 
 
+    /// A private method that actually implements -itemBySettingItem:atIndexPath: by setting the
+    /// item at the index position inside the index path. It is called recursively starting from
+    /// index position 0 and continuing until the entire index path is traversed.
+    ///
+    /// - parameter newItem: The new item to set at the specified index path relative to the instance
+    /// - parameter indexPath: The index path
+    /// - parameter indexPosition: The position in the index path to get the current index
     private func itemBySettingItem(newItem: PropertyListItem, atIndexPath indexPath: NSIndexPath, indexPosition: Int) -> PropertyListItem {
         if indexPosition == indexPath.length {
             return newItem

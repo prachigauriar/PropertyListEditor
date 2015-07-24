@@ -27,18 +27,56 @@
 import Foundation
 
 
+/// The PropertyListCollection method defines a set of properties and methods that all property
+/// collections provide. It is primarily useful for providing default behavior using a protocol
+/// extension.
 protocol PropertyListCollection: CustomStringConvertible, Hashable {
+    /// The type of element the instance contains.
     typealias ElementType: CustomStringConvertible, Hashable
 
+    /// The elements in the instance
     var elements: [ElementType] { get }
+
+    /// The number of elements in the instance
     var elementCount: Int { get }
 
+
+    /// Returns the element at the specified index in the instance.
+    /// - parameter index: The index. Raises an assertion if beyond the bounds of the instance.
+    /// - returns: The element at the specified index in the instance.
     func elementAtIndex(index: Int) -> ElementType
 
+
+    /// Adds the specified element to the end of the instance.
+    /// - parameter element: The element to add
     mutating func addElement(element: ElementType)
+
+    /// Inserts the specified element at the specified index in the instance.
+    /// - parameter element: The element to insert
+    /// - parameter index: The index at which to insert the element. Raises an assertion if beyond
+    ///       the bounds of the instance.
     mutating func insertElement(element: ElementType, atIndex index: Int)
-    mutating func moveElementAtIndex(index oldIndex: Int, toIndex newIndex: Int)
+
+
+    /// Moves the element from the specified index to the new index.
+    /// - parameter oldIndex: The index of the element being moved. Raises an assertion if beyond
+    ///       the bounds of the instance.
+    /// - parameter newIndex: The index to which to move the element. Raises an assertion if beyond
+    ///       the bounds of the instance.
+    mutating func moveElementAtIndex(oldIndex: Int, toIndex newIndex: Int)
+
+
+    /// Replaces the element at the specified index with the specified element.
+    /// - parameter index: The index of the element being replaced. Raises an assertion if beyond
+    ///       the bounds of the instance.
+    /// - parameter element: The element to replace the element at the specified index.
     mutating func replaceElementAtIndex(index: Int, withElement element: ElementType)
+
+
+    /// Removes the element at the specified index.
+    /// - parameter index: The index of the element being removed. Raises an assertion if beyond
+    ///       the bounds of the instance.
+    /// - returns: The element that was removed.
     mutating func removeElementAtIndex(index: Int) -> ElementType
 }
 
@@ -69,7 +107,7 @@ extension PropertyListCollection {
     }
 
     
-    mutating func moveElementAtIndex(index oldIndex: Int, toIndex newIndex: Int) {
+    mutating func moveElementAtIndex(oldIndex: Int, toIndex newIndex: Int) {
         let element = self.elementAtIndex(oldIndex)
         self.removeElementAtIndex(oldIndex)
         self.insertElement(element, atIndex: newIndex)

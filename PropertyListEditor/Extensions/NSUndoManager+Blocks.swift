@@ -33,8 +33,8 @@ import ObjectiveC.runtime
 extension NSUndoManager {
     /// Records an undo operation that executes the specified block.
     /// - parameter handler: The block to execute when undoing.
-    /// - returns: The undo manager on which the method was invoked. This is useful when
-    ///       chaining multiple method invocations is desired.
+    /// - returns: The undo manager on which the method was invoked. This is useful when chaining
+    ///       multiple method invocations is desired.
     func registerUndoWithHandler(handler: Void -> Void) -> Self {
         let target = UndoHandlerTarget(handler: handler)
         target.registerWithUndoManager(self)
@@ -43,8 +43,8 @@ extension NSUndoManager {
 }
 
 
-/// Instances of UndoHandlerTarget act as the target for block-based undo operations. They
-/// should not be used directly; Instead, use `-[NSUndoManager registerUndoWithHandler:]`.
+/// Instances of UndoHandlerTarget act as the target for block-based undo operations. They should
+/// not be used directly; Instead, use `-[NSUndoManager registerUndoWithHandler:]`.
 class UndoHandlerTarget: NSObject {
     /// The block that is executed when the instance’s undo: method is invoked.
     let handler: Void -> Void
@@ -58,8 +58,7 @@ class UndoHandlerTarget: NSObject {
     }
 
 
-    /// Registers the instance as a target for an undo operation with the specified 
-    /// undo manager.
+    /// Registers the instance as a target for an undo operation with the specified undo manager.
     ///
     /// - parameter undoManager: The undo manager with which to register.
     func registerWithUndoManager(undoManager: NSUndoManager) {
@@ -79,16 +78,16 @@ class UndoHandlerTarget: NSObject {
 // MARK: - Debug Helpers
 
 extension NSUndoManager {
-    /// Returns a debug description of the instance’s undo stack. This method should only be 
-    /// used for debugging. It uses undocumented, unsupported behavior.
+    /// Returns a debug description of the instance’s undo stack. This method should only be used
+    /// for debugging. It uses undocumented, unsupported behavior.
     var undoStackDebugDescription: String? {
         let undoStack = object_getIvar(self, class_getInstanceVariable(NSClassFromString("NSUndoManager"), "_undoStack"));
         return undoStack.debugDescription
     }
 
 
-    /// Returns a debug description of the instance’s redo stack. This method should only be
-    /// used for debugging. It uses undocumented, unsupported behavior.
+    /// Returns a debug description of the instance’s redo stack. This method should only be used
+    /// for debugging. It uses undocumented, unsupported behavior.
     var redoStackDebugDescription: String? {
         let redoStack = object_getIvar(self, class_getInstanceVariable(NSClassFromString("NSUndoManager"), "_redoStack"));
         return redoStack.debugDescription
