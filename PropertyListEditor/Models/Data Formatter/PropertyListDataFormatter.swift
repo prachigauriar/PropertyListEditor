@@ -27,12 +27,12 @@
 import Foundation
 
 
-/// PropertyListDataFormatter instances read/write NSData instances in a way that looks like
-/// NSData’s `description` method.
+/// `PropertyListDataFormatter` instances read/write `NSData` instances in a way that looks like
+/// `NSData`’s `description` method.
 class PropertyListDataFormatter: NSFormatter {
-    /// Returns an NSData instance by parsing the specified string.
+    /// Returns an `NSData` instance by parsing the specified string.
     /// - parameter string: The string to parse.
-    /// - returns: The NSData instance that was parsed or `nil` if parsing failed.
+    /// - returns: The `NSData` instance that was parsed or `nil` if parsing failed.
     func dataFromString(string: String) -> NSData? {
         var data: AnyObject?
         self.getObjectValue(&data, forString: string, errorDescription: nil)
@@ -52,8 +52,8 @@ class PropertyListDataFormatter: NSFormatter {
     override func getObjectValue(obj: AutoreleasingUnsafeMutablePointer<AnyObject?>,
         forString string: String,
         errorDescription error: AutoreleasingUnsafeMutablePointer<NSString?>) -> Bool {
-            // Start by removing all spaces in the string and getting a character generator that we can
-            // use to iterate over each character
+            // Start by removing all spaces in the string and getting a character generator that we
+            // can use to iterate over each character
             var characterGenerator = string.stringByReplacingOccurrencesOfString(" ", withString: "").characters.generate()
 
             // If the string didn’t start with a <, it’s invalid
@@ -106,15 +106,15 @@ class PropertyListDataFormatter: NSFormatter {
                 // The string is empty
                 return true
             } else if !scanner.scanString("<", intoString: nil) {
-                // The string does not begin with a <
+                // The string does not begin with a "<"
                 return false
             }
 
             let hexadecimalDigitCharacterSet = NSCharacterSet(charactersInString: "0123456789abcdefABCDEF")
 
-            // Scan hex digits until there are none left or we hit a >. This is structured as a repeat-while
-            // instead of a while so that we can handle the empty string case "<" and "<>" in a single code 
-            // path
+            // Scan hex digits until there are none left or we hit a ">". This is structured as a
+            // repeat-while instead of a while so that we can handle the empty string case "<" and
+            // "<>" in a single code path
             repeat {
                 // If we hit a >, we’re done with our loop
                 if scanner.scanString(">", intoString: nil) {

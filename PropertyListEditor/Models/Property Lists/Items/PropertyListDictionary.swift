@@ -27,7 +27,7 @@
 import Foundation
 
 
-/// PropertyListKeyValuePairs represent key/value pairs in a property list dictionary. Each pair has
+/// `PropertyListKeyValuePairs` represent key/value pairs in a property list dictionary. Each pair has
 /// a key (a string) and a value (a property list item).
 struct PropertyListKeyValuePair: CustomStringConvertible, Hashable {
     /// The instance’s key.
@@ -69,27 +69,17 @@ func ==(lhs: PropertyListKeyValuePair, rhs: PropertyListKeyValuePair) -> Bool {
 }
 
 
-
-/// PropertyListDictionaries represent dictionaries of property list items. These dictionaries each 
-/// have an array of key/value pairs jn the dictionary.
+/// `PropertyListDictionaries` represent dictionaries of property list items. Each element in a
+/// dictionary is a key/value pair whose key is a string and whose value is a property list item. In
+/// addition to the standard `PropertyListCollection` methods for manipulating its elements,
+/// `PropertyListDictionary` also provides convenience methods for inserting key/value pairs by
+/// passing in keys and values as parameters.
 struct PropertyListDictionary: PropertyListCollection {
     typealias ElementType = PropertyListKeyValuePair
     private(set) var elements: [PropertyListKeyValuePair] = []
 
     /// The set of current keys used in the instance.
     private var keySet = Set<String>()
-
-
-    /// Returns an object representation of the instance.
-    var objectValue: AnyObject {
-        let dictionary = NSMutableDictionary()
-
-        for element in self.elements {
-            dictionary[element.key] = element.value.objectValue
-        }
-
-        return dictionary.copy()
-    }
 
 
     /// Returns whether the instance contains a key/value pair with the specified key.

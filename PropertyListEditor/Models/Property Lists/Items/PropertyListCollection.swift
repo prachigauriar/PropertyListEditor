@@ -27,7 +27,7 @@
 import Foundation
 
 
-/// The PropertyListCollection method defines a set of properties and methods that all property
+/// The `PropertyListCollection` protocol defines a set of properties and methods that all property
 /// collections provide. It is primarily useful for providing default behavior using a protocol
 /// extension.
 protocol PropertyListCollection: CustomStringConvertible, Hashable {

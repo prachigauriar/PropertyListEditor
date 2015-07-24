@@ -28,7 +28,7 @@ import Foundation
 
 
 extension NSIndexPath {
-    /// Returns the indexes of an NSIndexPath as an array.
+    /// Returns the indexes of the instance as an array.
     var indexes: [Int] {
         var indexArray: [Int] = Array<Int>(count: self.length, repeatedValue: 0)
         self.getIndexes(&indexArray, range: NSRange(location: 0, length: self.length))

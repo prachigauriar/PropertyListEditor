@@ -28,7 +28,7 @@ import Foundation
 
 
 extension NSNumberFormatter {
-    /// Returns a number formatter suitable for reading and writing NSNumbers in in decimal format.
+    /// Returns a number formatter suitable for reading and writing `NSNumbers` in decimal format.
     /// - returns: The shared property list number formatter
     class func propertyListNumberFormatter() -> NSNumberFormatter {
         struct SharedFormatter {

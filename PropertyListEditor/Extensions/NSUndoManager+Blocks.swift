@@ -43,7 +43,7 @@ extension NSUndoManager {
 }
 
 
-/// Instances of UndoHandlerTarget act as the target for block-based undo operations. They should
+/// Instances of `UndoHandlerTarget` act as the target for block-based undo operations. They should
 /// not be used directly; Instead, use `-[NSUndoManager registerUndoWithHandler:]`.
 class UndoHandlerTarget: NSObject {
     /// The block that is executed when the instance’s undo: method is invoked.

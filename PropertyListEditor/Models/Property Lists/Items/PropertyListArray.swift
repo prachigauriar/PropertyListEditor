@@ -27,16 +27,11 @@
 import Foundation
 
 
-/// PropertyListArrays represent arrays of property list items.
+/// `PropertyListArrays` represent arrays of property list items. Each of its elements is a property
+/// list item.
 struct PropertyListArray: PropertyListCollection {
     typealias ElementType = PropertyListItem
     private(set) var elements: [PropertyListItem] = []
-
-
-    /// Returns an object representation of the instance.
-    var objectValue: AnyObject {
-        return self.elements.map { $0.objectValue } as NSArray
-    }
 
 
     mutating func insertElement(element: ElementType, atIndex index: Int) {

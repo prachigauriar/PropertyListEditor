@@ -468,7 +468,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
             let formatString = NSLocalizedString("PropertyListDocument.DictionaryValueFormat", comment: "Format string for values of dictionaries")
             return NSString.localizedStringWithFormat(formatString, treeNode.numberOfChildren)
         default:
-            return treeNode.item.objectValue
+            return treeNode.item.propertyListObjectValue
         }
     }
     
@@ -722,7 +722,7 @@ private extension PropertyListType {
 
 // MARK: - Value Constraints
 
-/// PropertyListValueConstraints represent constraints for valid values on property list items.
+/// `PropertyListValueConstraints` represent constraints for valid values on property list items.
 /// A value constraint can take one of two forms: a formatter that should be used to convert 
 /// to and from a string representation of the value; and an array of valid values that represent
 /// all the values the item can have.
@@ -735,7 +735,7 @@ enum PropertyListValueConstraint {
 }
 
 
-/// PropertyListValidValues represent the valid values that a property list item can have.
+/// `PropertyListValidValues` represent the valid values that a property list item can have.
 struct PropertyListValidValue {
     /// An object representation of the value.
     let value: PropertyListItemConvertible
@@ -747,7 +747,7 @@ struct PropertyListValidValue {
 
 
 extension PropertyListItem {
-    /// Returns an value constraint for the property list item type or nil if there are
+    /// Returns an value constraint for the property list item type or `nil` if there are
     // no constraints for the item.
     var valueConstraint: PropertyListValueConstraint? {
         switch self {

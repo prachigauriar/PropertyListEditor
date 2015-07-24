@@ -27,7 +27,12 @@
 import Foundation
 
 
-/// PropertyListItems represent property list types as an enum, with one case per property list type.
+/// `PropertyListItems` represent property list types as an enum, with one case per property list
+/// type. They are the primary type for modeling property lists in this application. Due to their
+/// nested, value-type nature, they are not well-suited to editing in place, particularly when the
+/// edit is occurring more than one level deep in the property list’s data hierarchy. As such, we
+/// have defined an extension below for making edits recursively using index paths. See the
+/// documentation below for more information.
 enum PropertyListItem: CustomStringConvertible, Hashable {
     case ArrayItem(PropertyListArray)
     case BooleanItem(NSNumber)
@@ -82,28 +87,6 @@ enum PropertyListItem: CustomStringConvertible, Hashable {
     var isCollection: Bool {
         return self.propertyListType == .ArrayType || self.propertyListType == .DictionaryType
     }
-
-
-    /// Returns an object representation of the receiver that can be used with property list
-    /// serialization.
-    var objectValue: AnyObject {
-        switch self {
-        case let .ArrayItem(array):
-            return array.objectValue
-        case let .BooleanItem(value):
-            return value
-        case let .DataItem(value):
-            return value
-        case let .DateItem(value):
-            return value
-        case let .DictionaryItem(dictionary):
-            return dictionary.objectValue
-        case let .NumberItem(value):
-            return value
-        case let .StringItem(value):
-            return value
-        }
-    }
 }
 
 
@@ -131,16 +114,19 @@ func ==(lhs: PropertyListItem, rhs: PropertyListItem) -> Bool {
 
 // MARK: - Property List Types
 
-/// PropertyListType is a simple enum that contains cases for each property list type. These are
-/// primarily useful when you need to use the type of a PropertyListItem for use in an arbitrary
-/// boolean expression. For example,
-///
+/// `PropertyListType` is a simple enum that contains cases for each property list type. These are
+/// primarily useful when you need the type of a `PropertyListItem` for use in an arbitrary boolean
+/// expression. For example,
+/// 
 /// ```
 /// extension PropertyListItem {
 ///     var isValue: Bool {
 ///         return !(self.propertyListType == .ArrayType || self.propertyListType == .DictionaryType)
 ///     }
 /// }
+///
+/// This type of concise expression isn’t possible with `PropertyListItem` because each of its enum
+/// cases has an associated value.
 /// ```
 enum PropertyListType {
     case ArrayType, DictionaryType, BooleanType, DataType, DateType, NumberType, StringType
@@ -172,6 +158,9 @@ extension PropertyListItem {
 
 // MARK: - Accessing Items with Index Path
 
+/// This extension adds the ability to access and change property lists using index paths. Rather
+/// than editing the property list items in place, the methods in this extension return new items
+/// that are the result of setting an item at particular index paths.
 extension PropertyListItem {
     /// Returns the item at the specified index path relative to the instance. Raises an assertion
     /// if any element of the index path indexes into a scalar.
@@ -205,7 +194,7 @@ extension PropertyListItem {
     }
 
 
-    /// A private method that actually implements -itemBySettingItem:atIndexPath: by setting the
+    /// A private method that actually implements `‑itemBySettingItem:atIndexPath:` by setting the
     /// item at the index position inside the index path. It is called recursively starting from
     /// index position 0 and continuing until the entire index path is traversed.
     ///
