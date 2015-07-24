@@ -27,6 +27,8 @@
 import Foundation
 
 
+/// PropertyListItems represent property list types as an enum, with one case
+/// per property list type.
 enum PropertyListItem: CustomStringConvertible, Hashable {
     case ArrayItem(PropertyListArray)
     case BooleanItem(NSNumber)
@@ -77,11 +79,14 @@ enum PropertyListItem: CustomStringConvertible, Hashable {
     }
 
 
+    /// Returns if the instance is an array or dictionary.
     var isCollection: Bool {
         return self.propertyListType == .ArrayType || self.propertyListType == .DictionaryType
     }
 
 
+    /// Returns an object representation of the receiver that can be used with 
+    /// property list serialization.
     var objectValue: AnyObject {
         switch self {
         case let .ArrayItem(array):
@@ -125,54 +130,26 @@ func ==(lhs: PropertyListItem, rhs: PropertyListItem) -> Bool {
 }
 
 
-// MARK: - Value Constraints
-
-struct PropertyListValidValue {
-    let value: PropertyListItemConvertible
-    let title: String
-}
-
-
-enum PropertyListValueConstraint {
-    case Formatter(NSFormatter)
-    case ValueArray([PropertyListValidValue])
-}
-
-
-extension PropertyListItem {
-    var valueConstraint: PropertyListValueConstraint? {
-        switch self {
-        case .BooleanItem:
-            let falseTitle = NSLocalizedString("PropertyListValue.Boolean.FalseTitle", comment: "Title for Boolean false value")
-            let falseValidValue = PropertyListValidValue(value: NSNumber(bool: false), title: falseTitle)
-            let trueTitle = NSLocalizedString("PropertyListValue.Boolean.TrueTitle", comment: "Title for Boolean true value")
-            let trueValidValue = PropertyListValidValue(value: NSNumber(bool: true), title: trueTitle)
-            return .ValueArray([falseValidValue, trueValidValue])
-        case .DataItem:
-            return .Formatter(PropertyListDataFormatter())
-        case .DateItem:
-            struct SharedFormatter {
-                static let dateFormatter = LenientDateFormatter()
-            }
-
-            return .Formatter(SharedFormatter.dateFormatter)
-        case .NumberItem:
-            return .Formatter(NSNumberFormatter.propertyListNumberFormatter())
-        default:
-            return nil
-        }
-    }
-}
-
-
 // MARK: - Property List Types
 
+/// PropertyListType is a simple enum that contains cases for each property list type. These are 
+/// primarily useful when you need to use the type of a PropertyListItem for use in an arbitrary
+/// boolean expression. For example,
+///
+/// ```
+/// extension PropertyListItem {
+///     var isValue: Bool {
+///         return !(self.propertyListType == .ArrayType || self.propertyListType == .DictionaryType)
+///     }
+/// }
+/// ```
 enum PropertyListType {
     case ArrayType, DictionaryType, BooleanType, DataType, DateType, NumberType, StringType
 }
 
 
 extension PropertyListItem {
+    /// Returns the property list type of the instance.
     var propertyListType: PropertyListType {
         switch self {
         case .ArrayItem:
@@ -197,6 +174,10 @@ extension PropertyListItem {
 // MARK: - Accessing Items with Index Path
 
 extension PropertyListItem {
+    /// Returns the item at the specified index path relative to the instance. Asserts if any element
+    /// of the index path indexes into a scalar.
+    ///
+    /// - parameter indexPath: The index path
     func itemAtIndexPath(indexPath: NSIndexPath) -> PropertyListItem {
         var item = self
 
@@ -215,6 +196,11 @@ extension PropertyListItem {
     }
 
 
+    /// Returns a copy of the instance in which the item at `indexPath` is set to `newItem`. Asserts
+    /// if any element of the index path indexes into a scalar.
+    ///
+    /// - parameter newItem: The new item to set at the specified index path relative to the instance
+    /// - parameter indexPath: The index path
     func itemBySettingItem(newItem: PropertyListItem, atIndexPath indexPath: NSIndexPath) -> PropertyListItem {
         return indexPath.length > 0 ? self.itemBySettingItem(newItem, atIndexPath: indexPath, indexPosition: 0) : newItem
     }

@@ -311,7 +311,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
         cell.font = NSFont.systemFontOfSize(NSFont.systemFontSizeForControlSize(.SmallControlSize))
         
         for validValue in validValues {
-            cell.addItemWithTitle(validValue.title)
+            cell.addItemWithTitle(validValue.localizedDescription)
             cell.menu!.itemArray.last!.representedObject = validValue.value
         }
         
@@ -720,9 +720,64 @@ private extension PropertyListType {
 }
 
 
+// MARK: - Value Constraints
+
+/// PropertyListValueConstraints represent constraints for valid values on property list items.
+/// A value constraint can take one of two forms: a formatter that should be used to convert 
+/// to and from a string representation of the value; and an array of valid values that represent
+/// all the values the item can have.
+enum PropertyListValueConstraint {
+    /// Represents a formatter value constraint.
+    case Formatter(NSFormatter)
+
+    /// Represents an array of valid values.
+    case ValueArray([PropertyListValidValue])
+}
+
+
+/// PropertyListValidValues represent the valid values that a property list item can have.
+struct PropertyListValidValue {
+    /// An object representation of the value.
+    let value: PropertyListItemConvertible
+
+    /// A localized, user-presentable description of the value.
+    let localizedDescription: String
+}
+
+
+
+extension PropertyListItem {
+    /// Returns an value constraint for the property list item type or nil if there are
+    // no constraints for the item.
+    var valueConstraint: PropertyListValueConstraint? {
+        switch self {
+        case .BooleanItem:
+            let falseTitle = NSLocalizedString("PropertyListValue.Boolean.FalseTitle", comment: "Title for Boolean false value")
+            let falseValidValue = PropertyListValidValue(value: NSNumber(bool: false), localizedDescription: falseTitle)
+            let trueTitle = NSLocalizedString("PropertyListValue.Boolean.TrueTitle", comment: "Title for Boolean true value")
+            let trueValidValue = PropertyListValidValue(value: NSNumber(bool: true), localizedDescription: trueTitle)
+            return .ValueArray([falseValidValue, trueValidValue])
+        case .DataItem:
+            return .Formatter(PropertyListDataFormatter())
+        case .DateItem:
+            struct SharedFormatter {
+                static let dateFormatter = LenientDateFormatter()
+            }
+
+            return .Formatter(SharedFormatter.dateFormatter)
+        case .NumberItem:
+            return .Formatter(NSNumberFormatter.propertyListNumberFormatter())
+        default:
+            return nil
+        }
+    }
+}
+
+
 // MARK: - Generating Unused Keys
 
 private extension PropertyListDictionary {
+    /// Returns a key that the instance does not contain.
     private func unusedKey() -> String {
         let formatString = NSLocalizedString("PropertyListDocument.KeyForAddingFormat",
                                              comment: "Format string for key generated when adding a dictionary item")
