@@ -48,7 +48,7 @@ enum PropertyListItem: CustomStringConvertible, Hashable {
         case let .ArrayItem(array):
             return array.description
         case let .BooleanItem(boolean):
-            return boolean.boolValue ? "true" : "false"
+            return boolean.boolValue.description
         case let .DataItem(data):
             return data.description
         case let .DateItem(date):
@@ -124,10 +124,10 @@ func ==(lhs: PropertyListItem, rhs: PropertyListItem) -> Bool {
 ///         return !(self.propertyListType == .ArrayType || self.propertyListType == .DictionaryType)
 ///     }
 /// }
+/// ```
 ///
 /// This type of concise expression isn’t possible with `PropertyListItem` because each of its enum
 /// cases has an associated value.
-/// ```
 enum PropertyListType {
     case ArrayType, DictionaryType, BooleanType, DataType, DateType, NumberType, StringType
 }

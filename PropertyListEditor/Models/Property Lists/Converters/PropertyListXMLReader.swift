@@ -27,9 +27,13 @@
 import Foundation
 
 
+/// The `PropertyListXMLReaderError` enum declares errors that can occur when reading
+/// data in the property list XML format.
 enum PropertyListXMLReaderError: ErrorType {
+    /// Indicates that the XML for the property list is invalid. 
     case InvalidXML
 }
+
 
 
 class PropertyListXMLReader: NSObject {

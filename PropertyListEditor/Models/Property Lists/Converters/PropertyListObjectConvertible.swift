@@ -28,10 +28,13 @@ import Foundation
 
 
 /// The `PropertyListItemConvertible` protocol declares a single method that returns a property list
-/// object representation of the conforming instance.
+/// object representation of the conforming instance. Via the extensions below, it serves as a way
+/// to convert from PropertyListItems to the Foundation property list objects that they represent.
+/// This is useful for interacting with UI elements, formatters, and Foundation’s property list
+/// serialization code.
 protocol PropertyListObjectConvertible {
-    /// Returns a property list object representation of the instance. The object returned should
-    /// be a Foundation property list object.
+    /// Returns a property list object representation of the instance. The object returned should be
+    /// a Foundation property list object.
     var propertyListObjectValue: AnyObject { get }
 }
 
@@ -57,6 +60,7 @@ extension PropertyListItem: PropertyListObjectConvertible {
     }
 }
 
+
 extension PropertyListArray: PropertyListObjectConvertible {
     var propertyListObjectValue: AnyObject {
         return self.elements.map { $0.propertyListObjectValue } as NSArray
@@ -72,6 +76,6 @@ extension PropertyListDictionary: PropertyListObjectConvertible {
             dictionary[element.key] = element.value.propertyListObjectValue
         }
 
-        return dictionary.copy() as! NSDictionary
+        return dictionary.copy()
     }
 }
