@@ -27,26 +27,41 @@
 import Foundation
 
 
-/// The `PropertyListXMLReaderError` enum declares errors that can occur when reading
-/// data in the property list XML format.
+/// The `PropertyListXMLReaderError` enum declares errors that can occur when reading data in the
+/// property list XML format.
 enum PropertyListXMLReaderError: ErrorType {
     /// Indicates that the XML for the property list is invalid. 
     case InvalidXML
 }
 
 
-
+/// Instances of `PropertyListXMLReader` read Property List XML data and return a property list item
+/// representation of that data. These should be used to read Property List XML files instead of
+/// using `NSPropertyListSerialization`s, as `PropertyListXMLReaders` create dictionaries whose
+/// key/value pairs are ordered the same as in the XML.
 class PropertyListXMLReader: NSObject {
+    /// The property list item that the reader has read.
     private var propertyListItem: PropertyListItem?
+    
+    /// The XML data that the reader reads.
     let XMLData: NSData
 
 
+    /// Initializes a new `PropertyListXMLReader` with the specified XML data.
+    /// - parameter XMLData: The XML data that the instance should read.
     init(XMLData: NSData) {
         self.XMLData = XMLData
         super.init()
     }
 
 
+    /// Reads the instance’s XML data and returns the resulting property list item. If the reader has
+    /// previously read the data, it simply returns the property list item that resulted from the 
+    /// previous read.
+    /// 
+    /// - throws: `PropertyListXMLReaderError.InvalidXML` if the instance’s XML data is not valid 
+    ///       Property List XML data.
+    /// - returns: A `PropertyListItem` representation of the instance’s XML data.
     func readData() throws -> PropertyListItem {
         if let propertyListItem = self.propertyListItem {
             return propertyListItem
@@ -64,7 +79,13 @@ class PropertyListXMLReader: NSObject {
 }
 
 
+/// This private extension adds the ability to create a new `PropertyListItem` with an XML element. It
+/// is used by `‑[PropertyListXMLReader readData]` to recursively create a property list item from a
+/// Property List XML document’s root element.
 private extension PropertyListItem {
+    /// Returns the property list item representation of the specified XML element. Returns nil if the
+    /// element cannot be represented using a property list item.
+    /// - parameter XMLElement: The XML element
     init?(XMLElement: NSXMLElement) {
         guard let elementName = XMLElement.name else {
             return nil

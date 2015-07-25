@@ -30,7 +30,7 @@ import Foundation
 /// The `PropertyListItemConvertible` protocol declares a single method that returns a property list
 /// object representation of the conforming instance. Via the extensions below, it serves as a way
 /// to convert from PropertyListItems to the Foundation property list objects that they represent.
-/// This is useful for interacting with UI elements, formatters, and Foundation’s property list
+/// This is useful for working with AppKit UI elements, formatters, and Foundation’s property list
 /// serialization code.
 protocol PropertyListObjectConvertible {
     /// Returns a property list object representation of the instance. The object returned should be

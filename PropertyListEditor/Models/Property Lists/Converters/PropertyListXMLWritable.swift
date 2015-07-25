@@ -27,12 +27,26 @@
 import Foundation
 
 
+/// The `PropertyListXMLWritable` protocol defines a single method that adds a property list item’s
+/// data as child XML elements of a property List XML element. It is used to save Property List XML
+/// documents instead of using `NSPropertyListSerialization`; the former maintains the order or 
+/// a dictionary’s key/value pairs, while the latter does not. All PropertyListItems conform to 
+/// this protocol via the extensions below.
+///
+/// While one could conceivably use the method in this protocol directly, it is better to use
+/// PropertyListXMLWritable.propertyListXMLDocumentData(), which will produce a complete Property 
+/// List XML document.
 protocol PropertyListXMLWritable {
+    /// Adds the conforming instance’s data to the specified XML element as children.
+    /// - parameter parentXMLElement: The element to which children should be added.
     func addPropertyListXMLElementToParentElement(parentXMLElement: NSXMLElement)
 }
 
 
+/// This protocol extension adds the ability to get a complete property list XML document
 extension PropertyListXMLWritable {
+    /// Returns the instance’s data as the root property list type in a property list XML document.
+    /// - returns: An `NSData` instance containing the XML 
     final func propertyListXMLDocumentData() -> NSData {
         let baseXMLString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n" +

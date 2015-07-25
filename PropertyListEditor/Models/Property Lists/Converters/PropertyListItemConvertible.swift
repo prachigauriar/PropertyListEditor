@@ -53,8 +53,9 @@ enum PropertyListItemConversionError: ErrorType, CustomStringConvertible {
 // MARK: - PropertyListItemConvertible Protocol and Extensions
 
 /// The `PropertyListItemConvertible` protocol declares a single method that returns a property list
-/// item representation of the conforming instance. All the Foundation property list types conform 
-/// to this protocol via the extensions below.
+/// item representation of the conforming instance. This is useful for working with AppKit UI elements,
+/// formatters, and Foundation’s property list serialization code. All the Foundation property list 
+/// types conform to this protocol via the extensions below.
 protocol PropertyListItemConvertible: NSObjectProtocol {
     /// Returns a property list item representation of the instance. 
     /// - throws: A `PropertyListItemConversionError` if the instance cannot be converted.

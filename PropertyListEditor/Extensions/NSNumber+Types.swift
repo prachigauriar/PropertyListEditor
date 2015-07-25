@@ -26,6 +26,7 @@
 
 import Foundation
 
+
 extension NSNumber {
     /// Returns whether the instance was initialized using a boolean.
     var isBoolean: Bool {

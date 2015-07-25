@@ -33,7 +33,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
     }
 
 
-    enum TreeNodeAction {
+    private enum TreeNodeAction {
         case InsertChildAtIndex(Int)
         case RemoveChildAtIndex(Int)
         case RegenerateChildrenAtIndex(Int)
@@ -281,7 +281,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
     }
 
 
-    func valueCellForTreeNode(treeNode: PropertyListTreeNode) -> NSCell {
+    private func valueCellForTreeNode(treeNode: PropertyListTreeNode) -> NSCell {
         let item = treeNode.item
 
         if item.isCollection {
@@ -305,7 +305,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
     }
 
 
-    func popUpButtonCellWithValidValues(validValues: [PropertyListValidValue]) -> NSPopUpButtonCell {
+    private func popUpButtonCellWithValidValues(validValues: [PropertyListValidValue]) -> NSPopUpButtonCell {
         let cell = NSPopUpButtonCell()
         cell.bordered = false
         cell.font = NSFont.systemFontOfSize(NSFont.systemFontSizeForControlSize(.SmallControlSize))
@@ -391,7 +391,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
     }
 
 
-    func editTreeNode(treeNode: PropertyListTreeNode) {
+    private func editTreeNode(treeNode: PropertyListTreeNode) {
         let rowIndex = self.propertyListOutlineView.rowForItem(treeNode)
 
         let column: TableColumn
@@ -410,7 +410,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
 
     // MARK: - Manipulating Tree Nodes Items
 
-    func keyOfTreeNode(treeNode: PropertyListTreeNode) -> NSString? {
+    private func keyOfTreeNode(treeNode: PropertyListTreeNode) -> NSString? {
         guard let index = treeNode.index else {
             return NSLocalizedString("PropertyListDocument.RootNodeKey", comment: "Key for root node")
         }
@@ -428,7 +428,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
     }
 
 
-    func setKey(key: String, ofTreeNode treeNode: PropertyListTreeNode) -> Bool {
+    private func setKey(key: String, ofTreeNode treeNode: PropertyListTreeNode) -> Bool {
         guard let parentNode = treeNode.parentNode, index = treeNode.index else {
             return false
         }
@@ -448,18 +448,18 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
     }
 
 
-    func typeOfTreeNode(treeNode: PropertyListTreeNode) -> Int {
+    private func typeOfTreeNode(treeNode: PropertyListTreeNode) -> Int {
         return treeNode.item.propertyListType.typePopUpMenuItemIndex
     }
 
 
-    func setType(type: PropertyListType, ofTreeNode treeNode: PropertyListTreeNode) {
+    private func setType(type: PropertyListType, ofTreeNode treeNode: PropertyListTreeNode) {
         let value = treeNode.item.propertyListItemByConvertingToType(type)
         self.setValue(value, ofTreeNode: treeNode, typeChanged: true)
     }
 
 
-    func valueOfTreeNode(treeNode: PropertyListTreeNode) -> AnyObject {
+    private func valueOfTreeNode(treeNode: PropertyListTreeNode) -> AnyObject {
         switch treeNode.item {
         case .ArrayItem:
             let formatString = NSLocalizedString("PropertyListDocument.ArrayValueFormat", comment: "Format string for values of arrays")
@@ -473,7 +473,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
     }
     
 
-    func setValue(newValue: PropertyListItem, ofTreeNode treeNode: PropertyListTreeNode, typeChanged: Bool = false) {
+    private func setValue(newValue: PropertyListItem, ofTreeNode treeNode: PropertyListTreeNode, typeChanged: Bool = false) {
         guard let parentNode = treeNode.parentNode else {
             self.setItem(newValue, ofTreeNodeAtIndexPath: self.tree.rootNode.indexPath)
             return
@@ -726,7 +726,7 @@ private extension PropertyListType {
 /// A value constraint can take one of two forms: a formatter that should be used to convert 
 /// to and from a string representation of the value; and an array of valid values that represent
 /// all the values the item can have.
-enum PropertyListValueConstraint {
+private enum PropertyListValueConstraint {
     /// Represents a formatter value constraint.
     case Formatter(NSFormatter)
 
@@ -736,7 +736,7 @@ enum PropertyListValueConstraint {
 
 
 /// `PropertyListValidValues` represent the valid values that a property list item can have.
-struct PropertyListValidValue {
+private struct PropertyListValidValue {
     /// An object representation of the value.
     let value: PropertyListItemConvertible
 
@@ -746,7 +746,7 @@ struct PropertyListValidValue {
 
 
 
-extension PropertyListItem {
+private extension PropertyListItem {
     /// Returns an value constraint for the property list item type or `nil` if there are
     // no constraints for the item.
     var valueConstraint: PropertyListValueConstraint? {
