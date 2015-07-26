@@ -120,8 +120,8 @@ func ==(lhs: PropertyListItem, rhs: PropertyListItem) -> Bool {
 /// 
 /// ```
 /// extension PropertyListItem {
-///     var isValue: Bool {
-///         return !(self.propertyListType == .ArrayType || self.propertyListType == .DictionaryType)
+///     var isScalar: Bool {
+///         return self.propertyListType != .ArrayType && self.propertyListType != .DictionaryType
 ///     }
 /// }
 /// ```
@@ -162,10 +162,10 @@ extension PropertyListItem {
 /// than editing the property list items in place, the methods in this extension return new items
 /// that are the result of setting an item at particular index paths.
 extension PropertyListItem {
-    /// Returns the item at the specified index path relative to the instance. Raises an assertion
-    /// if any element of the index path indexes into a scalar.
+    /// Returns the item at the specified index path relative to the instance.
     ///
-    /// - parameter indexPath: The index path
+    /// - parameter indexPath: The index path. Raises an assertion if any element of the index path
+    ///       indexes into a scalar.
     func itemAtIndexPath(indexPath: NSIndexPath) -> PropertyListItem {
         var item = self
 
@@ -184,11 +184,10 @@ extension PropertyListItem {
     }
 
 
-    /// Returns a copy of the instance in which the item at `indexPath` is set to `newItem`. Raises
-    /// an assertion if any element of the index path indexes into a scalar.
-    ///
+    /// Returns a copy of the instance in which the item at `indexPath` is set to `newItem`.
     /// - parameter newItem: The new item to set at the specified index path relative to the instance
-    /// - parameter indexPath: The index path
+    /// - parameter indexPath: The index path. Raises an assertion if any element of the index path
+    ///       indexes into a scalar.
     func itemBySettingItem(newItem: PropertyListItem, atIndexPath indexPath: NSIndexPath) -> PropertyListItem {
         return indexPath.length > 0 ? self.itemBySettingItem(newItem, atIndexPath: indexPath, indexPosition: 0) : newItem
     }
@@ -199,7 +198,8 @@ extension PropertyListItem {
     /// index position 0 and continuing until the entire index path is traversed.
     ///
     /// - parameter newItem: The new item to set at the specified index path relative to the instance
-    /// - parameter indexPath: The index path
+    /// - parameter indexPath: The index path. Raises an assertion if any element of the index path
+    ///       indexes into a scalar.
     /// - parameter indexPosition: The position in the index path to get the current index
     private func itemBySettingItem(newItem: PropertyListItem, atIndexPath indexPath: NSIndexPath, indexPosition: Int) -> PropertyListItem {
         if indexPosition == indexPath.length {

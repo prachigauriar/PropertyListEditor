@@ -78,16 +78,16 @@ class UndoHandlerTarget: NSObject {
 // MARK: - Debug Helpers
 
 extension NSUndoManager {
-    /// Returns a debug description of the instance’s undo stack. This method should only be used
-    /// for debugging. It uses undocumented, unsupported behavior.
+    /// Returns a debug description of the instance’s undo stack. 
+    /// - warning: This method should only be used for debugging; it uses undocumented, unsupported behavior.
     var undoStackDebugDescription: String? {
         let undoStack = object_getIvar(self, class_getInstanceVariable(NSClassFromString("NSUndoManager"), "_undoStack"));
         return undoStack.debugDescription
     }
 
 
-    /// Returns a debug description of the instance’s redo stack. This method should only be used
-    /// for debugging. It uses undocumented, unsupported behavior.
+    /// Returns a debug description of the instance’s redo stack.
+    /// - warning: This method should only be used for debugging; it uses undocumented, unsupported behavior.
     var redoStackDebugDescription: String? {
         let redoStack = object_getIvar(self, class_getInstanceVariable(NSClassFromString("NSUndoManager"), "_redoStack"));
         return redoStack.debugDescription

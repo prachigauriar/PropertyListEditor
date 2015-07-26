@@ -36,6 +36,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
     private enum TreeNodeAction {
         case InsertChildAtIndex(Int)
         case RemoveChildAtIndex(Int)
+        case RegenerateChildren
         case RegenerateChildrenAtIndex(Int)
 
 
@@ -45,8 +46,8 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
                 return .RemoveChildAtIndex(index)
             case let .RemoveChildAtIndex(index):
                 return .InsertChildAtIndex(index)
-            case let .RegenerateChildrenAtIndex(index):
-                return RegenerateChildrenAtIndex(index)
+            case .RegenerateChildren, .RegenerateChildrenAtIndex:
+                return self
             }
         }
 
@@ -57,8 +58,10 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
                 treeNode.insertChildAtIndex(index)
             case let .RemoveChildAtIndex(index):
                 treeNode.removeChildAtIndex(index)
+            case RegenerateChildren:
+                treeNode.regenerateChildren()
             case let .RegenerateChildrenAtIndex(index):
-                treeNode.children[index].regenerateChildren()
+                treeNode.childAtIndex(index).regenerateChildren()
             }
         }
     }
@@ -163,7 +166,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
             assert(false, "item must be a PropertyListTreeNode")
         }
 
-        return treeNode.children[index]
+        return treeNode.childAtIndex(index)
     }
 
 
@@ -358,7 +361,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
 
         let treeNode = self.propertyListOutlineView.itemAtRow(rowIndex) as! PropertyListTreeNode
         self.insertItem(self.itemForAdding(), atIndex: treeNode.numberOfChildren, inTreeNode: treeNode)
-        self.editTreeNode(treeNode.children[treeNode.numberOfChildren - 1])
+        self.editTreeNode(treeNode.lastChild!)
     }
 
 
@@ -373,7 +376,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
 
         let index: Int! = selectedNode.index
         self.insertItem(self.itemForAdding(), atIndex: index + 1, inTreeNode: parentNode)
-        self.editTreeNode(parentNode.children[index + 1])
+        self.editTreeNode(parentNode.childAtIndex(index + 1))
     }
 
 
@@ -454,8 +457,10 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
 
 
     private func setType(type: PropertyListType, ofTreeNode treeNode: PropertyListTreeNode) {
+        let wasCollection = treeNode.item.isCollection
         let value = treeNode.item.propertyListItemByConvertingToType(type)
-        self.setValue(value, ofTreeNode: treeNode, typeChanged: true)
+        let isCollection = value.isCollection
+        self.setValue(value, ofTreeNode: treeNode, needsChildRegeneration: wasCollection != isCollection)
     }
 
 
@@ -473,9 +478,9 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
     }
     
 
-    private func setValue(newValue: PropertyListItem, ofTreeNode treeNode: PropertyListTreeNode, typeChanged: Bool = false) {
+    private func setValue(newValue: PropertyListItem, ofTreeNode treeNode: PropertyListTreeNode, needsChildRegeneration: Bool = false) {
         guard let parentNode = treeNode.parentNode else {
-            self.setItem(newValue, ofTreeNodeAtIndexPath: self.tree.rootNode.indexPath)
+            self.setItem(newValue, ofTreeNodeAtIndexPath: self.tree.rootNode.indexPath, nodeAction: needsChildRegeneration ? .RegenerateChildren : nil)
             return
         }
 
@@ -494,7 +499,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
             item = newValue
         }
 
-        self.setItem(item, ofTreeNodeAtIndexPath: parentNode.indexPath, nodeAction: typeChanged ? .RegenerateChildrenAtIndex(index) : nil)
+        self.setItem(item, ofTreeNodeAtIndexPath: parentNode.indexPath, nodeAction: needsChildRegeneration ? .RegenerateChildrenAtIndex(index) : nil)
     }
 
 
@@ -550,11 +555,11 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
         if let nodeAction = nodeAction {
             switch nodeAction {
             case let .InsertChildAtIndex(index):
-                self.propertyListOutlineView.expandItem(treeNode.children[index])
-                break
+                self.propertyListOutlineView.expandItem(treeNode.childAtIndex(index))
+            case .RegenerateChildren:
+                self.propertyListOutlineView.expandItem(nil)
             case let .RegenerateChildrenAtIndex(index):
-                self.propertyListOutlineView.expandItem(treeNode.children[index])
-                break
+                self.propertyListOutlineView.expandItem(treeNode.childAtIndex(index))
             default:
                 break
             }

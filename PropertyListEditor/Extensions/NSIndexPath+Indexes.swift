@@ -34,4 +34,9 @@ extension NSIndexPath {
         self.getIndexes(&indexArray, range: NSRange(location: 0, length: self.length))
         return indexArray
     }
+
+
+    var lastIndex: Int? {
+        return self.length > 0 ? self.indexAtPosition(self.length - 1) : nil
+    }
 }
