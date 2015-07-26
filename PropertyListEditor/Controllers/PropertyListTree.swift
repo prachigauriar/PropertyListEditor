@@ -199,7 +199,7 @@ class PropertyListTreeNode: NSObject {
     }
     
     
-    var hashValue: Int {
+    override var hashValue: Int {
         return self.indexPath.hashValue
     }
     

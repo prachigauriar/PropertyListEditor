@@ -27,7 +27,7 @@
 import Cocoa
 
 
-class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDelegate, NSWindowDelegate {
+class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDelegate {
     private enum TableColumn: String {
         case Key, Type, Value
     }
@@ -557,7 +557,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
             case let .InsertChildAtIndex(index):
                 self.propertyListOutlineView.expandItem(treeNode.childAtIndex(index))
             case .RegenerateChildren:
-                self.propertyListOutlineView.expandItem(nil)
+                self.propertyListOutlineView.expandItem(treeNode)
             case let .RegenerateChildrenAtIndex(index):
                 self.propertyListOutlineView.expandItem(treeNode.childAtIndex(index))
             default:
