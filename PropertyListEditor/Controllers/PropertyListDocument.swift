@@ -153,7 +153,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
             assert(false, "item must be a PropertyListTreeNode")
         }
 
-        return treeNode.expandable
+        return treeNode.isExpandable
     }
 
 
@@ -360,6 +360,11 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
         }
 
         let treeNode = self.propertyListOutlineView.itemAtRow(rowIndex) as! PropertyListTreeNode
+        guard treeNode.isExpandable else {
+            NSLog("Received addChild: on unexpandable item. Ignoring…")
+            return
+        }
+
         self.insertItem(self.itemForAdding(), atIndex: treeNode.numberOfChildren, inTreeNode: treeNode)
         self.editTreeNode(treeNode.lastChild!)
     }
@@ -460,6 +465,10 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
         let wasCollection = treeNode.item.isCollection
         let value = treeNode.item.propertyListItemByConvertingToType(type)
         let isCollection = value.isCollection
+
+        // We only need child regeneration if we changed from being a scalar to a collection or vice versa.
+        // If we changed types from one collection to another, we convert the children automatically, so
+        // we will have the right number of nodes.
         self.setValue(value, ofTreeNode: treeNode, needsChildRegeneration: wasCollection != isCollection)
     }
 
@@ -514,6 +523,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
             dictionary.insertKey(dictionary.unusedKey(), value: item, atIndex: index)
             newItem = .DictionaryItem(dictionary)
         default:
+            assert(false, "Attempt to insert child at index \(index) in scalar tree node \(treeNode)")
             return
         }
 
@@ -532,6 +542,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
             dictionary.removeElementAtIndex(index)
             newItem = .DictionaryItem(dictionary)
         default:
+            assert(false, "Attempt to remove child at index \(index) in scalar tree node \(treeNode)")
             return
         }
 
@@ -626,6 +637,8 @@ private extension PropertyListItem {
             default:
                 return defaultItem
             }
+        case let .DateItem(date):
+            return type == .NumberType ? .NumberItem(date.timeIntervalSince1970) : defaultItem
         case let .DictionaryItem(dictionary):
             if type == .ArrayType {
                 var array = PropertyListArray()
