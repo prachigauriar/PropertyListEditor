@@ -41,60 +41,10 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
     }
 
 
-    /// The `TreeNodeOperation` enum enumerates the different operations that can be taken on a
-    /// tree node. Because all operations on a property list item ultimately boils down to 
-    /// replacing an item with a new one, we need some way to discern what corresponding node 
-    /// operation needs to take place. That’s what `TreeNodeOperations` are for.
-    private enum TreeNodeOperation {
-        /// Indicates that a child node should be inserted at the specified index.
-        case InsertChildAtIndex(Int)
-
-        /// Indicates that the child node at the specified index should be removed.
-        case RemoveChildAtIndex(Int)
-
-        /// Indicates that the child node at the specified index should have its children 
-        /// regenerated.
-        case RegenerateChildrenForChildAtIndex(Int)
-
-        /// Indicates that the node should regenerate its children.
-        case RegenerateChildren
-
-
-        /// Returns the inverse of the specified operation. This is useful when undoing an 
-        /// operation.
-        var inverseOperation: TreeNodeOperation {
-            switch self {
-            case let .InsertChildAtIndex(index):
-                return .RemoveChildAtIndex(index)
-            case let .RemoveChildAtIndex(index):
-                return .InsertChildAtIndex(index)
-            case .RegenerateChildrenForChildAtIndex, .RegenerateChildren:
-                return self
-            }
-        }
-
-
-        /// Performs the instance’s operation on the specified tree node.
-        /// - parameter treeNode: The tree node on which to perform the operation.
-        func performOperationOnTreeNode(treeNode: PropertyListTreeNode) {
-            switch self {
-            case let .InsertChildAtIndex(index):
-                treeNode.insertChildAtIndex(index)
-            case let .RemoveChildAtIndex(index):
-                treeNode.removeChildAtIndex(index)
-            case let .RegenerateChildrenForChildAtIndex(index):
-                treeNode.childAtIndex(index).regenerateChildren()
-            case RegenerateChildren:
-                treeNode.regenerateChildren()
-            }
-        }
-    }
-
-
     /// The instance’s outline view.
     @IBOutlet weak var propertyListOutlineView: NSOutlineView!
 
-    /// The prototypical cell for the Key column’s text field cell.
+    /// The prototype cell for the Key column’s text field cell.
     @IBOutlet weak var keyTextFieldPrototypeCell: NSTextFieldCell!
 
     /// The prototypical cell for the Type column’s pop-up button cell.
@@ -618,6 +568,25 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
 }
 
 
+// MARK: - Generating Unused Dictionary Keys
+
+private extension PropertyListDictionary {
+    /// Returns a key that the instance does not contain.
+    private func unusedKey() -> String {
+        let formatString = NSLocalizedString("PropertyListDocument.KeyForAddingFormat",
+                                             comment: "Format string for key generated when adding a dictionary item")
+
+        var key: String
+        var counter: Int = 1
+        repeat {
+            key = NSString.localizedStringWithFormat(formatString, counter++) as String
+        } while self.containsKey(key)
+
+        return key
+    }
+}
+
+
 // MARK: - PropertyListItem and PropertyListType Extensions
 
 private extension PropertyListItem {
@@ -826,20 +795,53 @@ private extension PropertyListItem {
 }
 
 
-// MARK: - Generating Unused Keys
+// MARK: - Tree Node Operations
 
-private extension PropertyListDictionary {
-    /// Returns a key that the instance does not contain.
-    private func unusedKey() -> String {
-        let formatString = NSLocalizedString("PropertyListDocument.KeyForAddingFormat",
-                                             comment: "Format string for key generated when adding a dictionary item")
+/// The `TreeNodeOperation` enum enumerates the different operations that can be taken on a
+/// tree node. Because all operations on a property list item ultimately boils down to
+/// replacing an item with a new one, we need some way to discern what corresponding node
+/// operation needs to take place. That’s what `TreeNodeOperations` are for.
+private enum TreeNodeOperation {
+    /// Indicates that a child node should be inserted at the specified index.
+    case InsertChildAtIndex(Int)
 
-        var key: String
-        var counter: Int = 1
-        repeat {
-            key = NSString.localizedStringWithFormat(formatString, counter++) as String
-        } while self.containsKey(key)
+    /// Indicates that the child node at the specified index should be removed.
+    case RemoveChildAtIndex(Int)
 
-        return key
+    /// Indicates that the child node at the specified index should have its children
+    /// regenerated.
+    case RegenerateChildrenForChildAtIndex(Int)
+
+    /// Indicates that the node should regenerate its children.
+    case RegenerateChildren
+
+
+    /// Returns the inverse of the specified operation. This is useful when undoing an
+    /// operation.
+    var inverseOperation: TreeNodeOperation {
+        switch self {
+        case let .InsertChildAtIndex(index):
+            return .RemoveChildAtIndex(index)
+        case let .RemoveChildAtIndex(index):
+            return .InsertChildAtIndex(index)
+        case .RegenerateChildrenForChildAtIndex, .RegenerateChildren:
+            return self
+        }
+    }
+
+
+    /// Performs the instance’s operation on the specified tree node.
+    /// - parameter treeNode: The tree node on which to perform the operation.
+    func performOperationOnTreeNode(treeNode: PropertyListTreeNode) {
+        switch self {
+        case let .InsertChildAtIndex(index):
+            treeNode.insertChildAtIndex(index)
+        case let .RemoveChildAtIndex(index):
+            treeNode.removeChildAtIndex(index)
+        case let .RegenerateChildrenForChildAtIndex(index):
+            treeNode.childAtIndex(index).regenerateChildren()
+        case RegenerateChildren:
+            treeNode.regenerateChildren()
+        }
     }
 }
