@@ -18,7 +18,7 @@
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="xOd-HO-29H" userLabel="Window">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="133" y="235" width="506" height="413"/>
+            <rect key="contentRect" x="131" y="354" width="506" height="413"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
             <value key="minSize" type="size" width="94" height="86"/>
             <view key="contentView" id="gIp-Ho-8D9">
@@ -137,7 +137,7 @@
                             <action selector="addChild:" target="-2" id="n8R-nO-wdi"/>
                         </connections>
                     </toolbarItem>
-                    <toolbarItem implicitItemIdentifier="F1214A9A-73BA-4191-BDB1-2D9157D1B4CA" explicitItemIdentifier="AddSibling" label="Add Sibling" paletteLabel="Add Sibling" tag="-1" image="ic_newSibling" id="H1i-YW-IQd">
+                    <toolbarItem implicitItemIdentifier="F1214A9A-73BA-4191-BDB1-2D9157D1B4CA" explicitItemIdentifier="AddSibling" label="Add Sibling" paletteLabel="Add Sibling" tag="-1" image="ic_addSibling" id="H1i-YW-IQd">
                         <connections>
                             <action selector="addSibling:" target="-2" id="0fx-JC-vvG"/>
                         </connections>
@@ -164,8 +164,8 @@
         </window>
     </objects>
     <resources>
-        <image name="ic_addChild" width="64" height="57"/>
-        <image name="ic_deleteItem" width="48" height="55"/>
-        <image name="ic_newSibling" width="158" height="163"/>
+        <image name="ic_addChild" width="32" height="32"/>
+        <image name="ic_addSibling" width="32" height="32"/>
+        <image name="ic_deleteItem" width="32" height="32"/>
     </resources>
 </document>

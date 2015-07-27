@@ -27,39 +27,41 @@
 import Cocoa
 
 
-/// `PropertyListDocument` is the primary controller class in this application. It manages the 
+/// `PropertyListDocument` is the primary controller class in this application. It manages the
 /// Property List document windows and the backing property list items in the data model.
 class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDelegate {
     /// The `TableColumn` enum is used to enumerate the different `NSTableColumns` that the
     /// instance’s outline view has. Whenever a table column is added to the outline view, a
-    /// corresponding case should be added to this enum. Additionally, the table column’s
-    /// identifier should be the same as the case name in this enum. The value of using this
-    /// approach is that the compiler ensures that all table column cases are handled by the
-    /// code. 
+    /// corresponding case should be added to this enum. Additionally, the table column’s identifier
+    /// should be the same as the case name in this enum. The value of using this approach is that
+    /// the compiler ensures that all table column cases are handled by the code. 
     private enum TableColumn: String {
         case Key, Type, Value
+    }
+
+
+    /// The instance’s property list tree. This is the model object that controller managers.
+    private var tree: PropertyListTree! {
+        didSet {
+            self.propertyListOutlineView?.reloadData()
+        }
     }
 
 
     /// The instance’s outline view.
     @IBOutlet weak var propertyListOutlineView: NSOutlineView!
 
-    /// The prototype cell for the Key column’s text field cell.
+    /// The prototype cell for the Key column’s text field cell. Copies of this cell are configured
+    /// and appear in each row.
     @IBOutlet weak var keyTextFieldPrototypeCell: NSTextFieldCell!
 
-    /// The prototypical cell for the Type column’s pop-up button cell.
+    /// The prototype cell for the Type column’s pop-up button cell. Copies of this cell are
+    /// configured and appear in each row.
     @IBOutlet weak var typePopUpButtonPrototypeCell: NSPopUpButtonCell!
 
-    /// The prototypical cell for the Value column’s text field cell.
+    /// The prototype cell for the Value column’s text field cell. Copies of this cell are
+    /// configured and appear in each row.
     @IBOutlet weak var valueTextFieldPrototypeCell: NSTextFieldCell!
-
-
-    /// The instance’s property list tree.
-    private var tree: PropertyListTree! {
-        didSet {
-            self.propertyListOutlineView?.reloadData()
-        }
-    }
 
 
     override init() {
@@ -69,9 +71,9 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
 
 
     deinit {
-        // Failing to unset the data source here results in a stray delegate message 
-        // sent to the zombie PropertyListDocument. While there may be a more correct
-        // solution, I’ve yet to find it
+        // Failing to unset the data source here results in a stray delegate message sent to the
+        // zombie PropertyListDocument. While there may be a more correct solution, I’ve yet to find
+        // it
         self.propertyListOutlineView?.setDataSource(nil)
         self.propertyListOutlineView?.setDelegate(nil)
     }
@@ -101,6 +103,10 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
 
         do {
             let rootItem: PropertyListItem
+            
+            // If the document is in XML format, use our custom XML reader so that we can retain the
+            // row order. Otherwise, just convert the output of NSPropertyListSerialization into a 
+            // property list item
             if format == .XMLFormat_v1_0 {
                 rootItem = try PropertyListXMLReader(XMLData: data).readData()
             } else {
@@ -196,8 +202,8 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
         case .Value:
             let item: PropertyListItem
 
+            // The two cases here are the value being set by a pop-up button or the value just being set
             if case let nodeItem = treeNode.item,
-                // If the value was set via a pop up button
                 let valueConstraint = nodeItem.valueConstraint,
                 case let .ValueArray(valueArray) = valueConstraint,
                 let popUpButtonMenuItemIndex = object as? Int {
@@ -225,15 +231,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
 
         switch tableColumn {
         case .Key:
-            let cell = self.keyTextFieldPrototypeCell.copy() as! NSTextFieldCell
-
-            if let parentNode = treeNode.parentNode {
-                cell.editable = parentNode.item.propertyListType == .DictionaryType
-            } else {
-                cell.editable = false
-            }
-
-            return cell
+            return self.keyTextFieldPrototypeCell.copy() as! NSTextFieldCell
         case .Type:
             return self.typePopUpButtonPrototypeCell.copy() as! NSPopUpButtonCell
         case .Value:
@@ -253,11 +251,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
 
         switch tableColumn {
         case .Key:
-            guard let parentItem = treeNode.parentNode?.item else {
-                return false
-            }
-
-            return parentItem.propertyListType == .DictionaryType
+            return treeNode.parentNode?.item.propertyListType == .DictionaryType
         case .Type:
             return true
         case .Value:
