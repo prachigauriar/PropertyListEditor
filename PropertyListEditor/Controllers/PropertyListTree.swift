@@ -278,7 +278,6 @@ class PropertyListTreeNode: NSObject {
 
     /// Returns the instance’s child node with the specified index.
     /// - parameter index: The index of the child.
-    /// - returns: The instance’s child tree node with the specified index.
     func childAtIndex(index: Int) -> PropertyListTreeNode {
         return self.children[index]
     }
@@ -286,7 +285,7 @@ class PropertyListTreeNode: NSObject {
 
     // MARK: - Managing Children
 
-    /// Regenerates the instance’s children nodes, replacing the existing child nodes with newly
+    /// Regenerates the instance’s child nodes, replacing the existing child nodes with newly
     /// created ones.
     func regenerateChildren() {
         let elementCount: Int
@@ -296,12 +295,10 @@ class PropertyListTreeNode: NSObject {
         case let .DictionaryItem(dictionary):
             elementCount = dictionary.elementCount
         default:
-            return
+            elementCount = 0
         }
 
-        self.children = (0 ..< elementCount).map { (i: Int) in
-            return PropertyListTreeNode(parentNode: self, index: i)
-        }
+        self.children = (0 ..< elementCount).map { PropertyListTreeNode(parentNode: self, index: $0) }
     }
 
 
@@ -312,6 +309,8 @@ class PropertyListTreeNode: NSObject {
 
 
     /// Inserts a new child node at the specified index.
+    /// - note: This method should only be invoked *after* the instance’s item has had a child
+    ///         added at the specified index. That is, update the item first, then the node.
     /// - parameter index: The index at which to insert the new child node.
     func insertChildAtIndex(index: Int) {
         self.children.insert(PropertyListTreeNode(parentNode: self, index: index), atIndex: index)
@@ -320,6 +319,8 @@ class PropertyListTreeNode: NSObject {
 
 
     /// Removes the child node at the specified index.
+    /// - note: This method should only be invoked *after* the instance’s item has had a child
+    ///         removed from the specified index. That is, update the item first, then the node.
     /// - parameter index: The index from which to remove the child node.
     func removeChildAtIndex(index: Int) {
         self.children.removeAtIndex(index)
@@ -329,8 +330,7 @@ class PropertyListTreeNode: NSObject {
 
     // MARK: - Updating Indexes and Index Paths
 
-    /// Invalidates the instance’s cached index path and recursively invalidates those of its
-    /// children.
+    /// Recursively invalidates the instance’s cached index path those of its children.
     private func invalidateCachedIndexPath() {
         self.cachedIndexPath = nil
         for child in self.children {
@@ -339,7 +339,7 @@ class PropertyListTreeNode: NSObject {
     }
 
 
-    /// Updates the indexes for the instance’s children whose index is in the specified range.
+    /// Updates the indexes for the instance’s children with indexes is in the specified range.
     /// - parameter indexRange: The range of child node indexes whose children need updated indexes.
     private func updateIndexesForChildrenInRange(indexRange: Range<Int>) {
         for i in indexRange {

@@ -27,52 +27,84 @@
 import Cocoa
 
 
+/// `PropertyListDocument` is the primary controller class in this application. It manages the 
+/// Property List document windows and the backing property list items in the data model.
 class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDelegate {
+    /// The `TableColumn` enum is used to enumerate the different `NSTableColumns` that the
+    /// instance’s outline view has. Whenever a table column is added to the outline view, a
+    /// corresponding case should be added to this enum. Additionally, the table column’s
+    /// identifier should be the same as the case name in this enum. The value of using this
+    /// approach is that the compiler ensures that all table column cases are handled by the
+    /// code. 
     private enum TableColumn: String {
         case Key, Type, Value
     }
 
 
-    private enum TreeNodeAction {
+    /// The `TreeNodeOperation` enum enumerates the different operations that can be taken on a
+    /// tree node. Because all operations on a property list item ultimately boils down to 
+    /// replacing an item with a new one, we need some way to discern what corresponding node 
+    /// operation needs to take place. That’s what `TreeNodeOperations` are for.
+    private enum TreeNodeOperation {
+        /// Indicates that a child node should be inserted at the specified index.
         case InsertChildAtIndex(Int)
+
+        /// Indicates that the child node at the specified index should be removed.
         case RemoveChildAtIndex(Int)
+
+        /// Indicates that the child node at the specified index should have its children 
+        /// regenerated.
+        case RegenerateChildrenForChildAtIndex(Int)
+
+        /// Indicates that the node should regenerate its children.
         case RegenerateChildren
-        case RegenerateChildrenAtIndex(Int)
 
 
-        var inverseAction: TreeNodeAction {
+        /// Returns the inverse of the specified operation. This is useful when undoing an 
+        /// operation.
+        var inverseOperation: TreeNodeOperation {
             switch self {
             case let .InsertChildAtIndex(index):
                 return .RemoveChildAtIndex(index)
             case let .RemoveChildAtIndex(index):
                 return .InsertChildAtIndex(index)
-            case .RegenerateChildren, .RegenerateChildrenAtIndex:
+            case .RegenerateChildrenForChildAtIndex, .RegenerateChildren:
                 return self
             }
         }
 
 
-        func performActionOnTreeNode(treeNode: PropertyListTreeNode) {
+        /// Performs the instance’s operation on the specified tree node.
+        /// - parameter treeNode: The tree node on which to perform the operation.
+        func performOperationOnTreeNode(treeNode: PropertyListTreeNode) {
             switch self {
             case let .InsertChildAtIndex(index):
                 treeNode.insertChildAtIndex(index)
             case let .RemoveChildAtIndex(index):
                 treeNode.removeChildAtIndex(index)
+            case let .RegenerateChildrenForChildAtIndex(index):
+                treeNode.childAtIndex(index).regenerateChildren()
             case RegenerateChildren:
                 treeNode.regenerateChildren()
-            case let .RegenerateChildrenAtIndex(index):
-                treeNode.childAtIndex(index).regenerateChildren()
             }
         }
     }
 
 
+    /// The instance’s outline view.
     @IBOutlet weak var propertyListOutlineView: NSOutlineView!
+
+    /// The prototypical cell for the Key column’s text field cell.
     @IBOutlet weak var keyTextFieldPrototypeCell: NSTextFieldCell!
+
+    /// The prototypical cell for the Type column’s pop-up button cell.
     @IBOutlet weak var typePopUpButtonPrototypeCell: NSPopUpButtonCell!
+
+    /// The prototypical cell for the Value column’s text field cell.
     @IBOutlet weak var valueTextFieldPrototypeCell: NSTextFieldCell!
 
 
+    /// The instance’s property list tree.
     private var tree: PropertyListTree! {
         didSet {
             self.propertyListOutlineView?.reloadData()
@@ -489,7 +521,8 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
 
     private func setValue(newValue: PropertyListItem, ofTreeNode treeNode: PropertyListTreeNode, needsChildRegeneration: Bool = false) {
         guard let parentNode = treeNode.parentNode else {
-            self.setItem(newValue, ofTreeNodeAtIndexPath: self.tree.rootNode.indexPath, nodeAction: needsChildRegeneration ? .RegenerateChildren : nil)
+            let nodeOperation: TreeNodeOperation? = needsChildRegeneration ? .RegenerateChildren : nil
+            self.setItem(newValue, ofTreeNodeAtIndexPath: self.tree.rootNode.indexPath, nodeOperation: nodeOperation)
             return
         }
 
@@ -508,7 +541,8 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
             item = newValue
         }
 
-        self.setItem(item, ofTreeNodeAtIndexPath: parentNode.indexPath, nodeAction: needsChildRegeneration ? .RegenerateChildrenAtIndex(index) : nil)
+        let nodeOperation: TreeNodeOperation? = needsChildRegeneration ? .RegenerateChildrenForChildAtIndex(index) : nil
+        self.setItem(item, ofTreeNodeAtIndexPath: parentNode.indexPath, nodeOperation: nodeOperation)
     }
 
 
@@ -527,7 +561,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
             return
         }
 
-        self.setItem(newItem, ofTreeNodeAtIndexPath: treeNode.indexPath, nodeAction: .InsertChildAtIndex(index))
+        self.setItem(newItem, ofTreeNodeAtIndexPath: treeNode.indexPath, nodeOperation: .InsertChildAtIndex(index))
     }
 
 
@@ -546,31 +580,31 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
             return
         }
 
-        self.setItem(newItem, ofTreeNodeAtIndexPath: treeNode.indexPath, nodeAction: .RemoveChildAtIndex(index))
+        self.setItem(newItem, ofTreeNodeAtIndexPath: treeNode.indexPath, nodeOperation: .RemoveChildAtIndex(index))
     }
 
 
-    private func setItem(newItem: PropertyListItem, ofTreeNodeAtIndexPath indexPath: NSIndexPath, nodeAction: TreeNodeAction? = nil) {
+    private func setItem(newItem: PropertyListItem, ofTreeNodeAtIndexPath indexPath: NSIndexPath, nodeOperation: TreeNodeOperation? = nil) {
         let treeNode = self.tree.nodeAtIndexPath(indexPath)
         let oldItem = treeNode.item
 
         self.undoManager!.registerUndoWithHandler { [unowned self] in
-            self.setItem(oldItem, ofTreeNodeAtIndexPath: indexPath, nodeAction: nodeAction?.inverseAction)
+            self.setItem(oldItem, ofTreeNodeAtIndexPath: indexPath, nodeOperation: nodeOperation?.inverseOperation)
         }
 
         treeNode.item = newItem
-        nodeAction?.performActionOnTreeNode(treeNode)
+        nodeOperation?.performOperationOnTreeNode(treeNode)
 
         self.propertyListOutlineView.reloadItem(treeNode, reloadChildren: true)
 
-        if let nodeAction = nodeAction {
-            switch nodeAction {
+        if let nodeOperation = nodeOperation {
+            switch nodeOperation {
             case let .InsertChildAtIndex(index):
+                self.propertyListOutlineView.expandItem(treeNode.childAtIndex(index))
+            case let .RegenerateChildrenForChildAtIndex(index):
                 self.propertyListOutlineView.expandItem(treeNode.childAtIndex(index))
             case .RegenerateChildren:
                 self.propertyListOutlineView.expandItem(treeNode)
-            case let .RegenerateChildrenAtIndex(index):
-                self.propertyListOutlineView.expandItem(treeNode.childAtIndex(index))
             default:
                 break
             }

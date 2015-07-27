@@ -34,7 +34,7 @@ import Foundation
 /// this protocol via the extensions below.
 ///
 /// While one could conceivably use the method in this protocol directly, it is better to use
-/// PropertyListXMLWritable.propertyListXMLDocumentData(), which will produce a complete Property 
+/// `PropertyListXMLWritable.propertyListXMLDocumentData()`, which will produce a complete Property
 /// List XML document.
 protocol PropertyListXMLWritable {
     /// Adds the conforming instance’s data to the specified XML element as children.
