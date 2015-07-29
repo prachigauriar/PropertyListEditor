@@ -154,20 +154,28 @@ class PropertyListTree: NSObject {
 /// - When a child item is added to a node’s item, invoke `‑insertChildAtIndex:` on the node.
 ///   This adds a corresponding child node at the appropriate index. Again, because node
 ///   creation creates children for you, the child item’s children are automatically created for
-///   you. This means that if you add a dictionary with many children at a particular index,
+///   you. This means that if you add a dictionary with many children at a particular index, you
 ///   only need to invoke `‑insertChildAtIndex:` for the dictionary; the node hierarchy for the
 ///   children will be created for you automatically.
 ///
 /// - When a child item is removed from a node’s item, invoke `‑removeChildAtIndex:` on the node.
-///   This removes the corresponding child node and the entire node hierarchy under it.
+///   This removes the corresponding child node and the entire node hierarchy underneath it.
 ///
 /// - When all else fails, invoke `‑regenerateChildren` on the node to discard its existing child
 ///   nodes and generate new ones based on the state of the node’s item. This should only be 
 ///   necessary if a large number of changes occur on a property list item at once. For example,
-///   if a node’s item was a dictionary and then became an date, it might be easier to just set
+///   if a node’s item was a dictionary and then became a date, it might be easier to just set
 ///   the node’s item to the date and regenerate its children instead of removing the children
 ///   one-by-one. 
 ///
+/// Note that tree nodes model item *hierarchies*, not their data, so you only need to add or
+/// remove nodes when the *hierachy* changes. For example, if you change an item from a number
+/// to a date, there’s no need to update its corresponding tree node, because there are no
+/// additional items in the item hierarchy. The same goes for an empty array being replaced by
+/// a string, or an array being replaced by a dictionary that contains the exact same elements.
+/// If a non-empty array were replaced by a string however, its corresponding node tree hierarchy
+/// would need to updated because the node for the array had children and the node for the string
+/// does not.
 class PropertyListTreeNode: NSObject {
     /// The tree that the instance is in
     unowned let tree: PropertyListTree
