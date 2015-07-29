@@ -389,7 +389,9 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
 
     // MARK: - Accessing Tree Node Item Data
 
-    private func keyOfTreeNode(treeNode: PropertyListTreeNode) -> NSString? {
+    /// Returns the string to display in the Key column for the specified tree node.
+    /// - parameter treeNode: The tree node whose key is being returned.
+    private func keyOfTreeNode(treeNode: PropertyListTreeNode) -> NSString {
         guard let index = treeNode.index else {
             return NSLocalizedString("PropertyListDocument.RootNodeKey", comment: "Key for root node")
         }
@@ -402,11 +404,24 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
         case let .DictionaryItem(dictionary):
             return dictionary.elementAtIndex(index).key
         default:
-            return nil
+            assert(false, "Impossible state: all nodes must be the root node or the child of a dictionary/array")
         }
     }
 
 
+    /// Sets the key for the specified tree node. Due to the implementation of other data source
+    /// methods, the tree node can be assumed to have a dictionary item as its parent. 
+    ///
+    /// This method works by getting the parent of the specified tree node, getting its
+    /// (dictionary) item, and editing it by replacing the tree node’s corresponding key with
+    /// the new key. The parent node’s (dictionary) item is then replaced with the edited
+    /// version using `‑setItem:ofTreeNodeAtIndexPath:nodeOperation:`. That method handles
+    /// making actual model changes and registering an appropriate undo action.
+    ///
+    /// - parameter key: The key being set. If the dictionary already contains this key, has no
+    ///       effect. This should not be possible because of our implementation of 
+    //        `control:textShouldEndEditing:`.
+    /// - parameter treeNode: The tree node whose key is being set.
     private func setKey(key: String, ofTreeNode treeNode: PropertyListTreeNode) {
         guard let parentNode = treeNode.parentNode, index = treeNode.index else {
             return
@@ -423,23 +438,38 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
     }
 
 
+    /// Returns the index corresponding to the tree node’s type in the type pop-up menu.
+    /// - parameter treeNode: The tree node whose type pop-up menu index is being returned.
     private func typePopUpMenuItemIndexOfTreeNode(treeNode: PropertyListTreeNode) -> Int {
         return treeNode.item.propertyListType.typePopUpMenuItemIndex
     }
 
 
+    /// Sets the type for the specified tree node. 
+    ///
+    /// This method works by first converting the existing property list item of the tree node
+    /// to the new type and then invoking `‑setValue:ofTreeNode:needsChildRegeneration:` with
+    /// the new value. Child regeneration is needed when the type of the given tree goes from
+    /// being a scalar to a collection or vice versa.
+    ///
+    /// - parameter key: The key being set. If the dictionary already contains this key, has no
+    ///       effect. This should not be possible because of our implementation of 
+    //        `‑control:textShouldEndEditing:`.
+    /// - parameter treeNode: The tree node whose key is being set.
     private func setType(type: PropertyListType, ofTreeNode treeNode: PropertyListTreeNode) {
         let wasCollection = treeNode.item.isCollection
-        let value = treeNode.item.propertyListItemByConvertingToType(type)
-        let isCollection = value.isCollection
+        let newValue = treeNode.item.propertyListItemByConvertingToType(type)
+        let isCollection = newValue.isCollection
 
-        // We only need child regeneration if we changed from being a scalar to a collection or vice
-        // versa.  If we changed types from one collection to another, we convert the children
-        // automatically, so we will have the right number of nodes.
-        self.setValue(value, ofTreeNode: treeNode, needsChildRegeneration: wasCollection != isCollection)
+        // We only need child regeneration if we changed from being a scalar to a collection or
+        // vice versa.  If we changed types from one collection to another, we keep our children
+        // as part of type conversion, so the node hierarchy doesn’t change at all.
+        self.setValue(newValue, ofTreeNode: treeNode, needsChildRegeneration: wasCollection != isCollection)
     }
 
 
+    /// Returns the object value to display in the Value column for the specified tree node.
+    /// - parameter treeNode: The tree node whose object value is being returned.
     private func valueOfTreeNode(treeNode: PropertyListTreeNode) -> AnyObject {
         switch treeNode.item {
         case .ArrayItem:
@@ -454,6 +484,23 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
     }
     
 
+    /// Sets the value for the specified tree node. If the node’s parent item is not a
+    /// dictionary, this simply means replacing the node’s item with the one specified. For
+    /// nodes that represent a key-value pair in a dictionary, this method sets the pair’s value
+    /// to the one specified.
+    ///
+    /// This method works by getting the parent of the specified tree node, getting its item,
+    /// and editing it by replacing the tree node’s corresponding value with the new one. The
+    /// parent node’s item is then replaced with the edited version using
+    /// `‑setItem:ofTreeNodeAtIndexPath:nodeOperation:`. That method handles making actual model
+    /// changes and registering an appropriate undo action.
+    ///
+    /// - parameter newValue: The value being set. 
+    /// - parameter treeNode: The tree node for which the value is being set.
+    /// - parameter needsChildRegeneration: Whether setting the new value should result in the
+    ///       node’s child nodes being regenerated. This is `false` by default. Child
+    ///       regeneration is appropriate when the effect of the edit changes the property list
+    ///       item hierarchy.
     private func setValue(newValue: PropertyListItem, ofTreeNode treeNode: PropertyListTreeNode, needsChildRegeneration: Bool = false) {
         guard let parentNode = treeNode.parentNode else {
             let nodeOperation: TreeNodeOperation? = needsChildRegeneration ? .RegenerateChildren : nil
@@ -481,6 +528,16 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
     }
 
 
+    /// Inserts the specified item as a child of `treeNode`’s item at the specified index.
+    ///
+    /// This method works by replacing `treeNode`’s item with an edited version that has the new
+    /// item added to it. It then invokes `‑setItem:ofTreeNodeAtIndexPath:nodeOperation:`, which
+    /// handles making actual model changes and registering an appropriate undo action.
+    ///
+    /// - parameter item: The item being added. 
+    /// - parameter index: The index in `treeNode`’s item at which to add the new item.
+    /// - parameter treeNode: The tree node that is having a child added to it. Raises an
+    ///       assertion if `treeNode`’s item is not a collection.
     private func insertItem(item: PropertyListItem, atIndex index: Int, inTreeNode treeNode: PropertyListTreeNode) {
         let newItem: PropertyListItem
 
@@ -500,6 +557,16 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
     }
 
 
+    /// Removes the child item at the specified index from `treeNode`’s item.
+    ///
+    /// This method works by replacing `treeNode`’s item with an edited version that removes the
+    /// child item at the specified index. It then invokes
+    /// `‑setItem:ofTreeNodeAtIndexPath:nodeOperation:`, which handles making actual model
+    /// changes and registering an appropriate undo action.
+    ///
+    /// - parameter index: The index of the child to remove in `treeNode`’s item.
+    /// - parameter treeNode: The tree node that is having a child removed from it. Raises an
+    ///       assertion if `treeNode`’s item is not a collection.
     private func removeItemAtIndex(index: Int, inTreeNode treeNode: PropertyListTreeNode) {
         let newItem: PropertyListItem
 
@@ -519,6 +586,21 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
     }
 
 
+    /// Sets the item of the tree node at the specified index path to the one specified and then
+    /// performs the specified tree node operation.
+    ///
+    /// This method also registers an appropriate undo operation that sets the item of the tree
+    /// node back to the original value and undoes the node operation.
+    ///
+    /// - parameter newItem: The new item that is being set.
+    /// - parameter indexPath: The index path of the tree node whose item is being set. This is 
+    ///       used instead of the tree node itself because an undo/redo operation might occur on
+    ///       a different tree node than the one that was in the tree at the time of the original
+    ///       edit.
+    /// - parameter nodeOperation: An optional tree node operation to perform to keep the tree node
+    ///       hierarchy in sync with the property list item hierarchy. `nil` by default. If this
+    ///       is non-`nil` and not `.RemoveChildAtIndex(index)`, the tree node that was inserted
+    ///       or had children regenerated for it will be expanded.
     private func setItem(newItem: PropertyListItem, ofTreeNodeAtIndexPath indexPath: NSIndexPath, nodeOperation: TreeNodeOperation? = nil) {
         let treeNode = self.tree.nodeAtIndexPath(indexPath)
         let oldItem = treeNode.item
@@ -547,6 +629,8 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
     }
 
 
+    /// Returns the default item to add to our backing property list when a new row is added to
+    /// the outline view.
     private func itemForAdding() -> PropertyListItem {
         return PropertyListItem(propertyListType: .StringType)
     }
@@ -697,6 +781,8 @@ private extension PropertyListDictionary {
 // MARK: - Converting Between Property List Types
 
 private extension PropertyListItem {
+    /// Returns a default property list item of the specified type.
+    /// - parameter type: The property list type of the new item.
     init(propertyListType: PropertyListType) {
         switch propertyListType {
         case .ArrayType:
@@ -718,6 +804,8 @@ private extension PropertyListItem {
     }
 
 
+    /// Returns a new property list item by converting the instance to the specified type.
+    /// - parameter type: The type of property list item to convert the instance to.
     func propertyListItemByConvertingToType(type: PropertyListType) -> PropertyListItem {
         if self.propertyListType == type {
             return self
@@ -807,6 +895,9 @@ private extension PropertyListItem {
 // MARK: - Property List Type Pop-Up Menu
 
 private extension PropertyListType {
+    /// Returns the `PropertyListType` instance that corresponds to the specified index of the
+    /// type pop-up menu, or `nil` if the index doesn’t have a known type correspondence.
+    /// - parameter index: The index of the type pop-up menu whose type is being returned.
     init?(typePopUpMenuItemIndex index: Int) {
         switch index {
         case 0:
@@ -829,6 +920,7 @@ private extension PropertyListType {
     }
 
 
+    /// Returns the index of the type pop-up menu that the instance corresponds to.
     var typePopUpMenuItemIndex: Int {
         switch self {
         case .ArrayType:
