@@ -6,10 +6,7 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="PropertyListDocument" customModule="PropertyListEditor" customModuleProvider="target">
             <connections>
-                <outlet property="keyTextFieldPrototypeCell" destination="IeN-d1-WIm" id="VlR-oL-rlg"/>
                 <outlet property="propertyListOutlineView" destination="ts0-c4-8yk" id="kqc-Y2-Y0k"/>
-                <outlet property="typePopUpButtonPrototypeCell" destination="rSu-us-wYx" id="FJg-kX-uiy"/>
-                <outlet property="valueTextFieldPrototypeCell" destination="dxW-43-C7g" id="Ekz-Ac-b7O"/>
                 <outlet property="window" destination="xOd-HO-29H" id="JIz-fz-R2o"/>
             </connections>
         </customObject>
@@ -19,7 +16,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="131" y="354" width="506" height="413"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
             <value key="minSize" type="size" width="94" height="86"/>
             <view key="contentView" id="gIp-Ho-8D9">
                 <rect key="frame" x="0.0" y="0.0" width="506" height="413"/>

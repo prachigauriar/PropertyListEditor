@@ -51,7 +51,7 @@ class UndoHandlerTarget: NSObject {
 
 
     /// Initializes the target with the specified handler block.
-    /// :handler: The block to execute when the instance’s undo: method is invoked.
+    /// - parameter handler: The block to execute when the instance’s `undo:` method is invoked.
     init(handler: Void -> Void) {
         self.handler = handler
         super.init()
@@ -79,7 +79,8 @@ class UndoHandlerTarget: NSObject {
 
 extension NSUndoManager {
     /// Returns a debug description of the instance’s undo stack. 
-    /// - warning: This method should only be used for debugging; it uses undocumented, unsupported behavior.
+    /// - warning: This method should only be used for debugging; it uses undocumented, unsupported 
+    ///            behavior.
     var undoStackDebugDescription: String? {
         let undoStack = object_getIvar(self, class_getInstanceVariable(NSClassFromString("NSUndoManager"), "_undoStack"));
         return undoStack.debugDescription

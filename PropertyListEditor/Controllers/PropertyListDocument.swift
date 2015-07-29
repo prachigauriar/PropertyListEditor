@@ -27,19 +27,11 @@
 import Cocoa
 
 
-/// `PropertyListDocument` is the primary controller class in this application. It manages the
-/// Property List document windows and the backing property list items in the data model.
+/// A `PropertyListDocument` instance synchronizes the changes between a property list document window
+/// and its backing data model. It manages opening and saving property list documents, displaying the
+/// document’s UI (an outline view), and synchronizing edits between the UI and the property list tree
+/// that contains its data.
 class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDelegate {
-    /// The `TableColumn` enum is used to enumerate the different `NSTableColumns` that the
-    /// instance’s outline view has. Whenever a table column is added to the outline view, a
-    /// corresponding case should be added to this enum. Additionally, the table column’s identifier
-    /// should be the same as the case name in this enum. The value of using this approach is that
-    /// the compiler ensures that all table column cases are handled by the code. 
-    private enum TableColumn: String {
-        case Key, Type, Value
-    }
-
-
     /// The instance’s property list tree. This is the model object that controller managers.
     private var tree: PropertyListTree! {
         didSet {
@@ -51,18 +43,6 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
     /// The instance’s outline view.
     @IBOutlet weak var propertyListOutlineView: NSOutlineView!
 
-    /// The prototype cell for the Key column’s text field cell. Copies of this cell are configured
-    /// and appear in each row.
-    @IBOutlet weak var keyTextFieldPrototypeCell: NSTextFieldCell!
-
-    /// The prototype cell for the Type column’s pop-up button cell. Copies of this cell are
-    /// configured and appear in each row.
-    @IBOutlet weak var typePopUpButtonPrototypeCell: NSPopUpButtonCell!
-
-    /// The prototype cell for the Value column’s text field cell. Copies of this cell are
-    /// configured and appear in each row.
-    @IBOutlet weak var valueTextFieldPrototypeCell: NSTextFieldCell!
-
 
     override init() {
         self.tree = PropertyListTree()
@@ -73,7 +53,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
     deinit {
         // Failing to unset the data source here results in a stray delegate message sent to the
         // zombie PropertyListDocument. While there may be a more correct solution, I’ve yet to find
-        // it
+        // it.
         self.propertyListOutlineView?.setDataSource(nil)
         self.propertyListOutlineView?.setDelegate(nil)
     }
@@ -101,23 +81,26 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
         var format: NSPropertyListFormat = .XMLFormat_v1_0
         let propertyListObject = try NSPropertyListSerialization.propertyListWithData(data, options: [], format: &format) as! PropertyListItemConvertible
 
-        do {
-            let rootItem: PropertyListItem
+        let rootItem: PropertyListItem
             
-            // If the document is in XML format, use our custom XML reader so that we can retain the
-            // row order. Otherwise, just convert the output of NSPropertyListSerialization into a 
-            // property list item
-            if format == .XMLFormat_v1_0 {
+        // If the document is in binary or ASCII format, convert the NSPropertyListSerialization
+        // output into a property list item. If it’s in XML, use our custom XML reader so that our
+        // dictionary keys are in the same order as the XML.
+        if format != .XMLFormat_v1_0 {
+            rootItem = try propertyListObject.propertyListItem()
+        } else {
+            // If an error occurs in our XML reader, fall back on the property list object that
+            // NSPropertyListSerialization already successfully produced. This should hopefully
+            // never happen.
+            do {
                 rootItem = try PropertyListXMLReader(XMLData: data).readData()
-            } else {
+            } catch let error {
+                NSLog("An error occurred while reading property list XML: \(error). Falling back on Apple’s implementation.")
                 rootItem = try propertyListObject.propertyListItem()
             }
-
-            self.tree = PropertyListTree(rootItem: rootItem)
-        } catch let error {
-            print("Error reading document: \(error)")
-            throw error
         }
+
+        self.tree = PropertyListTree(rootItem: rootItem)
     }
 
 
@@ -128,19 +111,13 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
             return 1
         }
 
-        guard let treeNode = item as? PropertyListTreeNode else {
-            assert(false, "item must be a PropertyListTreeNode")
-        }
-
+        let treeNode = item as! PropertyListTreeNode
         return treeNode.numberOfChildren
     }
 
 
     func outlineView(outlineView: NSOutlineView, isItemExpandable item: AnyObject) -> Bool {
-        guard let treeNode = item as? PropertyListTreeNode else {
-            assert(false, "item must be a PropertyListTreeNode")
-        }
-
+        let treeNode = item as! PropertyListTreeNode
         return treeNode.isExpandable
     }
 
@@ -150,28 +127,20 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
             return self.tree.rootNode
         }
 
-        guard let treeNode = item as? PropertyListTreeNode else {
-            assert(false, "item must be a PropertyListTreeNode")
-        }
-
+        let treeNode = item as! PropertyListTreeNode
         return treeNode.childAtIndex(index)
     }
 
 
     func outlineView(outlineView: NSOutlineView, objectValueForTableColumn tableColumn: NSTableColumn?, byItem item: AnyObject?) -> AnyObject? {
-        guard let tableColumnIdentifier = tableColumn?.identifier, treeNode = item as? PropertyListTreeNode else {
-            return nil
-        }
+        let treeNode = item as! PropertyListTreeNode
+        let tableColumnIdentifier = TableColumnIdentifier(rawValue: tableColumn!.identifier)!
 
-        guard let tableColumn = TableColumn(rawValue: tableColumnIdentifier) else {
-            assert(false, "invalid table column identifier \(tableColumnIdentifier)")
-        }
-
-        switch tableColumn {
+        switch tableColumnIdentifier {
         case .Key:
             return self.keyOfTreeNode(treeNode)
         case .Type:
-            return self.typeOfTreeNode(treeNode)
+            return self.typePopUpMenuItemIndexOfTreeNode(treeNode)
         case .Value:
             return self.valueOfTreeNode(treeNode)
         }
@@ -179,30 +148,20 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
 
 
     func outlineView(outlineView: NSOutlineView, setObjectValue object: AnyObject?, forTableColumn tableColumn: NSTableColumn?, byItem item: AnyObject?) {
-        guard let tableColumnIdentifier = tableColumn?.identifier, let treeNode = item as? PropertyListTreeNode else {
-            return
-        }
+        let treeNode = item as! PropertyListTreeNode
+        let tableColumnIdentifier = TableColumnIdentifier(rawValue: tableColumn!.identifier)!
+        let propertyListObject = object as! PropertyListItemConvertible
 
-        guard let tableColumn = TableColumn(rawValue: tableColumnIdentifier) else {
-            assert(false, "invalid table column identifier \(tableColumnIdentifier)")
-        }
-
-        guard let propertyListObject = object as? PropertyListItemConvertible else {
-            assert(false, "object value (\(object)) is not a property list object")
-        }
-
-        switch tableColumn {
+        switch tableColumnIdentifier {
         case .Key:
-            if !self.setKey(object as! String, ofTreeNode: treeNode) {
-                NSBeep()
-            }
+            self.setKey(object as! String, ofTreeNode: treeNode)
         case .Type:
             let type = PropertyListType(typePopUpMenuItemIndex: object as! Int)!
             self.setType(type, ofTreeNode: treeNode)
         case .Value:
             let item: PropertyListItem
 
-            // The two cases here are the value being set by a pop-up button or the value just being set
+            // The two cases here are the value being set by a pop-up button or the value being returned directly
             if case let nodeItem = treeNode.item,
                 let valueConstraint = nodeItem.valueConstraint,
                 case let .ValueArray(valueArray) = valueConstraint,
@@ -221,33 +180,25 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
     // MARK: - Outline View Delegate
 
     func outlineView(outlineView: NSOutlineView, dataCellForTableColumn tableColumn: NSTableColumn?, item: AnyObject) -> NSCell? {
-        guard let tableColumnIdentifier = tableColumn?.identifier, treeNode = item as? PropertyListTreeNode else {
+        guard let tableColumn = tableColumn else {
             return nil
         }
 
-        guard let tableColumn = TableColumn(rawValue: tableColumnIdentifier) else {
-            assert(false, "invalid table column identifier \(tableColumnIdentifier)")
-        }
+        let treeNode = item as! PropertyListTreeNode
+        let tableColumnIdentifier = TableColumnIdentifier(rawValue: tableColumn.identifier)!
 
-        switch tableColumn {
-        case .Key:
-            return self.keyTextFieldPrototypeCell.copy() as! NSTextFieldCell
-        case .Type:
-            return self.typePopUpButtonPrototypeCell.copy() as! NSPopUpButtonCell
+        switch tableColumnIdentifier {
         case .Value:
             return self.valueCellForTreeNode(treeNode)
+        default:
+            return tableColumn.dataCell as? NSCell
         }
     }
 
 
     func outlineView(outlineView: NSOutlineView, shouldEditTableColumn tableColumn: NSTableColumn?, item: AnyObject) -> Bool {
-        guard let tableColumnIdentifier = tableColumn?.identifier, treeNode = item as? PropertyListTreeNode else {
-            return false
-        }
-
-        guard let tableColumn = TableColumn(rawValue: tableColumnIdentifier) else {
-            assert(false, "invalid table column identifier \(tableColumnIdentifier)")
-        }
+        let treeNode = item as! PropertyListTreeNode
+        let tableColumn = TableColumnIdentifier(rawValue: tableColumn!.identifier)!
 
         switch tableColumn {
         case .Key:
@@ -260,25 +211,65 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
     }
 
 
+    func control(control: NSControl, textShouldEndEditing fieldEditor: NSText) -> Bool {
+        // This method will return true unless the edit happened in the Key column and the row’s
+        // parent item (a dictionary) already contains the key that the user typed in
+
+        // If there was no edited row, column, or there was no string that was typed in, 
+        // return true. (This should never happen, but the compiler doesn’t know that)
+        let editedRow = self.propertyListOutlineView.editedRow
+        let editedColumn = self.propertyListOutlineView.editedColumn
+        guard editedRow != -1 && editedColumn != -1, let newString = fieldEditor.string else {
+            return true
+        }
+
+        // If the column that was being edited wasn’t the Key column, return true
+        let tableColumn = self.propertyListOutlineView.tableColumns[editedColumn]
+        guard TableColumnIdentifier(rawValue: tableColumn.identifier) == .Key else {
+            return true
+        }
+
+        // parentNode should never be nil, since we only allow the Key column to be edited
+        // if the parent of the row’s item is a dictionary
+        let treeNode = self.propertyListOutlineView.itemAtRow(editedRow) as! PropertyListTreeNode
+        let parentNode = treeNode.parentNode!
+
+        // If we’re a dictionary item (we definitely are), only let the edit end if the key is
+        // not already in the dictionary.
+        switch parentNode.item {
+        case let .DictionaryItem(dictionary):
+            return !dictionary.containsKey(newString)
+        default:
+            return true
+        }
+    }
+
+
     private func valueCellForTreeNode(treeNode: PropertyListTreeNode) -> NSCell {
         let item = treeNode.item
+        let tableColumn = self.propertyListOutlineView.tableColumnWithIdentifier(TableColumnIdentifier.Key.rawValue)!
 
+        // If we’re a collection, just use a copy of the prototype cell with the disabled text color
         if item.isCollection {
-            let cell = self.valueTextFieldPrototypeCell.copy() as! NSTextFieldCell
+            let cell = tableColumn.dataCell.copy() as! NSTextFieldCell
             cell.textColor = NSColor.disabledControlTextColor()
             return cell
         }
 
+        // If we don’t have a value constraint, just use the normal text cell
         guard let valueConstraint = item.valueConstraint else {
-            return self.valueTextFieldPrototypeCell.copy() as! NSTextFieldCell
+            return tableColumn.dataCell as! NSTextFieldCell
         }
 
         switch valueConstraint {
         case let .Formatter(formatter):
-            let cell = self.valueTextFieldPrototypeCell.copy() as! NSTextFieldCell
+            // If our value constraint is a formatter, make a copy of the prototype cell and add the
+            // formatter to it.
+            let cell = tableColumn.dataCell.copy() as! NSTextFieldCell
             cell.formatter = formatter
             return cell
         case let .ValueArray(validValues):
+            // Otherwise, generate a pop-up button with the array of valid values
             return self.popUpButtonCellWithValidValues(validValues)
         }
     }
@@ -370,6 +361,11 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
                 return
         }
 
+        // Abort any current edits before deleting the row, else we’ll get a crash.
+        if self.propertyListOutlineView.editedRow != -1 {
+            self.propertyListOutlineView.abortEditing()
+        }
+
         let index: Int! = selectedTreeNode.index
         self.removeItemAtIndex(index, inTreeNode: parentTreeNode)
     }
@@ -378,21 +374,21 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
     private func editTreeNode(treeNode: PropertyListTreeNode) {
         let rowIndex = self.propertyListOutlineView.rowForItem(treeNode)
 
-        let column: TableColumn
+        let tableColumnIdentifier: TableColumnIdentifier
         if treeNode.isRootNode {
-            column = .Value
+            tableColumnIdentifier = .Value
         } else {
-            column = treeNode.parentNode!.item.propertyListType == .DictionaryType ? .Key : .Value
+            tableColumnIdentifier = treeNode.parentNode!.item.propertyListType == .DictionaryType ? .Key : .Value
         }
 
-        let columnIndex = self.propertyListOutlineView.tableColumns.indexOf { $0.identifier == column.rawValue }
+        let columnIndex = tableColumnIdentifier.indexOfTableColumnWithIdentifierInOutlineView(self.propertyListOutlineView)!
         self.propertyListOutlineView.selectRowIndexes(NSIndexSet(index: rowIndex), byExtendingSelection: false)
-        self.propertyListOutlineView.editColumn(columnIndex!, row: rowIndex, withEvent: nil, select: true)
+        self.propertyListOutlineView.editColumn(columnIndex, row: rowIndex, withEvent: nil, select: true)
 
     }
 
 
-    // MARK: - Manipulating Tree Nodes Items
+    // MARK: - Accessing Tree Node Item Data
 
     private func keyOfTreeNode(treeNode: PropertyListTreeNode) -> NSString? {
         guard let index = treeNode.index else {
@@ -412,27 +408,23 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
     }
 
 
-    private func setKey(key: String, ofTreeNode treeNode: PropertyListTreeNode) -> Bool {
+    private func setKey(key: String, ofTreeNode treeNode: PropertyListTreeNode) {
         guard let parentNode = treeNode.parentNode, index = treeNode.index else {
-            return false
+            return
         }
 
-        switch parentNode.item {
-        case var .DictionaryItem(dictionary):
+        if case var .DictionaryItem(dictionary) = parentNode.item {
             guard !dictionary.containsKey(key) else {
-                return false
+                return
             }
 
             dictionary.setKey(key, atIndex: index)
             self.setItem(.DictionaryItem(dictionary), ofTreeNodeAtIndexPath: parentNode.indexPath)
-            return true
-        default:
-            return false
         }
     }
 
 
-    private func typeOfTreeNode(treeNode: PropertyListTreeNode) -> Int {
+    private func typePopUpMenuItemIndexOfTreeNode(treeNode: PropertyListTreeNode) -> Int {
         return treeNode.item.propertyListType.typePopUpMenuItemIndex
     }
 
@@ -442,9 +434,9 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
         let value = treeNode.item.propertyListItemByConvertingToType(type)
         let isCollection = value.isCollection
 
-        // We only need child regeneration if we changed from being a scalar to a collection or vice versa.
-        // If we changed types from one collection to another, we convert the children automatically, so
-        // we will have the right number of nodes.
+        // We only need child regeneration if we changed from being a scalar to a collection or vice
+        // versa.  If we changed types from one collection to another, we convert the children
+        // automatically, so we will have the right number of nodes.
         self.setValue(value, ofTreeNode: treeNode, needsChildRegeneration: wasCollection != isCollection)
     }
 
@@ -562,6 +554,128 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
 }
 
 
+// MARK: - Table Column Identifiers
+
+/// The `TableColumn` enum is used to enumerate the different `NSTableColumns` that the instance’s
+/// outline view has. Whenever a table column is added to the outline view, a corresponding case
+/// should be added to this enum. Additionally, the table column’s identifier should be the same as
+/// the case name in this enum. The value of using this approach is that the compiler ensures that
+/// all table column cases are handled by the code.
+private enum TableColumnIdentifier: String {
+    case Key, Type, Value
+
+
+    /// Returns the index of the outline view table column whose identifier matches the instance’s.
+    /// - parameter outlineView: The outline view whose table column is being returned.
+    func indexOfTableColumnWithIdentifierInOutlineView(outlineView: NSOutlineView) -> Int? {
+        return outlineView.tableColumns.indexOf { $0.identifier == self.rawValue }
+    }
+}
+
+
+// MARK: - Value Constraints
+
+/// `PropertyListValueConstraints` represent constraints for valid values on property list items. A
+/// value constraint can take one of two forms: a formatter that should be used to convert to and
+/// from a string representation of the value; and an array of valid values that represent all the
+/// values the item can have.
+private enum PropertyListValueConstraint {
+    /// Represents a formatter value constraint.
+    case Formatter(NSFormatter)
+
+    /// Represents an array of valid values.
+    case ValueArray([PropertyListValidValue])
+}
+
+
+/// `PropertyListValidValues` represent the valid values that a property list item can have.
+private struct PropertyListValidValue {
+    /// An object representation of the value.
+    let value: PropertyListItemConvertible
+
+    /// A localized, user-presentable description of the value.
+    let localizedDescription: String
+}
+
+
+private extension PropertyListItem {
+    /// Returns an value constraint for the property list item type or `nil` if there are
+    /// no constraints for the item.
+    var valueConstraint: PropertyListValueConstraint? {
+        switch self {
+        case .BooleanItem:
+            let falseTitle = NSLocalizedString("PropertyListValue.Boolean.FalseTitle", comment: "Title for Boolean false value")
+            let falseValidValue = PropertyListValidValue(value: NSNumber(bool: false), localizedDescription: falseTitle)
+            let trueTitle = NSLocalizedString("PropertyListValue.Boolean.TrueTitle", comment: "Title for Boolean true value")
+            let trueValidValue = PropertyListValidValue(value: NSNumber(bool: true), localizedDescription: trueTitle)
+            return .ValueArray([falseValidValue, trueValidValue])
+        case .DataItem:
+            return .Formatter(PropertyListDataFormatter())
+        case .DateItem:
+            struct SharedFormatter {
+                static let dateFormatter = LenientDateFormatter()
+            }
+
+            return .Formatter(SharedFormatter.dateFormatter)
+        case .NumberItem:
+            return .Formatter(NSNumberFormatter.propertyListNumberFormatter())
+        default:
+            return nil
+        }
+    }
+}
+
+
+// MARK: - Tree Node Operations
+
+/// The `TreeNodeOperation` enum enumerates the different operations that can be taken on a tree
+/// node. Because all operations on a property list item ultimately boils down to replacing an item
+/// with a new one, we need some way to discern what corresponding node operation needs to take
+/// place. That’s what `TreeNodeOperations` are for.
+private enum TreeNodeOperation {
+    /// Indicates that a child node should be inserted at the specified index.
+    case InsertChildAtIndex(Int)
+
+    /// Indicates that the child node at the specified index should be removed.
+    case RemoveChildAtIndex(Int)
+
+    /// Indicates that the child node at the specified index should have its children regenerated.
+    case RegenerateChildrenForChildAtIndex(Int)
+
+    /// Indicates that the node should regenerate its children.
+    case RegenerateChildren
+
+
+    /// Returns the inverse of the specified operation. This is useful when undoing an operation.
+    var inverseOperation: TreeNodeOperation {
+        switch self {
+        case let .InsertChildAtIndex(index):
+            return .RemoveChildAtIndex(index)
+        case let .RemoveChildAtIndex(index):
+            return .InsertChildAtIndex(index)
+        case .RegenerateChildrenForChildAtIndex, .RegenerateChildren:
+            return self
+        }
+    }
+
+
+    /// Performs the instance’s operation on the specified tree node.
+    /// - parameter treeNode: The tree node on which to perform the operation.
+    func performOperationOnTreeNode(treeNode: PropertyListTreeNode) {
+        switch self {
+        case let .InsertChildAtIndex(index):
+            treeNode.insertChildAtIndex(index)
+        case let .RemoveChildAtIndex(index):
+            treeNode.removeChildAtIndex(index)
+        case let .RegenerateChildrenForChildAtIndex(index):
+            treeNode.childAtIndex(index).regenerateChildren()
+        case RegenerateChildren:
+            treeNode.regenerateChildren()
+        }
+    }
+}
+
+
 // MARK: - Generating Unused Dictionary Keys
 
 private extension PropertyListDictionary {
@@ -581,7 +695,7 @@ private extension PropertyListDictionary {
 }
 
 
-// MARK: - PropertyListItem and PropertyListType Extensions
+// MARK: - Converting Between Property List Types
 
 private extension PropertyListItem {
     init(propertyListType: PropertyListType) {
@@ -691,6 +805,8 @@ private extension PropertyListItem {
 }
 
 
+// MARK: - Property List Type Pop-Up Menu
+
 private extension PropertyListType {
     init?(typePopUpMenuItemIndex index: Int) {
         switch index {
@@ -730,112 +846,6 @@ private extension PropertyListType {
             return 6
         case .StringType:
             return 7
-        }
-    }
-}
-
-
-// MARK: - Value Constraints
-
-/// `PropertyListValueConstraints` represent constraints for valid values on property list items.
-/// A value constraint can take one of two forms: a formatter that should be used to convert 
-/// to and from a string representation of the value; and an array of valid values that represent
-/// all the values the item can have.
-private enum PropertyListValueConstraint {
-    /// Represents a formatter value constraint.
-    case Formatter(NSFormatter)
-
-    /// Represents an array of valid values.
-    case ValueArray([PropertyListValidValue])
-}
-
-
-/// `PropertyListValidValues` represent the valid values that a property list item can have.
-private struct PropertyListValidValue {
-    /// An object representation of the value.
-    let value: PropertyListItemConvertible
-
-    /// A localized, user-presentable description of the value.
-    let localizedDescription: String
-}
-
-
-
-private extension PropertyListItem {
-    /// Returns an value constraint for the property list item type or `nil` if there are
-    // no constraints for the item.
-    var valueConstraint: PropertyListValueConstraint? {
-        switch self {
-        case .BooleanItem:
-            let falseTitle = NSLocalizedString("PropertyListValue.Boolean.FalseTitle", comment: "Title for Boolean false value")
-            let falseValidValue = PropertyListValidValue(value: NSNumber(bool: false), localizedDescription: falseTitle)
-            let trueTitle = NSLocalizedString("PropertyListValue.Boolean.TrueTitle", comment: "Title for Boolean true value")
-            let trueValidValue = PropertyListValidValue(value: NSNumber(bool: true), localizedDescription: trueTitle)
-            return .ValueArray([falseValidValue, trueValidValue])
-        case .DataItem:
-            return .Formatter(PropertyListDataFormatter())
-        case .DateItem:
-            struct SharedFormatter {
-                static let dateFormatter = LenientDateFormatter()
-            }
-
-            return .Formatter(SharedFormatter.dateFormatter)
-        case .NumberItem:
-            return .Formatter(NSNumberFormatter.propertyListNumberFormatter())
-        default:
-            return nil
-        }
-    }
-}
-
-
-// MARK: - Tree Node Operations
-
-/// The `TreeNodeOperation` enum enumerates the different operations that can be taken on a
-/// tree node. Because all operations on a property list item ultimately boils down to
-/// replacing an item with a new one, we need some way to discern what corresponding node
-/// operation needs to take place. That’s what `TreeNodeOperations` are for.
-private enum TreeNodeOperation {
-    /// Indicates that a child node should be inserted at the specified index.
-    case InsertChildAtIndex(Int)
-
-    /// Indicates that the child node at the specified index should be removed.
-    case RemoveChildAtIndex(Int)
-
-    /// Indicates that the child node at the specified index should have its children
-    /// regenerated.
-    case RegenerateChildrenForChildAtIndex(Int)
-
-    /// Indicates that the node should regenerate its children.
-    case RegenerateChildren
-
-
-    /// Returns the inverse of the specified operation. This is useful when undoing an
-    /// operation.
-    var inverseOperation: TreeNodeOperation {
-        switch self {
-        case let .InsertChildAtIndex(index):
-            return .RemoveChildAtIndex(index)
-        case let .RemoveChildAtIndex(index):
-            return .InsertChildAtIndex(index)
-        case .RegenerateChildrenForChildAtIndex, .RegenerateChildren:
-            return self
-        }
-    }
-
-
-    /// Performs the instance’s operation on the specified tree node.
-    /// - parameter treeNode: The tree node on which to perform the operation.
-    func performOperationOnTreeNode(treeNode: PropertyListTreeNode) {
-        switch self {
-        case let .InsertChildAtIndex(index):
-            treeNode.insertChildAtIndex(index)
-        case let .RemoveChildAtIndex(index):
-            treeNode.removeChildAtIndex(index)
-        case let .RegenerateChildrenForChildAtIndex(index):
-            treeNode.childAtIndex(index).regenerateChildren()
-        case RegenerateChildren:
-            treeNode.regenerateChildren()
         }
     }
 }

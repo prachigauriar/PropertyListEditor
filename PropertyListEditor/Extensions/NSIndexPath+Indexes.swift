@@ -36,6 +36,8 @@ extension NSIndexPath {
     }
 
 
+    /// Returns the index at the last position in the instance, or `nil` if the instance has no 
+    /// indexes.
     var lastIndex: Int? {
         return self.length > 0 ? self.indexAtPosition(self.length - 1) : nil
     }
