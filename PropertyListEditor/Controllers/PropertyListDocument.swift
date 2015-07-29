@@ -292,19 +292,18 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
     // MARK: - UI Validation
 
     override func validateUserInterfaceItem(userInterfaceItem: NSValidatedUserInterfaceItem) -> Bool {
-        let selectors = Set<Selector>(arrayLiteral: "addChild:", "addSibling:", "deleteItem:")
+        let selectors: Set<Selector> = ["addChild:", "addSibling:", "deleteItem:"]
         let action = userInterfaceItem.action()
 
         guard selectors.contains(action) else {
             return super.validateUserInterfaceItem(userInterfaceItem)
         }
 
-        let outlineView = self.propertyListOutlineView
         let treeNode: PropertyListTreeNode
-        if outlineView.numberOfSelectedRows == 0 {
+        if self.propertyListOutlineView.numberOfSelectedRows == 0 {
             treeNode = self.tree.rootNode
         } else {
-            treeNode = outlineView.itemAtRow(outlineView.selectedRow) as! PropertyListTreeNode
+            treeNode = self.propertyListOutlineView.itemAtRow(self.propertyListOutlineView.selectedRow) as! PropertyListTreeNode
         }
 
         switch action {
