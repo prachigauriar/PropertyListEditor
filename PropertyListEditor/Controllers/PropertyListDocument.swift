@@ -592,6 +592,10 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
     /// This method also registers an appropriate undo operation that sets the item of the tree
     /// node back to the original value and undoes the node operation.
     ///
+    /// This is the only method in this class that makes direct changes to instance’s backing 
+    /// data model. All other methods ultimately funnel through this method. This is primarily to
+    /// make undo/redo easier to reason about.
+    ///
     /// - parameter newItem: The new item that is being set.
     /// - parameter indexPath: The index path of the tree node whose item is being set. This is 
     ///       used instead of the tree node itself because an undo/redo operation might occur on
