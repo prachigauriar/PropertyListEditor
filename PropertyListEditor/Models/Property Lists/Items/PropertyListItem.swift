@@ -156,7 +156,7 @@ extension PropertyListItem {
 }
 
 
-// MARK: - Accessing Items with Index Path
+// MARK: - Accessing Items with Index Paths
 
 /// This extension adds the ability to access and change property lists using index paths. Rather
 /// than editing the property list items in place, the methods in this extension return new items
@@ -176,7 +176,7 @@ extension PropertyListItem {
             case let .DictionaryItem(dictionary):
                 item = dictionary.elementAtIndex(index).value
             default:
-                assert(false, "non-empty indexPath for scalar type")
+                fatalError("non-empty indexPath for scalar type")
             }
         }
 
@@ -220,7 +220,7 @@ extension PropertyListItem {
             dictionary.setValue(newValue, atIndex: index)
             return .DictionaryItem(dictionary)
         default:
-            assert(false, "non-empty indexPath for scalar type")
+            fatalError("non-empty indexPath for scalar type")
         }
     }
 }

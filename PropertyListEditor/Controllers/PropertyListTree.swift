@@ -194,7 +194,6 @@ class PropertyListTreeNode: NSObject {
     /// The instance’s index.
     private(set) var index: Int? {
         didSet {
-            self.updateIndexesForChildrenInRange(0 ..< self.numberOfChildren)
             self.invalidateCachedIndexPath()
         }
     }
@@ -338,7 +337,7 @@ class PropertyListTreeNode: NSObject {
 
     // MARK: - Updating Indexes and Index Paths
 
-    /// Recursively invalidates the instance’s cached index path those of its children.
+    /// Recursively invalidates the instance’s cached index path and those of its children.
     private func invalidateCachedIndexPath() {
         self.cachedIndexPath = nil
         for child in self.children {

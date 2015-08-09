@@ -32,7 +32,7 @@ import Cocoa
 /// document’s UI (an outline view), and synchronizing edits between the UI and the property list tree
 /// that contains its data.
 class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDelegate {
-    /// The instance’s property list tree. This is the model object that controller managers.
+    /// The instance’s property list tree. This is the model object that the controller manages.
     private var tree: PropertyListTree! {
         didSet {
             self.propertyListOutlineView?.reloadData()
@@ -404,7 +404,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
         case let .DictionaryItem(dictionary):
             return dictionary.elementAtIndex(index).key
         default:
-            assert(false, "Impossible state: all nodes must be the root node or the child of a dictionary/array")
+            fatalError("Impossible state: all nodes must be the root node or the child of a dictionary/array")
         }
     }
 
@@ -452,10 +452,8 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
     /// the new value. Child regeneration is needed when the type of the given tree goes from
     /// being a scalar to a collection or vice versa.
     ///
-    /// - parameter key: The key being set. If the dictionary already contains this key, has no
-    ///       effect. This should not be possible because of our implementation of 
-    //        `‑control:textShouldEndEditing:`.
-    /// - parameter treeNode: The tree node whose key is being set.
+    /// - parameter type: The type being set.
+    /// - parameter treeNode: The tree node whose type is being set.
     private func setType(type: PropertyListType, ofTreeNode treeNode: PropertyListTreeNode) {
         let wasCollection = treeNode.item.isCollection
         let newValue = treeNode.item.propertyListItemByConvertingToType(type)
@@ -549,8 +547,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
             dictionary.insertKey(dictionary.unusedKey(), value: item, atIndex: index)
             newItem = .DictionaryItem(dictionary)
         default:
-            assert(false, "Attempt to insert child at index \(index) in scalar tree node \(treeNode)")
-            return
+            fatalError("Attempt to insert child at index \(index) in scalar tree node \(treeNode)")
         }
 
         self.setItem(newItem, ofTreeNodeAtIndexPath: treeNode.indexPath, nodeOperation: .InsertChildAtIndex(index))
@@ -578,8 +575,7 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
             dictionary.removeElementAtIndex(index)
             newItem = .DictionaryItem(dictionary)
         default:
-            assert(false, "Attempt to remove child at index \(index) in scalar tree node \(treeNode)")
-            return
+            fatalError("Attempt to remove child at index \(index) in scalar tree node \(treeNode)")
         }
 
         self.setItem(newItem, ofTreeNodeAtIndexPath: treeNode.indexPath, nodeOperation: .RemoveChildAtIndex(index))
