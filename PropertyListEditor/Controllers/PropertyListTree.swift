@@ -259,7 +259,8 @@ class PropertyListTreeNode: NSObject {
 
 
     override var description: String {
-        let indexPathString = "/".join(self.indexPath.indexes.map { $0.description })
+        let indexDescriptions = self.indexPath.indexes.map { $0.description }
+        let indexPathString = indexDescriptions.joinWithSeparator("/")
         return "<PropertyListTreeNode indexPath=/\(indexPathString)>"
     }
     

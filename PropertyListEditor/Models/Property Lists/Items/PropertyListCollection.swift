@@ -83,7 +83,8 @@ protocol PropertyListCollection: CustomStringConvertible, Hashable {
 
 extension PropertyListCollection {
     var description: String {
-        return "[" + ", ".join(self.elements.map { $0.description }) + "]"
+        let elementDescriptions = self.elements.map { $0.description }
+        return "[" + elementDescriptions.joinWithSeparator(", ") + "]"
     }
 
 
