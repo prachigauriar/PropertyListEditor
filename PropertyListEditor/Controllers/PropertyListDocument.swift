@@ -292,7 +292,9 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
     // MARK: - UI Validation
 
     override func validateUserInterfaceItem(userInterfaceItem: NSValidatedUserInterfaceItem) -> Bool {
-        let selectors: Set<Selector> = ["addChild:", "addSibling:", "deleteItem:"]
+        let selectors: Set<Selector> = [#selector(PropertyListDocument.addChild(_:)),
+                                        #selector(PropertyListDocument.addSibling(_:)),
+                                        #selector(PropertyListDocument.deleteItem(_:))]
         let action = userInterfaceItem.action()
 
         guard selectors.contains(action) else {
@@ -307,9 +309,9 @@ class PropertyListDocument: NSDocument, NSOutlineViewDataSource, NSOutlineViewDe
         }
 
         switch action {
-        case "addChild:":
+        case #selector(PropertyListDocument.addChild(_:)):
             return treeNode.item.isCollection
-        case "addSibling:", "deleteItem:":
+        case #selector(PropertyListDocument.addSibling(_:)), #selector(PropertyListDocument.deleteItem(_:)):
             return !treeNode.isRootNode
         default:
             return false
@@ -770,7 +772,8 @@ private extension PropertyListDictionary {
         var key: String
         var counter: Int = 1
         repeat {
-            key = NSString.localizedStringWithFormat(formatString, counter++) as String
+            key = NSString.localizedStringWithFormat(formatString, counter) as String
+            counter += 1
         } while self.containsKey(key)
 
         return key

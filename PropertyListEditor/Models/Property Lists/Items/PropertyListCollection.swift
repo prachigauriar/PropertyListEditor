@@ -32,7 +32,7 @@ import Foundation
 /// extension.
 protocol PropertyListCollection: CustomStringConvertible, Hashable {
     /// The type of element the instance contains.
-    typealias ElementType: CustomStringConvertible, Hashable
+    associatedtype ElementType: CustomStringConvertible, Hashable
 
     /// The elements in the instance
     var elements: [ElementType] { get }

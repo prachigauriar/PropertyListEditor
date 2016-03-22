@@ -61,7 +61,7 @@ class UndoHandlerTarget: NSObject {
     /// Registers the instance as a target for an undo operation with the specified undo manager.
     /// - parameter undoManager: The undo manager with which to register.
     func registerWithUndoManager(undoManager: NSUndoManager) {
-        undoManager.registerUndoWithTarget(self, selector: "undo:", object: self)
+        undoManager.registerUndoWithTarget(self, selector: #selector(UndoHandlerTarget.undo(_:)), object: self)
     }
 
 
