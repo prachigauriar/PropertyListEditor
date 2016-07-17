@@ -30,7 +30,7 @@ import Foundation
 /// The `PropertyListCollection` protocol defines a set of properties and methods that all property
 /// collections provide. It is primarily useful for providing default behavior using a protocol
 /// extension.
-protocol PropertyListCollection: CustomStringConvertible, Hashable {
+protocol PropertyListCollection : CustomStringConvertible, Hashable {
     /// The type of element the instance contains.
     associatedtype ElementType: CustomStringConvertible, Hashable
 
@@ -38,86 +38,73 @@ protocol PropertyListCollection: CustomStringConvertible, Hashable {
     var elements: [ElementType] { get }
 
     /// The number of elements in the instance
-    var elementCount: Int { get }
+    var count: Int { get }
 
-
-    /// Returns the element at the specified index in the instance.
-    /// - parameter index: The index. Raises an assertion if beyond the bounds of the instance.
-    /// - returns: The element at the specified index in the instance.
-    func elementAtIndex(index: Int) -> ElementType
-
+    subscript(index: Int) -> ElementType { get set }
 
     /// Adds the specified element to the end of the instance.
     /// - parameter element: The element to add
-    mutating func addElement(element: ElementType)
+    mutating func append(_ element: ElementType)
 
     /// Inserts the specified element at the specified index in the instance.
     /// - parameter element: The element to insert
     /// - parameter index: The index at which to insert the element. Raises an assertion if beyond
     ///       the bounds of the instance.
-    mutating func insertElement(element: ElementType, atIndex index: Int)
-
+    mutating func insert(_ element: ElementType, at index: Int)
 
     /// Moves the element from the specified index to the new index.
     /// - parameter oldIndex: The index of the element being moved. Raises an assertion if beyond
     ///       the bounds of the instance.
     /// - parameter newIndex: The index to which to move the element. Raises an assertion if beyond
     ///       the bounds of the instance.
-    mutating func moveElementAtIndex(oldIndex: Int, toIndex newIndex: Int)
-
-
-    /// Replaces the element at the specified index with the specified element.
-    /// - parameter index: The index of the element being replaced. Raises an assertion if beyond
-    ///       the bounds of the instance.
-    /// - parameter element: The element to replace the element at the specified index.
-    mutating func replaceElementAtIndex(index: Int, withElement element: ElementType)
-
+    mutating func moveElement(at oldIndex: Int, to newIndex: Int)
 
     /// Removes the element at the specified index.
     /// - parameter index: The index of the element being removed. Raises an assertion if beyond
     ///       the bounds of the instance.
     /// - returns: The element that was removed.
-    mutating func removeElementAtIndex(index: Int) -> ElementType
+    @discardableResult mutating func remove(at index: Int) -> ElementType
 }
 
 
 extension PropertyListCollection {
     var description: String {
-        let elementDescriptions = self.elements.map { $0.description }
-        return "[" + elementDescriptions.joinWithSeparator(", ") + "]"
+        let elementDescriptions = elements.map { $0.description }
+        return "[" + elementDescriptions.joined(separator: ", ") + "]"
     }
 
 
     var hashValue: Int {
-        return self.elementCount
+        return count
     }
 
 
-    var elementCount: Int {
-        return self.elements.count
+    var count: Int {
+        return elements.count
     }
 
 
-    func elementAtIndex(index: Int) -> ElementType {
-        return self.elements[index]
-    }
+    subscript(index: Int) -> ElementType {
+        get {
+            return elements[index]
+        }
 
-
-    mutating func addElement(element: ElementType) {
-        self.insertElement(element, atIndex: self.elementCount)
+        set {
+            remove(at: index)
+            insert(newValue, at: index)
+        }
     }
 
     
-    mutating func moveElementAtIndex(oldIndex: Int, toIndex newIndex: Int) {
-        let element = self.elementAtIndex(oldIndex)
-        self.removeElementAtIndex(oldIndex)
-        self.insertElement(element, atIndex: newIndex)
+    mutating func append(_ element: ElementType) {
+        insert(element, at: count)
     }
 
-
-    mutating func replaceElementAtIndex(index: Int, withElement element: ElementType) {
-        self.removeElementAtIndex(index)
-        self.insertElement(element, atIndex: index)
+    
+    mutating func moveElement(at oldIndex: Int, to newIndex: Int) {
+        let element = self[oldIndex]
+        remove(at: oldIndex)
+        insert(element, at: newIndex)
     }
 }
 

@@ -30,7 +30,7 @@ import Foundation
 extension NSNumber {
     /// Returns whether the instance was initialized using a boolean.
     var isBoolean: Bool {
-        return NSNumber(bool: true).objCType == self.objCType
+        return NSNumber(value: true).objCType == objCType
     }
 
 

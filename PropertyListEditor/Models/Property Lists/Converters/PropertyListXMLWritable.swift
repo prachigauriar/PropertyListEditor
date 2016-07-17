@@ -39,7 +39,7 @@ import Foundation
 protocol PropertyListXMLWritable {
     /// Adds the conforming instance’s data to the specified XML element as children.
     /// - parameter parentXMLElement: The element to which children should be added.
-    func addPropertyListXMLElementToParentElement(parentXMLElement: NSXMLElement)
+    func addPropertyListXMLElement(to parentXMLElement: XMLElement)
 }
 
 
@@ -47,49 +47,50 @@ protocol PropertyListXMLWritable {
 extension PropertyListXMLWritable {
     /// Returns the instance’s data as the root property list type in a property list XML document.
     /// - returns: An `NSData` instance containing the XML 
-    final func propertyListXMLDocumentData() -> NSData {
+    final func propertyListXMLDocumentData() -> Data {
         let baseXMLString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n" +
             "<plist version=\"1.0\"></plist>"
 
-        let XMLDocument = try! NSXMLDocument(XMLString: baseXMLString, options: 0)
-        self.addPropertyListXMLElementToParentElement(XMLDocument.rootElement()!)
-        return XMLDocument.XMLDataWithOptions(NSXMLNodePrettyPrint | NSXMLNodeCompactEmptyElement)
+        let document = try! XMLDocument(xmlString: baseXMLString, options: 0)
+        addPropertyListXMLElement(to: document.rootElement()!)
+
+        return document.xmlData(withOptions: Int(XMLNodeOptions.nodePrettyPrint.rawValue | XMLNodeOptions.nodeCompactEmptyElement.rawValue))
     }
 }
 
 
-extension PropertyListItem: PropertyListXMLWritable {
-    func addPropertyListXMLElementToParentElement(parentXMLElement: NSXMLElement) {
+extension PropertyListItem : PropertyListXMLWritable {
+    func addPropertyListXMLElement(to parentXMLElement: XMLElement) {
         switch self {
-        case let .ArrayItem(array):
-            array.addPropertyListXMLElementToParentElement(parentXMLElement)
-        case let .BooleanItem(boolean):
-            parentXMLElement.addChild(NSXMLElement(name: boolean.boolValue ? "true" : "false"))
-        case let .DataItem(data):
-            parentXMLElement.addChild(NSXMLElement(name: "data", stringValue: data.base64EncodedStringWithOptions([])))
-        case let .DateItem(date):
-            parentXMLElement.addChild(NSXMLElement(name: "date", stringValue: NSDateFormatter.propertyListXMLDateFormatter().stringFromDate(date)))
-        case let .DictionaryItem(dictionary):
-            dictionary.addPropertyListXMLElementToParentElement(parentXMLElement)
-        case let .NumberItem(number):
+        case let .array(array):
+            array.addPropertyListXMLElement(to: parentXMLElement)
+        case let .boolean(boolean):
+            parentXMLElement.addChild(XMLElement(name: boolean.boolValue ? "true" : "false"))
+        case let .data(data):
+            parentXMLElement.addChild(XMLElement(name: "data", stringValue: data.base64EncodedString(options: [])))
+        case let .date(date):
+            parentXMLElement.addChild(XMLElement(name: "date", stringValue: DateFormatter.propertyListXML.string(from: date as Date)))
+        case let .dictionary(dictionary):
+            dictionary.addPropertyListXMLElement(to: parentXMLElement)
+        case let .number(number):
             if number.isInteger {
-                parentXMLElement.addChild(NSXMLElement(name: "integer", stringValue: "\(number.integerValue)"))
+                parentXMLElement.addChild(XMLElement(name: "integer", stringValue: "\(number.intValue)"))
             } else {
-                parentXMLElement.addChild(NSXMLElement(name: "real", stringValue: "\(number.doubleValue)"))
+                parentXMLElement.addChild(XMLElement(name: "real", stringValue: "\(number.doubleValue)"))
             }
-        case let .StringItem(string):
-            parentXMLElement.addChild(NSXMLElement(name: "string", stringValue: string as String))
+        case let .string(string):
+            parentXMLElement.addChild(XMLElement(name: "string", stringValue: string as String))
         }
     }
 }
 
 
-extension PropertyListArray: PropertyListXMLWritable {
-    func addPropertyListXMLElementToParentElement(parentXMLElement: NSXMLElement) {
-        let arrayXMLElement = NSXMLElement(name: "array")
-        for element in self.elements {
-            element.addPropertyListXMLElementToParentElement(arrayXMLElement)
+extension PropertyListArray : PropertyListXMLWritable {
+    func addPropertyListXMLElement(to parentXMLElement: XMLElement) {
+        let arrayXMLElement = XMLElement(name: "array")
+        for element in elements {
+            element.addPropertyListXMLElement(to: arrayXMLElement)
         }
 
         parentXMLElement.addChild(arrayXMLElement)
@@ -97,12 +98,12 @@ extension PropertyListArray: PropertyListXMLWritable {
 }
 
 
-extension PropertyListDictionary: PropertyListXMLWritable {
-    func addPropertyListXMLElementToParentElement(parentXMLElement: NSXMLElement) {
-        let dictionaryXMLElement = NSXMLElement(name: "dict")
-        for keyValuePair in self.elements {
-            dictionaryXMLElement.addChild(NSXMLElement(name: "key", stringValue: keyValuePair.key))
-            keyValuePair.value.addPropertyListXMLElementToParentElement(dictionaryXMLElement)
+extension PropertyListDictionary : PropertyListXMLWritable {
+    func addPropertyListXMLElement(to parentXMLElement: XMLElement) {
+        let dictionaryXMLElement = XMLElement(name: "dict")
+        for keyValuePair in elements {
+            dictionaryXMLElement.addChild(XMLElement(name: "key", stringValue: keyValuePair.key))
+            keyValuePair.value.addPropertyListXMLElement(to: dictionaryXMLElement)
         }
 
         parentXMLElement.addChild(dictionaryXMLElement)

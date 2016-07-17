@@ -38,7 +38,7 @@ import Foundation
 /// object form. 
 ///
 /// Generally speaking, a tree is only useful because it provides references to its item and nodes.
-/// That is, you will typically interact with an item or a node, not the tree itself. See the
+/// That is, you will typically interact with an item or a node, not the tree it See the
 /// documentation for `PropertyListItem` and `PropertyListTreeNode` for more information on how to
 /// work with items and tree nodes.
 ///
@@ -48,7 +48,7 @@ import Foundation
 /// all share the same root item. While this may be obvious, it is the basic reason why property
 /// list trees work. We use value types at the model level, but wrap them in a reference type so
 /// that we can have many references to that same value.
-class PropertyListTree: NSObject {
+class PropertyListTree : NSObject {
     /// The instance’s root property list item
     private(set) var rootItem: PropertyListItem
 
@@ -61,43 +61,43 @@ class PropertyListTree: NSObject {
     init(rootItem: PropertyListItem) {
         self.rootItem = rootItem
         super.init()
-        self.rootNode = PropertyListTreeNode(tree: self)
+        rootNode = PropertyListTreeNode(tree: self)
     }
 
 
     /// Initializes a new property list tree with a an empty dictionary as the root item.
     convenience override init() {
-        self.init(rootItem: .DictionaryItem(PropertyListDictionary()))
+        self.init(rootItem: .dictionary(PropertyListDictionary()))
     }
 
 
     /// Returns the property list tree node at the specified index path.
     /// - parameter indexPath: The index path. Raises an assertion if there is no item at the
     ///       specified index path.
-    func nodeAtIndexPath(indexPath: NSIndexPath) -> PropertyListTreeNode {
-        var treeNode = self.rootNode
+    func node(at indexPath: IndexPath) -> PropertyListTreeNode {
+        var treeNode = rootNode
 
-        for index in indexPath.indexes {
-            treeNode = treeNode.children[index]
+        for index in indexPath {
+            treeNode = treeNode?.children[index]
         }
 
-        return treeNode
+        return treeNode!
     }
 
 
     /// Returns the item at the specified index path relative to the instance’s root item.
     /// - parameter indexPath: The index path. Raises an assertion if any element of the index path
     ///       indexes into a scalar.
-    func itemAtIndexPath(indexPath: NSIndexPath) -> PropertyListItem {
-        return self.rootItem.itemAtIndexPath(indexPath)
+    func item(at indexPath: IndexPath) -> PropertyListItem {
+        return rootItem.item(at: indexPath)
     }
 
 
     /// Sets the item at the specified index path relative to the instance’s root item.
     /// - parameter indexPath: The index path. Raises an assertion if any element of the index path
     ///       indexes into a scalar.
-    func setItem(item: PropertyListItem, atIndexPath indexPath: NSIndexPath) {
-        self.rootItem = self.rootItem.itemBySettingItem(item, atIndexPath: indexPath)
+    func setItem(_ item: PropertyListItem, at indexPath: IndexPath) {
+        rootItem = rootItem.setting(item, at: indexPath)
     }
 }
 
@@ -151,17 +151,17 @@ class PropertyListTree: NSObject {
 /// - Creating a `PropertyListTreeNode` creates child nodes for its item’s children, so a node’s
 ///   hierarchy is automatically in sync with its item’s when it is created.
 ///
-/// - When a child item is added to a node’s item, invoke `‑insertChildAtIndex:` on the node.
+/// - When a child item is added to a node’s item, invoke `insertChild(at:)` on the node.
 ///   This adds a corresponding child node at the appropriate index. Again, because node
 ///   creation creates children for you, the child item’s children are automatically created for
 ///   you. This means that if you add a dictionary with many children at a particular index, you
-///   only need to invoke `‑insertChildAtIndex:` for the dictionary; the node hierarchy for the
+///   only need to invoke `insertChild(at:)` for the dictionary; the node hierarchy for the
 ///   children will be created for you automatically.
 ///
-/// - When a child item is removed from a node’s item, invoke `‑removeChildAtIndex:` on the node.
+/// - When a child item is removed from a node’s item, invoke `removeChild(at:)` on the node.
 ///   This removes the corresponding child node and the entire node hierarchy underneath it.
 ///
-/// - When all else fails, invoke `‑regenerateChildren` on the node to discard its existing child
+/// - When all else fails, invoke `regenerateChildren()` on the node to discard its existing child
 ///   nodes and generate new ones based on the state of the node’s item. This should only be 
 ///   necessary if a large number of changes occur on a property list item at once. For example,
 ///   if a node’s item was a dictionary and then became a date, it might be easier to just set
@@ -176,25 +176,25 @@ class PropertyListTree: NSObject {
 /// If a non-empty array were replaced by a string however, its corresponding node tree hierarchy
 /// would need to updated because the node for the array had children and the node for the string
 /// does not.
-class PropertyListTreeNode: NSObject {
+class PropertyListTreeNode : NSObject {
     /// The tree that the instance is in
     unowned let tree: PropertyListTree
 
     /// The instance’s parent node. This is `nil` when the instance is the root node.
-    private(set) weak var parentNode: PropertyListTreeNode?
+    private(set) weak var parent: PropertyListTreeNode?
 
     /// The instance’s child nodes.
     private var children: [PropertyListTreeNode] = []
 
     /// A cached version of the instance’s calculated index path. This is only calculated once
     /// provided that the instance’s index (or one of its ancestors’) doesn’t change.
-    private var cachedIndexPath: NSIndexPath?
+    private var cachedIndexPath: IndexPath?
 
 
     /// The instance’s index.
     private(set) var index: Int? {
         didSet {
-            self.invalidateCachedIndexPath()
+            invalidateCachedIndexPath()
         }
     }
 
@@ -205,36 +205,36 @@ class PropertyListTreeNode: NSObject {
     init(tree: PropertyListTree) {
         self.tree = tree
         super.init()
-        self.regenerateChildren()
+        regenerateChildren()
     }
 
 
     /// Initializes a new tree node with the specified tree, parent node, and index. Automatically
     /// generates child nodes for its item’s children.
     ///
-    /// - parameter parentNode: The node’s parent.
+    /// - parameter parent: The node’s parent.
     /// - parameter index: The index of the node in its parent’s children array.
-    init(parentNode: PropertyListTreeNode, index: Int) {
-        self.tree = parentNode.tree
-        self.parentNode = parentNode
+    init(parent: PropertyListTreeNode, index: Int) {
+        tree = parent.tree
+        self.parent = parent
         self.index = index
         super.init()
-        self.regenerateChildren()
+        regenerateChildren()
     }
 
 
     /// Returns the instance’s index path. 
-    var indexPath: NSIndexPath {
-        if self.cachedIndexPath == nil {
-            if let parentNode = self.parentNode {
+    var indexPath: IndexPath {
+        if cachedIndexPath == nil {
+            if let parent = parent {
                 // If we have a parent, we have an index
-                self.cachedIndexPath = parentNode.indexPath.indexPathByAddingIndex(self.index!)
+                cachedIndexPath = parent.indexPath.appending(index!)
             } else {
-                self.cachedIndexPath = NSIndexPath()
+                cachedIndexPath = IndexPath()
             }
         }
 
-        return self.cachedIndexPath!
+        return cachedIndexPath!
     }
 
 
@@ -242,11 +242,11 @@ class PropertyListTreeNode: NSObject {
     /// item via the instance’s tree.
     var item: PropertyListItem {
         get {
-            return self.tree.itemAtIndexPath(self.indexPath)
+            return tree.item(at: indexPath)
         }
 
         set(item) {
-            self.tree.setItem(item, atIndexPath: self.indexPath)
+            tree.setItem(item, at: indexPath)
         }
     }
 
@@ -254,65 +254,67 @@ class PropertyListTreeNode: NSObject {
     /// Whether the instance is the root node of its tree. This returns true if the instance has no
     /// parent.
     var isRootNode: Bool {
-        return self.parentNode == nil
+        return parent == nil
     }
 
 
     override var description: String {
-        let indexDescriptions = self.indexPath.indexes.map { $0.description }
-        let indexPathString = indexDescriptions.joinWithSeparator("/")
+        let indexDescriptions = indexPath.map { $0.description }
+        let indexPathString = indexDescriptions.joined(separator: "/")
         return "<PropertyListTreeNode indexPath=/\(indexPathString)>"
     }
     
     
     override var hashValue: Int {
-        return self.indexPath.hashValue
+        return indexPath.hashValue
     }
 
 
-    // MARK: - NSOutlineView Helpers
+    // MARK:
+    // MARK: NSOutlineView Helpers
 
     /// Whether the instance is expandable, i.e., whether it can have children.
     var isExpandable: Bool {
-        return self.item.isCollection
+        return item.isCollection
     }
 
 
     /// The number of child nodes the instance has.
     var numberOfChildren: Int {
-        return self.children.count
+        return children.count
     }
 
 
     /// Returns the instance’s child node with the specified index.
     /// - parameter index: The index of the child.
-    func childAtIndex(index: Int) -> PropertyListTreeNode {
-        return self.children[index]
+    func child(at index: Int) -> PropertyListTreeNode {
+        return children[index]
     }
 
 
-    // MARK: - Managing Children
+    // MARK:
+    // MARK: Managing Children
 
     /// Regenerates the instance’s child nodes, replacing the existing child nodes with newly
     /// created ones.
     func regenerateChildren() {
         let elementCount: Int
-        switch self.item {
-        case let .ArrayItem(array):
-            elementCount = array.elementCount
-        case let .DictionaryItem(dictionary):
-            elementCount = dictionary.elementCount
+        switch item {
+        case let .array(array):
+            elementCount = array.count
+        case let .dictionary(dictionary):
+            elementCount = dictionary.count
         default:
             elementCount = 0
         }
 
-        self.children = (0 ..< elementCount).map { PropertyListTreeNode(parentNode: self, index: $0) }
+        children = (0 ..< elementCount).map { PropertyListTreeNode(parent: self, index: $0) }
     }
 
 
     /// Returns the instance’s last child or `nil` if the instance has no children.
     var lastChild: PropertyListTreeNode? {
-        return self.children.last
+        return children.last
     }
 
 
@@ -320,9 +322,9 @@ class PropertyListTreeNode: NSObject {
     /// - note: This method should only be invoked *after* the instance’s item has had a child
     ///         added at the specified index. That is, update the item first, then the node.
     /// - parameter index: The index at which to insert the new child node.
-    func insertChildAtIndex(index: Int) {
-        self.children.insert(PropertyListTreeNode(parentNode: self, index: index), atIndex: index)
-        self.updateIndexesForChildrenInRange(index ..< self.numberOfChildren)
+    func insertChild(at index: Int) {
+        children.insert(PropertyListTreeNode(parent: self, index: index), at: index)
+        updateIndexesForChildren(in: index ..< numberOfChildren)
     }
 
 
@@ -330,18 +332,19 @@ class PropertyListTreeNode: NSObject {
     /// - note: This method should only be invoked *after* the instance’s item has had a child
     ///         removed from the specified index. That is, update the item first, then the node.
     /// - parameter index: The index from which to remove the child node.
-    func removeChildAtIndex(index: Int) {
-        self.children.removeAtIndex(index)
-        self.updateIndexesForChildrenInRange(index ..< self.numberOfChildren)
+    func removeChild(at index: Int) {
+        children.remove(at: index)
+        updateIndexesForChildren(in: index ..< numberOfChildren)
     }
 
 
-    // MARK: - Updating Indexes and Index Paths
+    // MARK:
+    // MARK: Updating Indexes and Index Paths
 
     /// Recursively invalidates the instance’s cached index path and those of its children.
     private func invalidateCachedIndexPath() {
-        self.cachedIndexPath = nil
-        for child in self.children {
+        cachedIndexPath = nil
+        for child in children {
             child.invalidateCachedIndexPath()
         }
     }
@@ -349,9 +352,9 @@ class PropertyListTreeNode: NSObject {
 
     /// Updates the indexes for the instance’s children with indexes is in the specified range.
     /// - parameter indexRange: The range of child node indexes whose children need updated indexes.
-    private func updateIndexesForChildrenInRange(indexRange: Range<Int>) {
+    private func updateIndexesForChildren(in indexRange: CountableRange<Int>) {
         for i in indexRange {
-            self.children[i].index = i
+            children[i].index = i
         }
     }
 }

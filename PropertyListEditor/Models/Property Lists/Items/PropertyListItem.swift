@@ -33,31 +33,31 @@ import Foundation
 /// edit is occurring more than one level deep in the property list’s data hierarchy. As such, we
 /// have defined an extension below for making edits recursively using index paths. See the
 /// documentation below for more information.
-enum PropertyListItem: CustomStringConvertible, Hashable {
-    case ArrayItem(PropertyListArray)
-    case BooleanItem(NSNumber)
-    case DataItem(NSData)
-    case DateItem(NSDate)
-    case DictionaryItem(PropertyListDictionary)
-    case NumberItem(NSNumber)
-    case StringItem(NSString)
+enum PropertyListItem : CustomStringConvertible, Hashable {
+    case array(PropertyListArray)
+    case boolean(NSNumber)
+    case data(NSData)
+    case date(NSDate)
+    case dictionary(PropertyListDictionary)
+    case number(NSNumber)
+    case string(NSString)
 
 
     var description: String {
         switch self {
-        case let .ArrayItem(array):
+        case let .array(array):
             return array.description
-        case let .BooleanItem(boolean):
+        case let .boolean(boolean):
             return boolean.boolValue.description
-        case let .DataItem(data):
+        case let .data(data):
             return data.description
-        case let .DateItem(date):
+        case let .date(date):
             return date.description
-        case let .DictionaryItem(dictionary):
+        case let .dictionary(dictionary):
             return dictionary.description
-        case let .NumberItem(number):
+        case let .number(number):
             return number.description
-        case let .StringItem(string):
+        case let .string(string):
             return string.description
         }
     }
@@ -65,19 +65,19 @@ enum PropertyListItem: CustomStringConvertible, Hashable {
 
     var hashValue: Int {
         switch self {
-        case let .ArrayItem(array):
+        case let .array(array):
             return array.hashValue
-        case let .BooleanItem(boolean):
+        case let .boolean(boolean):
             return boolean.hashValue
-        case let .DataItem(data):
+        case let .data(data):
             return data.hashValue
-        case let .DateItem(date):
+        case let .date(date):
             return date.hashValue
-        case let .DictionaryItem(dictionary):
+        case let .dictionary(dictionary):
             return dictionary.hashValue
-        case let .NumberItem(number):
+        case let .number(number):
             return number.hashValue
-        case let .StringItem(string):
+        case let .string(string):
             return string.hashValue
         }
     }
@@ -85,26 +85,26 @@ enum PropertyListItem: CustomStringConvertible, Hashable {
 
     /// Returns if the instance is an array or dictionary.
     var isCollection: Bool {
-        return self.propertyListType == .ArrayType || self.propertyListType == .DictionaryType
+        return propertyListType == .array || propertyListType == .dictionary
     }
 }
 
 
 func ==(lhs: PropertyListItem, rhs: PropertyListItem) -> Bool {
     switch (lhs, rhs) {
-    case let (.ArrayItem(left), .ArrayItem(right)):
+    case let (.array(left), .array(right)):
         return left == right
-    case let (.BooleanItem(left), .BooleanItem(right)):
+    case let (.boolean(left), .boolean(right)):
         return left == right
-    case let (.DataItem(left), .DataItem(right)):
+    case let (.data(left), .data(right)):
         return left == right
-    case let (.DateItem(left), .DateItem(right)):
+    case let (.date(left), .date(right)):
         return left == right
-    case let (.DictionaryItem(left), .DictionaryItem(right)):
+    case let (.dictionary(left), .dictionary(right)):
         return left == right
-    case let (.NumberItem(left), .NumberItem(right)):
+    case let (.number(left), .number(right)):
         return left == right
-    case let (.StringItem(left), .StringItem(right)):
+    case let (.string(left), .string(right)):
         return left == right
     default:
         return false
@@ -112,7 +112,8 @@ func ==(lhs: PropertyListItem, rhs: PropertyListItem) -> Bool {
 }
 
 
-// MARK: - Property List Types
+// MARK:
+// MARK: Property List Types
 
 /// `PropertyListType` is a simple enum that contains cases for each property list type. These are
 /// primarily useful when you need the type of a `PropertyListItem` for use in an arbitrary boolean
@@ -121,7 +122,7 @@ func ==(lhs: PropertyListItem, rhs: PropertyListItem) -> Bool {
 /// ```
 /// extension PropertyListItem {
 ///     var isScalar: Bool {
-///         return self.propertyListType != .ArrayType && self.propertyListType != .DictionaryType
+///         return propertyListType != .ArrayType && propertyListType != .DictionaryType
 ///     }
 /// }
 /// ```
@@ -129,7 +130,13 @@ func ==(lhs: PropertyListItem, rhs: PropertyListItem) -> Bool {
 /// This type of concise expression isn’t possible with `PropertyListItem` because each of its enum
 /// cases has an associated value.
 enum PropertyListType {
-    case ArrayType, DictionaryType, BooleanType, DataType, DateType, NumberType, StringType
+    case array
+    case boolean
+    case data
+    case date
+    case dictionary
+    case number
+    case string
 }
 
 
@@ -137,26 +144,27 @@ extension PropertyListItem {
     /// Returns the property list type of the instance.
     var propertyListType: PropertyListType {
         switch self {
-        case .ArrayItem:
-            return .ArrayType
-        case .BooleanItem:
-            return .BooleanType
-        case .DataItem:
-            return .DataType
-        case .DateItem:
-            return .DateType
-        case .DictionaryItem:
-            return .DictionaryType
-        case .NumberItem:
-            return .NumberType
-        case .StringItem:
-            return .StringType
+        case .array:
+            return .array
+        case .boolean:
+            return .boolean
+        case .data:
+            return .data
+        case .date:
+            return .date
+        case .dictionary:
+            return .dictionary
+        case .number:
+            return .number
+        case .string:
+            return .string
         }
     }
 }
 
 
-// MARK: - Accessing Items with Index Paths
+// MARK:
+// MARK: Accessing Items with Index Paths
 
 /// This extension adds the ability to access and change property lists using index paths. Rather
 /// than editing the property list items in place, the methods in this extension return new items
@@ -166,15 +174,15 @@ extension PropertyListItem {
     ///
     /// - parameter indexPath: The index path. Raises an assertion if any element of the index path
     ///       indexes into a scalar.
-    func itemAtIndexPath(indexPath: NSIndexPath) -> PropertyListItem {
+    func item(at indexPath: IndexPath) -> PropertyListItem {
         var item = self
 
-        for index in indexPath.indexes {
+        for index in indexPath {
             switch item {
-            case let .ArrayItem(array):
-                item = array.elementAtIndex(index)
-            case let .DictionaryItem(dictionary):
-                item = dictionary.elementAtIndex(index).value
+            case let .array(array):
+                item = array[index]
+            case let .dictionary(dictionary):
+                item = dictionary[index].value
             default:
                 fatalError("non-empty indexPath for scalar type")
             }
@@ -188,12 +196,12 @@ extension PropertyListItem {
     /// - parameter newItem: The new item to set at the specified index path relative to the instance
     /// - parameter indexPath: The index path. Raises an assertion if any element of the index path
     ///       indexes into a scalar.
-    func itemBySettingItem(newItem: PropertyListItem, atIndexPath indexPath: NSIndexPath) -> PropertyListItem {
-        return indexPath.length > 0 ? self.itemBySettingItem(newItem, atIndexPath: indexPath, indexPosition: 0) : newItem
+    func setting(_ newItem: PropertyListItem, at indexPath: IndexPath) -> PropertyListItem {
+        return (indexPath as NSIndexPath).length > 0 ? setting(newItem, at: indexPath, indexPosition: 0) : newItem
     }
 
 
-    /// A private method that actually implements `‑itemBySettingItem:atIndexPath:` by setting the
+    /// A private method that actually implements `setting(_:at:)` by setting the
     /// item at the index position inside the index path. It is called recursively starting from
     /// index position 0 and continuing until the entire index path is traversed.
     ///
@@ -201,24 +209,24 @@ extension PropertyListItem {
     /// - parameter indexPath: The index path. Raises an assertion if any element of the index path
     ///       indexes into a scalar.
     /// - parameter indexPosition: The position in the index path to get the current index
-    private func itemBySettingItem(newItem: PropertyListItem, atIndexPath indexPath: NSIndexPath, indexPosition: Int) -> PropertyListItem {
-        if indexPosition == indexPath.length {
+    private func setting(_ newItem: PropertyListItem, at indexPath: IndexPath, indexPosition: Int) -> PropertyListItem {
+        if indexPosition == indexPath.count {
             return newItem
         }
 
-        let index = indexPath.indexAtPosition(indexPosition)
+        let index = indexPath[indexPosition]
 
         switch self {
-        case var .ArrayItem(array):
-            let element = array.elementAtIndex(index)
-            let newElement = element.itemBySettingItem(newItem, atIndexPath: indexPath, indexPosition: indexPosition + 1)
-            array.replaceElementAtIndex(index, withElement:newElement)
-            return .ArrayItem(array)
-        case var .DictionaryItem(dictionary):
-            let value = dictionary.elementAtIndex(index).value
-            let newValue = value.itemBySettingItem(newItem, atIndexPath: indexPath, indexPosition: indexPosition + 1)
-            dictionary.setValue(newValue, atIndex: index)
-            return .DictionaryItem(dictionary)
+        case var .array(array):
+            let element = array[index]
+            let newElement = element.setting(newItem, at: indexPath, indexPosition: indexPosition + 1)
+            array[index] = newElement
+            return .array(array)
+        case var .dictionary(dictionary):
+            let value = dictionary[index].value
+            let newValue = value.setting(newItem, at: indexPath, indexPosition: indexPosition + 1)
+            dictionary.setValue(newValue, at: index)
+            return .dictionary(dictionary)
         default:
             fatalError("non-empty indexPath for scalar type")
         }

@@ -39,40 +39,40 @@ protocol PropertyListObjectConvertible {
 }
 
 
-extension PropertyListItem: PropertyListObjectConvertible {
+extension PropertyListItem : PropertyListObjectConvertible {
     var propertyListObjectValue: AnyObject {
         switch self {
-        case let .ArrayItem(array):
+        case let .array(array):
             return array.propertyListObjectValue
-        case let .BooleanItem(value):
+        case let .boolean(value):
             return value
-        case let .DataItem(value):
+        case let .data(value):
             return value
-        case let .DateItem(value):
+        case let .date(value):
             return value
-        case let .DictionaryItem(dictionary):
+        case let .dictionary(dictionary):
             return dictionary.propertyListObjectValue
-        case let .NumberItem(value):
+        case let .number(value):
             return value
-        case let .StringItem(value):
+        case let .string(value):
             return value
         }
     }
 }
 
 
-extension PropertyListArray: PropertyListObjectConvertible {
+extension PropertyListArray : PropertyListObjectConvertible {
     var propertyListObjectValue: AnyObject {
-        return self.elements.map { $0.propertyListObjectValue } as NSArray
+        return elements.map { $0.propertyListObjectValue } as NSArray
     }
 }
 
 
-extension PropertyListDictionary: PropertyListObjectConvertible {
+extension PropertyListDictionary : PropertyListObjectConvertible {
     var propertyListObjectValue: AnyObject {
         let dictionary = NSMutableDictionary()
 
-        for element in self.elements {
+        for element in elements {
             dictionary[element.key] = element.value.propertyListObjectValue
         }
 

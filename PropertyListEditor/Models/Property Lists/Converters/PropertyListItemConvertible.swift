@@ -29,101 +29,102 @@ import Foundation
 
 /// The `PropertyListItemConversionError` enum declares errors that can occur when converting data
 /// into a property list item.
-enum PropertyListItemConversionError: ErrorType, CustomStringConvertible {
+enum PropertyListItemConversionError : ErrorProtocol, CustomStringConvertible {
     /// Indicates that a key in a dictionary was not a string.
     /// - parameter dictionary: The dictionary being converted
     /// - parameter key: The key that was not a string
-    case NonStringDictionaryKey(dictionary: NSDictionary, key: AnyObject)
+    case nonStringDictionaryKey(dictionary: NSDictionary, key: AnyObject)
 
     /// Indicates that the specified object was not a supported property list type
-    case UnsupportedObjectType(AnyObject)
+    case unsupportedObjectType(AnyObject)
 
     
     var description: String {
         switch self {
-        case let .NonStringDictionaryKey(dictionary: _, key: key):
+        case let .nonStringDictionaryKey(dictionary: _, key: key):
             return "Non-string key \(key) in dictionary"
-        case let .UnsupportedObjectType(object):
+        case let .unsupportedObjectType(object):
             return "Unsupported object \(object) of type (\(object.dynamicType))"
         }
     }
 }
 
 
-// MARK: - PropertyListItemConvertible Protocol and Extensions
+// MARK:
+// MARK: PropertyListItemConvertible Protocol and Extensions
 
 /// The `PropertyListItemConvertible` protocol declares a single method that returns a property list
 /// item representation of the conforming instance. This is useful for working with AppKit UI elements,
 /// formatters, and Foundation’s property list serialization code. All the Foundation property list 
 /// types conform to this protocol via the extensions below.
-protocol PropertyListItemConvertible: NSObjectProtocol {
+protocol PropertyListItemConvertible : NSObjectProtocol {
     /// Returns a property list item representation of the instance. 
     /// - throws: A `PropertyListItemConversionError` if the instance cannot be converted.
     func propertyListItem() throws -> PropertyListItem
 }
 
 
-extension NSArray: PropertyListItemConvertible {
+extension NSArray : PropertyListItemConvertible {
     func propertyListItem() throws -> PropertyListItem {
         var array = PropertyListArray()
 
         for element in self {
             guard let propertyListObject = element as? PropertyListItemConvertible else {
-                throw PropertyListItemConversionError.UnsupportedObjectType(element)
+                throw PropertyListItemConversionError.unsupportedObjectType(element)
             }
 
-            array.addElement(try propertyListObject.propertyListItem())
+            array.append(try propertyListObject.propertyListItem())
         }
 
-        return .ArrayItem(array)
+        return .array(array)
     }
 }
 
 
-extension NSData: PropertyListItemConvertible {
+extension NSData : PropertyListItemConvertible {
     func propertyListItem() throws -> PropertyListItem {
-        return .DataItem(self)
+        return .data(self)
     }
 }
 
 
-extension NSDate: PropertyListItemConvertible {
+extension NSDate : PropertyListItemConvertible {
     func propertyListItem() throws -> PropertyListItem {
-        return .DateItem(self)
+        return .date(self)
     }
 }
 
 
-extension NSDictionary: PropertyListItemConvertible {
+extension NSDictionary : PropertyListItemConvertible {
     func propertyListItem() throws -> PropertyListItem {
         var dictionary = PropertyListDictionary()
 
         for (key, value) in self {
-            guard let stringKey = key as? String else {
-                throw PropertyListItemConversionError.NonStringDictionaryKey(dictionary: self, key: key)
+            guard let stringKey = key as? String else { 
+                throw PropertyListItemConversionError.nonStringDictionaryKey(dictionary: self, key: key)
             }
 
             guard let propertyListObject = value as? PropertyListItemConvertible else {
-                throw PropertyListItemConversionError.UnsupportedObjectType(value)
+                throw PropertyListItemConversionError.unsupportedObjectType(value)
             }
 
             dictionary.addKey(stringKey, value: try propertyListObject.propertyListItem())
         }
 
-        return .DictionaryItem(dictionary)
+        return .dictionary(dictionary)
     }
 }
 
 
-extension NSNumber: PropertyListItemConvertible {
+extension NSNumber : PropertyListItemConvertible {
     func propertyListItem() throws -> PropertyListItem {
-        return self.isBoolean ? .BooleanItem(self) : .NumberItem(self)
+        return isBoolean ? .boolean(self) : .number(self)
     }
 }
 
 
-extension NSString: PropertyListItemConvertible {
+extension NSString : PropertyListItemConvertible {
     func propertyListItem() throws -> PropertyListItem {
-        return .StringItem(self)
+        return .string(self)
     }
 }

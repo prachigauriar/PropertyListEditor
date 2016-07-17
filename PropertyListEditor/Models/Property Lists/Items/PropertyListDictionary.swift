@@ -29,7 +29,7 @@ import Foundation
 
 /// `PropertyListKeyValuePairs` represent key/value pairs in a property list dictionary. Each pair has
 /// a key (a string) and a value (a property list item).
-struct PropertyListKeyValuePair: CustomStringConvertible, Hashable {
+struct PropertyListKeyValuePair : CustomStringConvertible, Hashable {
     /// The instance’s key.
     let key: String
     
@@ -38,7 +38,7 @@ struct PropertyListKeyValuePair: CustomStringConvertible, Hashable {
 
     
     var description: String {
-        return "\"\(self.key)\": \(self.value)"
+        return "\"\(key)\": \(value)"
     }
 
 
@@ -50,16 +50,16 @@ struct PropertyListKeyValuePair: CustomStringConvertible, Hashable {
     /// Returns a new key/value pair instance with the specified key and the value of the instance.
     /// - parameter key: The key of the new instance.
     /// - returns: A copy of the instance with the specified key and the value of the instance.
-    func keyValuePairBySettingKey(key: String) -> PropertyListKeyValuePair {
-        return PropertyListKeyValuePair(key: key, value: self.value)
+    func settingKey(_ key: String) -> PropertyListKeyValuePair {
+        return PropertyListKeyValuePair(key: key, value: value)
     }
 
 
     /// Returns a new key/value pair instance with the key of the instance and the specified value.
     /// - parameter value: The value of the new instance.
     /// - returns: A copy of the instance with the key of the instance and the specified value.
-    func keyValuePairBySettingValue(value: PropertyListItem) -> PropertyListKeyValuePair {
-        return PropertyListKeyValuePair(key: self.key, value: value)
+    func settingValue(_ value: PropertyListItem) -> PropertyListKeyValuePair {
+        return PropertyListKeyValuePair(key: key, value: value)
     }
 }
 
@@ -74,7 +74,7 @@ func ==(lhs: PropertyListKeyValuePair, rhs: PropertyListKeyValuePair) -> Bool {
 /// addition to the standard `PropertyListCollection` methods for manipulating its elements,
 /// `PropertyListDictionary` also provides convenience methods for inserting key/value pairs by
 /// passing in keys and values as parameters.
-struct PropertyListDictionary: PropertyListCollection {
+struct PropertyListDictionary : PropertyListCollection {
     typealias ElementType = PropertyListKeyValuePair
     private(set) var elements: [PropertyListKeyValuePair] = []
 
@@ -85,32 +85,33 @@ struct PropertyListDictionary: PropertyListCollection {
     /// Returns whether the instance contains a key/value pair with the specified key.
     /// - parameter key: The key whose membership in the instance’s key set is being checked.
     /// - returns: Whether the key is in the instance’s key set.
-    func containsKey(key: String) -> Bool {
-        return self.keySet.contains(key)
+    func containsKey(_ key: String) -> Bool {
+        return keySet.contains(key)
     }
 
 
-    mutating func insertElement(element: ElementType, atIndex index: Int) {
-        assert(!self.keySet.contains(element.key), "dictionary already contains key \"\(element.key)\"")
-        self.keySet.insert(element.key)
-        self.elements.insert(element, atIndex: index)
+    mutating func insert(_ element: ElementType, at index: Int) {
+        assert(!keySet.contains(element.key), "dictionary already contains key \"\(element.key)\"")
+        keySet.insert(element.key)
+        elements.insert(element, at: index)
     }
 
 
-    mutating func removeElementAtIndex(index: Int) -> ElementType {
-        let element = self.elements[index]
-        self.keySet.remove(element.key)
-        return self.elements.removeAtIndex(index)
+    @discardableResult mutating func remove(at index: Int) -> ElementType {
+        let element = elements[index]
+        keySet.remove(element.key)
+        return elements.remove(at: index)
     }
 
 
-    // MARK: - Key-Value Pair Methods
+    // MARK:
+    // MARK: Key-Value Pair Methods
 
     /// Adds a key/value pair with the specified key and value to the end of the instance.
     /// - parameter key: The key being added to the instance.
     /// - parameter value: The value being added to the instance.
-    mutating func addKey(key: String, value: PropertyListItem) {
-        self.insertKey(key, value: value, atIndex: self.elementCount)
+    mutating func addKey(_ key: String, value: PropertyListItem) {
+        insertKey(key, value: value, at: count)
     }
 
 
@@ -118,8 +119,8 @@ struct PropertyListDictionary: PropertyListCollection {
     /// instance.
     /// - parameter key: The key of the key/value pair being inserted into the instance.
     /// - parameter value: The value of the key/value pair being inserted into the instance.
-    mutating func insertKey(key: String, value: PropertyListItem, atIndex index: Int) {
-        self.insertElement(PropertyListKeyValuePair(key: key, value: value), atIndex: index)
+    mutating func insertKey(_ key: String, value: PropertyListItem, at index: Int) {
+        insert(PropertyListKeyValuePair(key: key, value: value), at: index)
     }
 
 
@@ -127,25 +128,23 @@ struct PropertyListDictionary: PropertyListCollection {
     /// - parameter key: The key of the key/value pair being inserted into the instance.
     /// - parameter value: The value of the key/value pair being inserted into the instance.
     /// - parameter index: The index at which the new key/value pair is being set.
-    mutating func setKey(key: String, value: PropertyListItem, atIndex index: Int) {
-        self.replaceElementAtIndex(index, withElement:PropertyListKeyValuePair(key: key, value: value))
+    mutating func setKey(_ key: String, value: PropertyListItem, at index: Int) {
+        self[index] = PropertyListKeyValuePair(key: key, value: value)
     }
 
 
     /// Replaces the key of the key/value pair at the specified index.
     /// - parameter key: The key of the key/value pair being set on the instance.
     /// - parameter index: The index at which the new key/value pair is being set.
-    mutating func setKey(key: String, atIndex index: Int) {
-        let keyValuePair = self.elementAtIndex(index)
-        self.replaceElementAtIndex(index, withElement: keyValuePair.keyValuePairBySettingKey(key))
+    mutating func setKey(_ key: String, at index: Int) {
+        self[index] = self[index].settingKey(key)
     }
 
 
     /// Replaces the value of the key/value pair at the specified index.
     /// - parameter value: The value of the key/value pair being set on the instance.
     /// - parameter index: The index at which the new key/value pair is being set.
-    mutating func setValue(value: PropertyListItem, atIndex index: Int) {
-        let keyValuePair = self.elementAtIndex(index)
-        self.replaceElementAtIndex(index, withElement: keyValuePair.keyValuePairBySettingValue(value))
+    mutating func setValue(_ value: PropertyListItem, at index: Int) {
+        self[index] = self[index].settingValue(value)
     }
 }

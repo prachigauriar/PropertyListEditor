@@ -1,8 +1,8 @@
 //
-//  NSIndexPath+Indexes.swift
+//  NSDateFormatter+PropertyLists.swift
 //  PropertyListEditor
 //
-//  Created by Prachi Gauriar on 7/19/2015.
+//  Created by Prachi Gauriar on 7/16/2015.
 //  Copyright © 2015 Quantum Lens Cap. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,18 +27,24 @@
 import Foundation
 
 
-extension NSIndexPath {
-    /// Returns the indexes of the instance as an array.
-    var indexes: [Int] {
-        var indexArray: [Int] = Array<Int>(count: self.length, repeatedValue: 0)
-        self.getIndexes(&indexArray, range: NSRange(location: 0, length: self.length))
-        return indexArray
-    }
+extension DateFormatter {
+    /// Returns a shared date formatter suitable for reading and writing `NSDates` in the XML
+    /// property list format.
+    /// - returns: The shared property list XML date formatter
+    @nonobjc static var propertyListXML: DateFormatter = {
+        let dateFormatter = DateFormatter()
+        dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+        return dateFormatter
+    }()
 
 
-    /// Returns the index at the last position in the instance, or `nil` if the instance has no 
-    /// indexes.
-    var lastIndex: Int? {
-        return self.length > 0 ? self.indexAtPosition(self.length - 1) : nil
-    }
+    /// Returns a shared date formatter suitable for displaying dates to the user.
+    /// - returns: The shared property list output date formatter
+    @nonobjc static var propertyListOutput: DateFormatter = {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .long
+        dateFormatter.timeStyle = .long
+        return dateFormatter
+    }()
 }

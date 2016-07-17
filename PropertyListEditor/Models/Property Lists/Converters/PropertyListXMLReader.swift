@@ -29,9 +29,9 @@ import Foundation
 
 /// The `PropertyListXMLReaderError` enum declares errors that can occur when reading data in the
 /// property list XML format.
-enum PropertyListXMLReaderError: ErrorType {
+enum PropertyListXMLReaderError : ErrorProtocol {
     /// Indicates that the XML for the property list is invalid. 
-    case InvalidXML
+    case invalidXML
 }
 
 
@@ -39,17 +39,17 @@ enum PropertyListXMLReaderError: ErrorType {
 /// representation of that data. These should be used to read Property List XML files instead of
 /// using `NSPropertyListSerialization`s, as `PropertyListXMLReaders` create dictionaries whose
 /// key/value pairs are ordered the same as in the XML.
-class PropertyListXMLReader: NSObject {
+class PropertyListXMLReader : NSObject {
     /// The property list item that the reader has read.
     private var propertyListItem: PropertyListItem?
     
     /// The XML data that the reader reads.
-    let XMLData: NSData
+    let XMLData: Data
 
 
     /// Initializes a new `PropertyListXMLReader` with the specified XML data.
     /// - parameter XMLData: The XML data that the instance should read.
-    init(XMLData: NSData) {
+    init(XMLData: Data) {
         self.XMLData = XMLData
         super.init()
     }
@@ -63,14 +63,14 @@ class PropertyListXMLReader: NSObject {
     ///       Property List XML data.
     /// - returns: A `PropertyListItem` representation of the instance’s XML data.
     func readData() throws -> PropertyListItem {
-        if let propertyListItem = self.propertyListItem {
+        if let propertyListItem = propertyListItem {
             return propertyListItem
         }
 
-        let XMLDocument = try NSXMLDocument(data: self.XMLData, options: 0)
-        guard let propertyListXMLElement = XMLDocument.rootElement()?.children?.first as? NSXMLElement,
+        let XMLDocument = try Foundation.XMLDocument(data: XMLData, options: 0)
+        guard let propertyListXMLElement = XMLDocument.rootElement()?.children?.first as? XMLElement,
             let propertyListItem = PropertyListItem.init(XMLElement: propertyListXMLElement) else {
-                throw PropertyListXMLReaderError.InvalidXML
+                throw PropertyListXMLReaderError.invalidXML
         }
 
         self.propertyListItem = propertyListItem
@@ -80,13 +80,13 @@ class PropertyListXMLReader: NSObject {
 
 
 /// This private extension adds the ability to create a new `PropertyListItem` with an XML element. It
-/// is used by `‑[PropertyListXMLReader readData]` to recursively create a property list item from a
+/// is used by `PropertyListXMLReader.readData()` to recursively create a property list item from a
 /// Property List XML document’s root element.
 private extension PropertyListItem {
     /// Returns the property list item representation of the specified XML element. Returns nil if the
     /// element cannot be represented using a property list item.
     /// - parameter XMLElement: The XML element
-    init?(XMLElement: NSXMLElement) {
+    init?(XMLElement: Foundation.XMLElement) {
         guard let elementName = XMLElement.name else {
             return nil
         }
@@ -96,17 +96,17 @@ private extension PropertyListItem {
             var array = PropertyListArray()
 
             if let children = XMLElement.children {
-                for childXMLNode in children where childXMLNode is NSXMLElement {
-                    let childXMLElement = childXMLNode as! NSXMLElement
+                for childXMLNode in children where childXMLNode is Foundation.XMLElement {
+                    let childXMLElement = childXMLNode as! Foundation.XMLElement
                     guard let element = PropertyListItem(XMLElement: childXMLElement) else {
                         return nil
                     }
 
-                    array.addElement(element)
+                    array.append(element)
                 }
             }
 
-            self = .ArrayItem(array)
+            self = .array(array)
         case "dict":
             var dictionary = PropertyListDictionary()
 
@@ -115,12 +115,12 @@ private extension PropertyListItem {
                     return nil
                 }
 
-                var childGenerator = children.generate()
+                var childGenerator = children.makeIterator()
 
                 while let keyNode = childGenerator.next() {
-                    guard let keyElement = keyNode as? NSXMLElement where keyElement.name == "key",
+                    guard let keyElement = keyNode as? Foundation.XMLElement where keyElement.name == "key",
                         let key = keyElement.stringValue where !dictionary.containsKey(key),
-                        let valueElement = childGenerator.next() as? NSXMLElement,
+                        let valueElement = childGenerator.next() as? Foundation.XMLElement,
                         let value = PropertyListItem(XMLElement: valueElement) else {
                             return nil
                     }
@@ -129,38 +129,38 @@ private extension PropertyListItem {
                 }
             }
 
-            self = .DictionaryItem(dictionary)
+            self = .dictionary(dictionary)
         case "data":
             guard let base64EncodedString = XMLElement.stringValue,
-                let data = NSData(base64EncodedString: base64EncodedString, options: [ .IgnoreUnknownCharacters ]) else {
+                let data = Data(base64Encoded: base64EncodedString) else {
                     return nil
             }
 
-            self = .DataItem(data)
+            self = .data(data)
         case "date":
             guard let dateString = XMLElement.stringValue,
-                let date = NSDateFormatter.propertyListXMLDateFormatter().dateFromString(dateString) else {
+                let date = DateFormatter.propertyListXML.date(from: dateString) else {
                     return nil
             }
 
-            self = .DateItem(date)
+            self = .date(date)
         case "integer", "real":
             guard let numberString = XMLElement.stringValue,
-                let number = NSNumberFormatter.propertyListNumberFormatter().numberFromString(numberString) else {
+                let number = NumberFormatter.propertyList.number(from: numberString) else {
                     return nil
             }
 
-            self = .NumberItem(number)
+            self = .number(number)
         case "true":
-            self = .BooleanItem(true)
+            self = .boolean(true)
         case "false":
-            self = .BooleanItem(false)
+            self = .boolean(false)
         case "string":
             guard let string = XMLElement.stringValue else {
                 return nil
             }
 
-            self = .StringItem(string)
+            self = .string(string)
         default:
             return nil
         }

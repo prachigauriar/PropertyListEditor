@@ -29,22 +29,17 @@ import Foundation
 
 /// `PropertyListArrays` represent arrays of property list items. Each of its elements is a property
 /// list item.
-struct PropertyListArray: PropertyListCollection {
+struct PropertyListArray : PropertyListCollection {
     typealias ElementType = PropertyListItem
     private(set) var elements: [PropertyListItem] = []
 
 
-    mutating func insertElement(element: ElementType, atIndex index: Int) {
-        self.elements.insert(element, atIndex: index)
+    mutating func insert(_ element: ElementType, at index: Int) {
+        elements.insert(element, at: index)
     }
 
 
-    mutating func replaceElementAtIndex(index: Int, withElement element: ElementType) {
-        self.elements[index] = element
-    }
-
-
-    mutating func removeElementAtIndex(index: Int) -> ElementType {
-        return self.elements.removeAtIndex(index)
+    @discardableResult mutating func remove(at index: Int) -> ElementType {
+        return elements.remove(at: index)
     }
 }

@@ -27,19 +27,13 @@
 import Foundation
 
 
-extension NSNumberFormatter {
+extension NumberFormatter {
     /// Returns a number formatter suitable for reading and writing `NSNumbers` in decimal format.
     /// - returns: The shared property list number formatter
-    class func propertyListNumberFormatter() -> NSNumberFormatter {
-        struct SharedFormatter {
-            static let numberFormatter: NSNumberFormatter = {
-                let numberFormatter = NSNumberFormatter()
-                numberFormatter.minimumFractionDigits = 0
-                numberFormatter.maximumFractionDigits = Int.max
-                return numberFormatter
-            }()
-        }
-
-        return SharedFormatter.numberFormatter
-    }
+    @nonobjc static var propertyList: NumberFormatter = {
+        let numberFormatter = NumberFormatter()
+        numberFormatter.minimumFractionDigits = 0
+        numberFormatter.maximumFractionDigits = Int.max
+        return numberFormatter
+    }()
 }

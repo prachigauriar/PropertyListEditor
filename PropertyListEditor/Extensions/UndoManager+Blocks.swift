@@ -30,14 +30,14 @@ import ObjectiveC.runtime
 
 // MARK: Block-Based Undo
 
-extension NSUndoManager {
+extension UndoManager {
     /// Records an undo operation that executes the specified block.
     /// - parameter handler: The block to execute when undoing.
     /// - returns: The undo manager on which the method was invoked. This is useful when chaining
     ///       multiple method invocations is desired.
-    func registerUndoWithHandler(handler: Void -> Void) -> Self {
+    @discardableResult func registerUndo(with handler: (Void) -> Void) -> Self {
         let target = UndoHandlerTarget(handler: handler)
-        target.registerWithUndoManager(self)
+        target.register(with: self)
         return self
     }
 }
@@ -45,14 +45,14 @@ extension NSUndoManager {
 
 /// Instances of `UndoHandlerTarget` act as the target for block-based undo operations. They should
 /// not be used directly; Instead, use `-[NSUndoManager registerUndoWithHandler:]`.
-class UndoHandlerTarget: NSObject {
+class UndoHandlerTarget : NSObject {
     /// The block that is executed when the instance’s undo: method is invoked.
-    let handler: Void -> Void
+    let handler: (Void) -> Void
 
 
     /// Initializes the target with the specified handler block.
     /// - parameter handler: The block to execute when the instance’s `undo:` method is invoked.
-    init(handler: Void -> Void) {
+    init(handler: (Void) -> Void) {
         self.handler = handler
         super.init()
     }
@@ -60,26 +60,27 @@ class UndoHandlerTarget: NSObject {
 
     /// Registers the instance as a target for an undo operation with the specified undo manager.
     /// - parameter undoManager: The undo manager with which to register.
-    func registerWithUndoManager(undoManager: NSUndoManager) {
-        undoManager.registerUndoWithTarget(self, selector: #selector(UndoHandlerTarget.undo(_:)), object: self)
+    func register(with undoManager: UndoManager) {
+        undoManager.registerUndo(withTarget: self, selector: #selector(UndoHandlerTarget.undo(_:)), object: self)
     }
 
 
     /// Simply invokes the instance’s handler block.
     ///
     /// - parameter sender: This parameter is ignored.
-    func undo(sender: AnyObject?) -> Void {
-        self.handler()
+    func undo(_ sender: AnyObject?) -> Void {
+        handler()
     }
 }
 
 
-// MARK: - Debug Helpers
+// MARK:
+// MARK: Debug Helpers
 
-extension NSUndoManager {
-    /// Returns a debug description of the instance’s undo stack. 
-    /// - warning: This method should only be used for debugging; it uses undocumented, unsupported 
-    ///            behavior.
+extension UndoManager {
+    /// Returns a debug description of the instance’s undo stack.
+    /// - warning: This method should only be used for debugging; it uses undocumented, unsupported
+    ///     behavior.
     var undoStackDebugDescription: String? {
         let undoStack = object_getIvar(self, class_getInstanceVariable(NSClassFromString("NSUndoManager"), "_undoStack"));
         return undoStack.debugDescription

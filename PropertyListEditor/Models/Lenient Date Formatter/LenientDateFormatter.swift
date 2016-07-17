@@ -29,37 +29,36 @@ import Cocoa
 
 /// `LenientDateFormatter` instances read/write `NSDate` instances in a highly flexible way. Rather
 /// than specifying an actual format, they use data detectors to parse dates in strings.
-class LenientDateFormatter: NSFormatter {
+class LenientDateFormatter : Formatter {
     /// Returns an `NSDate` instance by parsing the specified string.
     /// - parameter string: The string to parse.
-    /// - returns: The `NSDate` instance that was parsed or `nil` if parsing failed.
-    func dateFromString(string: String) -> NSDate? {
+    /// - returns: The `Date` instance that was parsed or `nil` if parsing failed.
+    func date(from string: String) -> Date? {
         var date: AnyObject?
-        self.getObjectValue(&date, forString: string, errorDescription: nil)
-        return date as? NSDate
+        return getObjectValue(&date, for: string, errorDescription: nil) ? date as? Date : nil
     }
 
 
-    override func stringForObjectValue(obj: AnyObject) -> String? {
-        return NSDateFormatter.propertyListDateOutputFormatter().stringForObjectValue(obj)
+    override func string(for obj: AnyObject?) -> String? {
+        return DateFormatter.propertyListOutput.string(for: obj)
     }
 
 
-    override func getObjectValue(obj: AutoreleasingUnsafeMutablePointer<AnyObject?>,
-        forString string: String,
-        errorDescription error: AutoreleasingUnsafeMutablePointer<NSString?>) -> Bool {
-            do {
-                let detector = try NSDataDetector(types: NSTextCheckingType.Date.rawValue)
-                let matches = detector.matchesInString(string, options: NSMatchingOptions(), range: NSRange(location: 0, length: string.characters.count))
+    override func getObjectValue(_ obj: AutoreleasingUnsafeMutablePointer<AnyObject?>?,
+                                 for string: String,
+                                 errorDescription error: AutoreleasingUnsafeMutablePointer<NSString?>?) -> Bool {
+        do {
+            let detector = try NSDataDetector(types: TextCheckingResult.CheckingType.date.rawValue)
+            let matches = detector.matches(in: string, options: RegularExpression.MatchingOptions(), range: NSRange(location: 0, length: string.characters.count))
 
-                for match in matches where match.date != nil {
-                    obj.memory = match.date
-                    return true
-                }
-            } catch {
-                return false
+            for match in matches where match.date != nil {
+                obj?.pointee = match.date
+                return true
             }
-
+        } catch {
             return false
+        }
+
+        return false
     }
 }
