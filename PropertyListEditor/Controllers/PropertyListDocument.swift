@@ -59,8 +59,7 @@ class PropertyListDocument : NSDocument, NSOutlineViewDataSource, NSOutlineViewD
     }
 
 
-    // MARK:
-    // MARK: NSDocument Methods
+    // MARK: - NSDocument Methods
 
     override var windowNibName: String? {
         return "PropertyListDocument"
@@ -105,8 +104,7 @@ class PropertyListDocument : NSDocument, NSOutlineViewDataSource, NSOutlineViewD
     }
 
 
-    // MARK:
-    // MARK: Outline View Data Source
+    // MARK: - Outline View Data Source
 
     func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: AnyObject?) -> Int {
         if item == nil {
@@ -179,8 +177,7 @@ class PropertyListDocument : NSDocument, NSOutlineViewDataSource, NSOutlineViewD
     }
 
 
-    // MARK:
-    // MARK: Outline View Delegate
+    // MARK: - Outline View Delegate
 
     func outlineView(_ outlineView: NSOutlineView, dataCellFor tableColumn: NSTableColumn?, item: AnyObject) -> NSCell? {
         guard let tableColumn = tableColumn else {
@@ -292,14 +289,13 @@ class PropertyListDocument : NSDocument, NSOutlineViewDataSource, NSOutlineViewD
     }
 
 
-    // MARK:
-    // MARK: UI Validation
+    // MARK: - UI Validation
 
     override func validateUserInterfaceItem(_ item: NSValidatedUserInterfaceItem) -> Bool {
         let selectors: Set<Selector> = [#selector(PropertyListDocument.addChild(_:)),
                                         #selector(PropertyListDocument.addSibling(_:)),
                                         #selector(PropertyListDocument.deleteItem(_:))]
-        guard let action = item.action where selectors.contains(action) else {
+        guard let action = item.action, selectors.contains(action) else {
             return super.validateUserInterfaceItem(item)
         }
 
@@ -321,8 +317,7 @@ class PropertyListDocument : NSDocument, NSOutlineViewDataSource, NSOutlineViewD
     }
 
 
-    // MARK:
-    // MARK: Action Methods
+    // MARK: - Action Methods
 
     @IBAction func addChild(_ sender: AnyObject?) {
         var rowIndex = propertyListOutlineView.selectedRow
@@ -346,7 +341,8 @@ class PropertyListDocument : NSDocument, NSOutlineViewDataSource, NSOutlineViewD
 
         guard selectedRow != -1,
             let selectedNode = propertyListOutlineView.item(atRow: selectedRow) as? PropertyListTreeNode,
-            let parent = selectedNode.parent where parent.item.isCollection else {
+            let parent = selectedNode.parent,
+            parent.item.isCollection else {
                 return
         }
 
@@ -361,7 +357,8 @@ class PropertyListDocument : NSDocument, NSOutlineViewDataSource, NSOutlineViewD
 
         guard selectedRow != -1,
             let selectedNode = propertyListOutlineView.item(atRow: selectedRow) as? PropertyListTreeNode,
-            let parentNode = selectedNode.parent where parentNode.item.isCollection else {
+            let parentNode = selectedNode.parent,
+            parentNode.item.isCollection else {
                 return
         }
 
@@ -392,8 +389,7 @@ class PropertyListDocument : NSDocument, NSOutlineViewDataSource, NSOutlineViewD
     }
 
 
-    // MARK:
-    // MARK: Accessing Tree Node Item Data
+    // MARK: - Accessing Tree Node Item Data
 
     /// Returns the string to display in the Key column for the specified tree node.
     /// - parameter treeNode: The tree node whose key is being returned.
@@ -429,7 +425,7 @@ class PropertyListDocument : NSDocument, NSOutlineViewDataSource, NSOutlineViewD
     //        `control(_:textShouldEndEditing:)`.
     /// - parameter treeNode: The tree node whose key is being set.
     private func setKey(_ key: String, of treeNode: PropertyListTreeNode) {
-        guard let parent = treeNode.parent, index = treeNode.index else {
+        guard let parent = treeNode.parent, let index = treeNode.index else {
             return
         }
 
@@ -643,8 +639,7 @@ class PropertyListDocument : NSDocument, NSOutlineViewDataSource, NSOutlineViewD
 }
 
 
-// MARK:
-// MARK: Table Column Identifiers
+// MARK: - Table Column Identifiers
 
 /// The `TableColumn` enum is used to enumerate the different `NSTableColumns` that the instance’s
 /// outline view has. Whenever a table column is added to the outline view, a corresponding case
@@ -665,8 +660,7 @@ private enum TableColumnIdentifier : String {
 }
 
 
-// MARK:
-// MARK: Value Constraints
+// MARK: - Value Constraints
 
 /// `PropertyListValueConstraints` represent constraints for valid values on property list items. A
 /// value constraint can take one of two forms: a formatter that should be used to convert to and
@@ -719,8 +713,7 @@ private extension PropertyListItem {
 }
 
 
-// MARK:
-// MARK: Tree Node Operations
+// MARK: - Tree Node Operations
 
 /// The `TreeNodeOperation` enum enumerates the different operations that can be taken on a tree
 /// node. Because all operations on a property list item ultimately boils down to replacing an item
@@ -770,8 +763,7 @@ private enum TreeNodeOperation {
 }
 
 
-// MARK:
-// MARK: Generating Unused Dictionary Keys
+// MARK: - Generating Unused Dictionary Keys
 
 private extension PropertyListDictionary {
     /// Returns a key that the instance does not contain.
@@ -791,8 +783,7 @@ private extension PropertyListDictionary {
 }
 
 
-// MARK:
-// MARK: Converting Between Property List Types
+// MARK: - Converting Between Property List Types
 
 private extension PropertyListItem {
     /// Returns a default property list item of the specified type.
@@ -906,8 +897,7 @@ private extension PropertyListItem {
 }
 
 
-// MARK:
-// MARK: Property List Type Pop-Up Menu
+// MARK: - Property List Type Pop-Up Menu
 
 private extension PropertyListType {
     /// Returns the `PropertyListType` instance that corresponds to the specified index of the

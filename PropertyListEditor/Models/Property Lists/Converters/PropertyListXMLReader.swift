@@ -118,8 +118,10 @@ private extension PropertyListItem {
                 var childGenerator = children.makeIterator()
 
                 while let keyNode = childGenerator.next() {
-                    guard let keyElement = keyNode as? Foundation.XMLElement where keyElement.name == "key",
-                        let key = keyElement.stringValue where !dictionary.containsKey(key),
+                    guard let keyElement = keyNode as? Foundation.XMLElement,
+                        keyElement.name == "key",
+                        let key = keyElement.stringValue,
+                        !dictionary.containsKey(key),
                         let valueElement = childGenerator.next() as? Foundation.XMLElement,
                         let value = PropertyListItem(XMLElement: valueElement) else {
                             return nil

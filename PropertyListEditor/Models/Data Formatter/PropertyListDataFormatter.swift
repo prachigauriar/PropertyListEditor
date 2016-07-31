@@ -56,7 +56,7 @@ class PropertyListDataFormatter : Formatter {
         var characterIterator = string.replacingOccurrences(of: " ", with: "").characters.makeIterator()
 
         // If the string didn’t start with a <, it’s invalid
-        guard let firstCharacter = characterIterator.next() where firstCharacter == "<" else {
+        guard let firstCharacter = characterIterator.next(), firstCharacter == "<" else {
             return false
         }
 
@@ -76,7 +76,7 @@ class PropertyListDataFormatter : Formatter {
             // Otherwise, assume we got a hex character. Read a second hex character to form
             // a byte. If we can’t create a valid byte from the two hex characters, the string
             // was invalid, so we should return false
-            guard let char2 = characterIterator.next(), byte = UInt8("\(char1)\(char2)", radix: 16) else {
+            guard let char2 = characterIterator.next(), let byte = UInt8("\(char1)\(char2)", radix: 16) else {
                 return false
             }
 

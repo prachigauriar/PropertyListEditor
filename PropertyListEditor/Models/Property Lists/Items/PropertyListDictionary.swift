@@ -104,8 +104,7 @@ struct PropertyListDictionary : PropertyListCollection {
     }
 
 
-    // MARK:
-    // MARK: Key-Value Pair Methods
+    // MARK: - Key-Value Pair Methods
 
     /// Adds a key/value pair with the specified key and value to the end of the instance.
     /// - parameter key: The key being added to the instance.

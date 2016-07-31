@@ -112,8 +112,7 @@ func ==(lhs: PropertyListItem, rhs: PropertyListItem) -> Bool {
 }
 
 
-// MARK:
-// MARK: Property List Types
+// MARK: - Property List Types
 
 /// `PropertyListType` is a simple enum that contains cases for each property list type. These are
 /// primarily useful when you need the type of a `PropertyListItem` for use in an arbitrary boolean
@@ -163,8 +162,7 @@ extension PropertyListItem {
 }
 
 
-// MARK:
-// MARK: Accessing Items with Index Paths
+// MARK: - Accessing Items with Index Paths
 
 /// This extension adds the ability to access and change property lists using index paths. Rather
 /// than editing the property list items in place, the methods in this extension return new items

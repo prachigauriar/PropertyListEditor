@@ -74,8 +74,7 @@ class UndoHandlerTarget : NSObject {
 }
 
 
-// MARK:
-// MARK: Debug Helpers
+// MARK: - Debug Helpers
 
 extension UndoManager {
     /// Returns a debug description of the instance’s undo stack.

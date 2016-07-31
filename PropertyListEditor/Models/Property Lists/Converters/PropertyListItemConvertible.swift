@@ -50,8 +50,7 @@ enum PropertyListItemConversionError : ErrorProtocol, CustomStringConvertible {
 }
 
 
-// MARK:
-// MARK: PropertyListItemConvertible Protocol and Extensions
+// MARK: - PropertyListItemConvertible Protocol and Extensions
 
 /// The `PropertyListItemConvertible` protocol declares a single method that returns a property list
 /// item representation of the conforming instance. This is useful for working with AppKit UI elements,

@@ -270,8 +270,7 @@ class PropertyListTreeNode : NSObject {
     }
 
 
-    // MARK:
-    // MARK: NSOutlineView Helpers
+    // MARK: - 
 
     /// Whether the instance is expandable, i.e., whether it can have children.
     var isExpandable: Bool {
@@ -292,8 +291,7 @@ class PropertyListTreeNode : NSObject {
     }
 
 
-    // MARK:
-    // MARK: Managing Children
+    // MARK: - 
 
     /// Regenerates the instance’s child nodes, replacing the existing child nodes with newly
     /// created ones.
@@ -338,8 +336,7 @@ class PropertyListTreeNode : NSObject {
     }
 
 
-    // MARK:
-    // MARK: Updating Indexes and Index Paths
+    // MARK: - 
 
     /// Recursively invalidates the instance’s cached index path and those of its children.
     private func invalidateCachedIndexPath() {
