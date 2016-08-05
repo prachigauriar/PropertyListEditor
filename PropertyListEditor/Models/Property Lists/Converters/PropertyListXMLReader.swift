@@ -29,7 +29,7 @@ import Foundation
 
 /// The `PropertyListXMLReaderError` enum declares errors that can occur when reading data in the
 /// property list XML format.
-enum PropertyListXMLReaderError : ErrorProtocol {
+enum PropertyListXMLReaderError : Error {
     /// Indicates that the XML for the property list is invalid. 
     case invalidXML
 }

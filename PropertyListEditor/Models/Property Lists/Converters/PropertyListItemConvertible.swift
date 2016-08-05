@@ -29,7 +29,7 @@ import Foundation
 
 /// The `PropertyListItemConversionError` enum declares errors that can occur when converting data
 /// into a property list item.
-enum PropertyListItemConversionError : ErrorProtocol, CustomStringConvertible {
+enum PropertyListItemConversionError : Error, CustomStringConvertible {
     /// Indicates that a key in a dictionary was not a string.
     /// - parameter dictionary: The dictionary being converted
     /// - parameter key: The key that was not a string

@@ -252,7 +252,7 @@ class PropertyListDocument : NSDocument, NSOutlineViewDataSource, NSOutlineViewD
         // If we’re a collection, just use a copy of the prototype cell with the disabled text color
         if item.isCollection {
             let cell = (tableColumn.dataCell as! NSCopying).copy() as! NSTextFieldCell
-            cell.textColor = NSColor.disabledControlTextColor()
+            cell.textColor = NSColor.disabledControlTextColor
             return cell
         }
 
@@ -756,7 +756,7 @@ private enum TreeNodeOperation {
             treeNode.removeChild(at: index)
         case let .regenerateChildrenForChildAt(index):
             treeNode.child(at: index).regenerateChildren()
-        case regenerateChildren:
+        case .regenerateChildren:
             treeNode.regenerateChildren()
         }
     }

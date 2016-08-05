@@ -55,7 +55,7 @@ extension PropertyListXMLWritable {
         let document = try! XMLDocument(xmlString: baseXMLString, options: 0)
         addPropertyListXMLElement(to: document.rootElement()!)
 
-        return document.xmlData(withOptions: Int(XMLNodeOptions.nodePrettyPrint.rawValue | XMLNodeOptions.nodeCompactEmptyElement.rawValue))
+        return document.xmlData(withOptions: Int(XMLDocument.Options.nodePrettyPrint.rawValue | XMLDocument.Options.nodeCompactEmptyElement.rawValue))
     }
 }
 

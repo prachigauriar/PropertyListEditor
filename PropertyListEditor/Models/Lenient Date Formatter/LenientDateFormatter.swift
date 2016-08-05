@@ -48,8 +48,10 @@ class LenientDateFormatter : Formatter {
                                  for string: String,
                                  errorDescription error: AutoreleasingUnsafeMutablePointer<NSString?>?) -> Bool {
         do {
-            let detector = try NSDataDetector(types: TextCheckingResult.CheckingType.date.rawValue)
-            let matches = detector.matches(in: string, options: RegularExpression.MatchingOptions(), range: NSRange(location: 0, length: string.characters.count))
+            let detector = try NSDataDetector(types: NSTextCheckingResult.CheckingType.date.rawValue)
+            let matches = detector.matches(in: string,
+                                           options: NSRegularExpression.MatchingOptions(),
+                                           range: NSRange(location: 0, length: string.characters.count))
 
             for match in matches where match.date != nil {
                 obj?.pointee = match.date
