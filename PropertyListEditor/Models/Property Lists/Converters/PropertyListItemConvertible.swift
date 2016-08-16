@@ -33,10 +33,10 @@ enum PropertyListItemConversionError : Error, CustomStringConvertible {
     /// Indicates that a key in a dictionary was not a string.
     /// - parameter dictionary: The dictionary being converted
     /// - parameter key: The key that was not a string
-    case nonStringDictionaryKey(dictionary: NSDictionary, key: AnyObject)
+    case nonStringDictionaryKey(dictionary: NSDictionary, key: Any)
 
     /// Indicates that the specified object was not a supported property list type
-    case unsupportedObjectType(AnyObject)
+    case unsupportedObjectType(Any)
 
     
     var description: String {
@@ -44,7 +44,7 @@ enum PropertyListItemConversionError : Error, CustomStringConvertible {
         case let .nonStringDictionaryKey(dictionary: _, key: key):
             return "Non-string key \(key) in dictionary"
         case let .unsupportedObjectType(object):
-            return "Unsupported object \(object) of type (\(object.dynamicType))"
+            return "Unsupported object \(object) of type (\(type(of: object)))"
         }
     }
 }
@@ -69,7 +69,7 @@ extension NSArray : PropertyListItemConvertible {
 
         for element in self {
             guard let propertyListObject = element as? PropertyListItemConvertible else {
-                throw PropertyListItemConversionError.unsupportedObjectType(element)
+                throw PropertyListItemConversionError.unsupportedObjectType(element as Any)
             }
 
             array.append(try propertyListObject.propertyListItem())
@@ -104,7 +104,7 @@ extension NSDictionary : PropertyListItemConvertible {
             }
 
             guard let propertyListObject = value as? PropertyListItemConvertible else {
-                throw PropertyListItemConversionError.unsupportedObjectType(value)
+                throw PropertyListItemConversionError.unsupportedObjectType(value as Any)
             }
 
             dictionary.addKey(stringKey, value: try propertyListObject.propertyListItem())

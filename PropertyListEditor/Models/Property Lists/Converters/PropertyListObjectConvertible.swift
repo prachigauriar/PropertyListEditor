@@ -35,12 +35,12 @@ import Foundation
 protocol PropertyListObjectConvertible {
     /// Returns a property list object representation of the instance. The object returned should be
     /// a Foundation property list object.
-    var propertyListObjectValue: AnyObject { get }
+    var propertyListObjectValue: Any { get }
 }
 
 
 extension PropertyListItem : PropertyListObjectConvertible {
-    var propertyListObjectValue: AnyObject {
+    var propertyListObjectValue: Any {
         switch self {
         case let .array(array):
             return array.propertyListObjectValue
@@ -62,14 +62,14 @@ extension PropertyListItem : PropertyListObjectConvertible {
 
 
 extension PropertyListArray : PropertyListObjectConvertible {
-    var propertyListObjectValue: AnyObject {
+    var propertyListObjectValue: Any {
         return elements.map { $0.propertyListObjectValue } as NSArray
     }
 }
 
 
 extension PropertyListDictionary : PropertyListObjectConvertible {
-    var propertyListObjectValue: AnyObject {
+    var propertyListObjectValue: Any {
         let dictionary = NSMutableDictionary()
 
         for element in elements {

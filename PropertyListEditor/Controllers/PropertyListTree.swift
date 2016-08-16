@@ -184,7 +184,7 @@ class PropertyListTreeNode : NSObject {
     private(set) weak var parent: PropertyListTreeNode?
 
     /// The instance’s child nodes.
-    private var children: [PropertyListTreeNode] = []
+    fileprivate var children: [PropertyListTreeNode] = []
 
     /// A cached version of the instance’s calculated index path. This is only calculated once
     /// provided that the instance’s index (or one of its ancestors’) doesn’t change.

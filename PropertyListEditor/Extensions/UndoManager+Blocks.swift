@@ -35,7 +35,7 @@ extension UndoManager {
     /// - parameter handler: The block to execute when undoing.
     /// - returns: The undo manager on which the method was invoked. This is useful when chaining
     ///       multiple method invocations is desired.
-    @discardableResult func registerUndo(with handler: (Void) -> Void) -> Self {
+    @discardableResult func registerUndo(with handler: @escaping (Void) -> Void) -> Self {
         let target = UndoHandlerTarget(handler: handler)
         target.register(with: self)
         return self
@@ -52,7 +52,7 @@ class UndoHandlerTarget : NSObject {
 
     /// Initializes the target with the specified handler block.
     /// - parameter handler: The block to execute when the instance’s `undo:` method is invoked.
-    init(handler: (Void) -> Void) {
+    init(handler: @escaping (Void) -> Void) {
         self.handler = handler
         super.init()
     }
@@ -68,7 +68,7 @@ class UndoHandlerTarget : NSObject {
     /// Simply invokes the instance’s handler block.
     ///
     /// - parameter sender: This parameter is ignored.
-    func undo(_ sender: AnyObject?) -> Void {
+    func undo(_ sender: Any?) -> Void {
         handler()
     }
 }

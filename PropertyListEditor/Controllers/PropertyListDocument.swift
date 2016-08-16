@@ -106,7 +106,7 @@ class PropertyListDocument : NSDocument, NSOutlineViewDataSource, NSOutlineViewD
 
     // MARK: - Outline View Data Source
 
-    func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: AnyObject?) -> Int {
+    func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
         if item == nil {
             return 1
         }
@@ -116,13 +116,13 @@ class PropertyListDocument : NSDocument, NSOutlineViewDataSource, NSOutlineViewD
     }
 
 
-    func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: AnyObject) -> Bool {
+    func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool {
         let treeNode = item as! PropertyListTreeNode
         return treeNode.isExpandable
     }
 
 
-    func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: AnyObject?) -> AnyObject {
+    func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
         if item == nil {
             return tree.rootNode
         }
@@ -132,7 +132,7 @@ class PropertyListDocument : NSDocument, NSOutlineViewDataSource, NSOutlineViewD
     }
 
 
-    func outlineView(_ outlineView: NSOutlineView, objectValueFor tableColumn: NSTableColumn?, byItem item: AnyObject?) -> AnyObject? {
+    func outlineView(_ outlineView: NSOutlineView, objectValueFor tableColumn: NSTableColumn?, byItem item: Any?) -> Any? {
         let treeNode = item as! PropertyListTreeNode
         let tableColumnIdentifier = TableColumnIdentifier(rawValue: tableColumn!.identifier)!
 
@@ -147,7 +147,7 @@ class PropertyListDocument : NSDocument, NSOutlineViewDataSource, NSOutlineViewD
     }
 
 
-    func outlineView(_ outlineView: NSOutlineView, setObjectValue object: AnyObject?, for tableColumn: NSTableColumn?, byItem item: AnyObject?) {
+    func outlineView(_ outlineView: NSOutlineView, setObjectValue object: Any?, for tableColumn: NSTableColumn?, byItem item: Any?) {
         let treeNode = item as! PropertyListTreeNode
         let tableColumnIdentifier = TableColumnIdentifier(rawValue: tableColumn!.identifier)!
         let propertyListObject = object as! PropertyListItemConvertible
@@ -179,7 +179,7 @@ class PropertyListDocument : NSDocument, NSOutlineViewDataSource, NSOutlineViewD
 
     // MARK: - Outline View Delegate
 
-    func outlineView(_ outlineView: NSOutlineView, dataCellFor tableColumn: NSTableColumn?, item: AnyObject) -> NSCell? {
+    func outlineView(_ outlineView: NSOutlineView, dataCellFor tableColumn: NSTableColumn?, item: Any) -> NSCell? {
         guard let tableColumn = tableColumn else {
             return nil
         }
@@ -196,7 +196,7 @@ class PropertyListDocument : NSDocument, NSOutlineViewDataSource, NSOutlineViewD
     }
 
 
-    func outlineView(_ outlineView: NSOutlineView, shouldEdit tableColumn: NSTableColumn?, item: AnyObject) -> Bool {
+    func outlineView(_ outlineView: NSOutlineView, shouldEdit tableColumn: NSTableColumn?, item: Any) -> Bool {
         let treeNode = item as! PropertyListTreeNode
         let tableColumn = TableColumnIdentifier(rawValue: tableColumn!.identifier)!
 
@@ -395,16 +395,16 @@ class PropertyListDocument : NSDocument, NSOutlineViewDataSource, NSOutlineViewD
     /// - parameter treeNode: The tree node whose key is being returned.
     private func key(of treeNode: PropertyListTreeNode) -> NSString {
         guard let index = treeNode.index else {
-            return NSLocalizedString("PropertyListDocument.RootNodeKey", comment: "Key for root node")
+            return NSLocalizedString("PropertyListDocument.RootNodeKey", comment: "Key for root node") as NSString
         }
 
         // Parent node will be non-nil if index is non-nil
         switch treeNode.parent!.item {
         case .array:
             let formatString = NSLocalizedString("PropertyListDocument.ArrayItemKeyFormat", comment: "Format string for array item node key")
-            return NSString.localizedStringWithFormat(formatString, index)
+            return NSString.localizedStringWithFormat(formatString as NSString, index)
         case let .dictionary(dictionary):
-            return dictionary[index].key
+            return dictionary[index].key as NSString
         default:
             fatalError("Impossible state: all nodes must be the root node or the child of a dictionary/array")
         }
@@ -470,14 +470,14 @@ class PropertyListDocument : NSDocument, NSOutlineViewDataSource, NSOutlineViewD
 
     /// Returns the object value to display in the Value column for the specified tree node.
     /// - parameter treeNode: The tree node whose object value is being returned.
-    private func value(of treeNode: PropertyListTreeNode) -> AnyObject {
+    private func value(of treeNode: PropertyListTreeNode) -> Any {
         switch treeNode.item {
         case .array:
             let formatString = NSLocalizedString("PropertyListDocument.ArrayValueFormat", comment: "Format string for values of arrays")
-            return NSString.localizedStringWithFormat(formatString, treeNode.numberOfChildren)
+            return NSString.localizedStringWithFormat(formatString as NSString, treeNode.numberOfChildren)
         case .dictionary:
             let formatString = NSLocalizedString("PropertyListDocument.DictionaryValueFormat", comment: "Format string for values of dictionaries")
-            return NSString.localizedStringWithFormat(formatString, treeNode.numberOfChildren)
+            return NSString.localizedStringWithFormat(formatString as NSString, treeNode.numberOfChildren)
         default:
             return treeNode.item.propertyListObjectValue
         }
@@ -767,14 +767,14 @@ private enum TreeNodeOperation {
 
 private extension PropertyListDictionary {
     /// Returns a key that the instance does not contain.
-    private func unusedKey() -> String {
+    func unusedKey() -> String {
         let formatString = NSLocalizedString("PropertyListDocument.KeyForAddingFormat",
                                              comment: "Format string for key generated when adding a dictionary item")
 
         var key: String
         var counter: Int = 1
         repeat {
-            key = NSString.localizedStringWithFormat(formatString, counter) as String
+            key = NSString.localizedStringWithFormat(formatString as NSString, counter) as String
             counter += 1
         } while containsKey(key)
 
@@ -795,16 +795,16 @@ private extension PropertyListItem {
         case .boolean:
             self = .boolean(false)
         case .data:
-            self = .data(Data())
+            self = .data(Data() as NSData)
         case .date:
-            self = .date(Date())
+            self = .date(Date() as NSDate)
         case .dictionary:
             self = .dictionary(PropertyListDictionary())
         case .number:
             self = .number(NSNumber(value: 0))
         case .string:
             let string = NSLocalizedString("PropertyListDocument.ItemForAddingStringValue", comment: "Default value when adding a new item")
-            self = .string(string)
+            self = .string(string as NSString)
         }
     }
 
@@ -836,12 +836,12 @@ private extension PropertyListItem {
             case .number:
                 return .number(boolean.boolValue ? 1 : 0)
             case .string:
-                return .string(description)
+                return .string(description as NSString)
             default:
                 return defaultItem
             }
         case let .date(date):
-            return type == .number ? .number(date.timeIntervalSince1970) : defaultItem
+            return type == .number ? .number(date.timeIntervalSince1970 as NSNumber) : defaultItem
         case let .dictionary(dictionary):
             if type == .array {
                 var array = PropertyListArray()
@@ -857,27 +857,27 @@ private extension PropertyListItem {
         case let .number(number):
             switch type {
             case .boolean:
-                return .boolean(number.boolValue)
+                return .boolean(number.boolValue as NSNumber)
             case .date:
-                return .date(Date(timeIntervalSince1970: number.doubleValue))
+                return .date(Date(timeIntervalSince1970: number.doubleValue) as NSDate)
             case .string:
-                return .string(number.description)
+                return .string(number.description as NSString)
             default:
                 return defaultItem
             }
         case let .string(string):
             switch type {
             case .boolean:
-                return .boolean(string.caseInsensitiveCompare("YES") == .orderedSame || string.caseInsensitiveCompare("true") == .orderedSame)
+                return .boolean((string.caseInsensitiveCompare("YES") == .orderedSame || string.caseInsensitiveCompare("true") == .orderedSame) as NSNumber)
             case .data:
                 if let data = PropertyListDataFormatter().data(from: string as String) {
-                    return .data(data)
+                    return .data(data as NSData)
                 }
 
                 return defaultItem
             case .date:
                 if let date = LenientDateFormatter().date(from: string as String) {
-                    return .date(date)
+                    return .date(date as NSDate)
                 }
 
                 return defaultItem

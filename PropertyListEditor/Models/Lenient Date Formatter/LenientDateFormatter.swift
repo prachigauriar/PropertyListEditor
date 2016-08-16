@@ -39,7 +39,7 @@ class LenientDateFormatter : Formatter {
     }
 
 
-    override func string(for obj: AnyObject?) -> String? {
+    override func string(for obj: Any?) -> String? {
         return DateFormatter.propertyListOutput.string(for: obj)
     }
 
@@ -54,7 +54,7 @@ class LenientDateFormatter : Formatter {
                                            range: NSRange(location: 0, length: string.characters.count))
 
             for match in matches where match.date != nil {
-                obj?.pointee = match.date
+                obj?.pointee = match.date as NSDate?
                 return true
             }
         } catch {

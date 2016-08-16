@@ -138,14 +138,14 @@ private extension PropertyListItem {
                     return nil
             }
 
-            self = .data(data)
+            self = .data(data as NSData)
         case "date":
             guard let dateString = XMLElement.stringValue,
                 let date = DateFormatter.propertyListXML.date(from: dateString) else {
                     return nil
             }
 
-            self = .date(date)
+            self = .date(date as NSDate)
         case "integer", "real":
             guard let numberString = XMLElement.stringValue,
                 let number = NumberFormatter.propertyList.number(from: numberString) else {
@@ -162,7 +162,7 @@ private extension PropertyListItem {
                 return nil
             }
 
-            self = .string(string)
+            self = .string(string as NSString)
         default:
             return nil
         }

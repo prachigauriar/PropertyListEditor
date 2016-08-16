@@ -39,7 +39,7 @@ class PropertyListDataFormatter : Formatter {
     }
 
 
-    override func string(for obj: AnyObject?) -> String? {
+    override func string(for obj: Any?) -> String? {
         if let data = obj as? Data {
             return data.description
         } else {
@@ -47,11 +47,9 @@ class PropertyListDataFormatter : Formatter {
         }
     }
 
-
     override func getObjectValue(_ obj: AutoreleasingUnsafeMutablePointer<AnyObject?>?,
                                  for string: String,
                                  errorDescription error: AutoreleasingUnsafeMutablePointer<NSString?>?) -> Bool {
-        // Start by removing all spaces in the string and getting a character iterator that we
         // can use to iterate over each character
         var characterIterator = string.replacingOccurrences(of: " ", with: "").characters.makeIterator()
 
@@ -84,7 +82,7 @@ class PropertyListDataFormatter : Formatter {
             byteBuffer.append(byte)
         } while true
 
-        obj?.pointee = Data(bytes: &byteBuffer, count: byteBuffer.count)
+        obj?.pointee = Data(bytes: &byteBuffer, count: byteBuffer.count) as NSData
         return true
     }
 
