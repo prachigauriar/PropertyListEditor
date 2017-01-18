@@ -607,8 +607,8 @@ class PropertyListDocument : NSDocument, NSOutlineViewDataSource, NSOutlineViewD
         let treeNode = tree.node(at: indexPath)
         let oldItem = treeNode.item
 
-        undoManager!.registerUndo { [unowned self] in
-            self.setItem(oldItem, ofTreeNodeAt: indexPath, nodeOperation: nodeOperation?.inverseOperation)
+        undoManager!.registerUndo(withTarget: self) { target in
+            target.setItem(oldItem, ofTreeNodeAt: indexPath, nodeOperation: nodeOperation?.inverseOperation)
         }
 
         treeNode.item = newItem

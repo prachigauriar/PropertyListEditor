@@ -10,7 +10,6 @@
 		4C0882431B5DDBF500E8DD71 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4E05B81B445AB000BF69C2 /* AppDelegate.swift */; };
 		4C0882441B5DDBF500E8DD71 /* DateFormatter+PropertyLists.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8829F51B5892B60023BCB7 /* DateFormatter+PropertyLists.swift */; };
 		4C0882461B5DDBF500E8DD71 /* NumberFormatter+PropertyLists.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8829F31B58927E0023BCB7 /* NumberFormatter+PropertyLists.swift */; };
-		4C0882471B5DDBF500E8DD71 /* UndoManager+Blocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CE4955C1B5AE3F2009EE029 /* UndoManager+Blocks.swift */; };
 		4C0882481B5DDBF500E8DD71 /* PropertyListDataFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C70C3AF1B50487200D8ECAB /* PropertyListDataFormatter.swift */; };
 		4C0882491B5DDBF500E8DD71 /* LenientDateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CBDDBD71B58276C00131559 /* LenientDateFormatter.swift */; };
 		4C08824A1B5DDBF500E8DD71 /* PropertyListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CACB7F51B5BE8510037A18E /* PropertyListItem.swift */; };
@@ -51,7 +50,6 @@
 		4CB59CEC1B5BEB9F0003288F /* PropertyListCollection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListCollection.swift; sourceTree = "<group>"; };
 		4CB59CEF1B5BED440003288F /* PropertyListDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListDictionary.swift; sourceTree = "<group>"; };
 		4CBDDBD71B58276C00131559 /* LenientDateFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LenientDateFormatter.swift; sourceTree = "<group>"; };
-		4CE4955C1B5AE3F2009EE029 /* UndoManager+Blocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UndoManager+Blocks.swift"; sourceTree = "<group>"; };
 		4CF3D9591B46DB7100C76D8D /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4CF3D95B1B46DB7100C76D8D /* Base */ = {isa = PBXFileReference; explicitFileType = text.plist.xml; name = Base; path = Base.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		4CF3D95D1B46DB7100C76D8D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
@@ -197,7 +195,6 @@
 				4C8829F51B5892B60023BCB7 /* DateFormatter+PropertyLists.swift */,
 				4C1272E91B5FCFE300EC42D4 /* NSNumber+Types.swift */,
 				4C8829F31B58927E0023BCB7 /* NumberFormatter+PropertyLists.swift */,
-				4CE4955C1B5AE3F2009EE029 /* UndoManager+Blocks.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -298,7 +295,6 @@
 				4C0882431B5DDBF500E8DD71 /* AppDelegate.swift in Sources */,
 				4C0882441B5DDBF500E8DD71 /* DateFormatter+PropertyLists.swift in Sources */,
 				4C0882461B5DDBF500E8DD71 /* NumberFormatter+PropertyLists.swift in Sources */,
-				4C0882471B5DDBF500E8DD71 /* UndoManager+Blocks.swift in Sources */,
 				4C0882481B5DDBF500E8DD71 /* PropertyListDataFormatter.swift in Sources */,
 				4C0882491B5DDBF500E8DD71 /* LenientDateFormatter.swift in Sources */,
 				4C08824A1B5DDBF500E8DD71 /* PropertyListItem.swift in Sources */,
@@ -395,7 +391,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -437,7 +433,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
 			};
