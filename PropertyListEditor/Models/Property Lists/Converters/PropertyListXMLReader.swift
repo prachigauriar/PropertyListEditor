@@ -67,8 +67,8 @@ class PropertyListXMLReader : NSObject {
             return propertyListItem
         }
 
-        let XMLDocument = try Foundation.XMLDocument(data: XMLData, options: 0)
-        guard let propertyListXMLElement = XMLDocument.rootElement()?.children?.first as? XMLElement,
+        let xmlDocument = try XMLDocument(data: XMLData)
+        guard let propertyListXMLElement = xmlDocument.rootElement()?.children?.first as? XMLElement,
             let propertyListItem = PropertyListItem.init(XMLElement: propertyListXMLElement) else {
                 throw PropertyListXMLReaderError.invalidXML
         }

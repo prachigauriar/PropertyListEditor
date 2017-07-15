@@ -61,8 +61,8 @@ class PropertyListDocument : NSDocument, NSOutlineViewDataSource, NSOutlineViewD
 
     // MARK: - NSDocument Methods
 
-    override var windowNibName: String? {
-        return "PropertyListDocument"
+    override var windowNibName: NSNib.Name? {
+        return .propertyListDocument
     }
 
 
@@ -134,31 +134,33 @@ class PropertyListDocument : NSDocument, NSOutlineViewDataSource, NSOutlineViewD
 
     func outlineView(_ outlineView: NSOutlineView, objectValueFor tableColumn: NSTableColumn?, byItem item: Any?) -> Any? {
         let treeNode = item as! PropertyListTreeNode
-        let tableColumnIdentifier = TableColumnIdentifier(rawValue: tableColumn!.identifier)!
+        let tableColumnIdentifier = tableColumn!.identifier
 
         switch tableColumnIdentifier {
-        case .key:
+        case .keyColumn:
             return key(of: treeNode)
-        case .type:
+        case .typeColumn:
             return typePopUpMenuItemIndex(of: treeNode)
-        case .value:
+        case .valueColumn:
             return value(of: treeNode)
+        default:
+            preconditionFailure("Unknown table column")
         }
     }
 
 
     func outlineView(_ outlineView: NSOutlineView, setObjectValue object: Any?, for tableColumn: NSTableColumn?, byItem item: Any?) {
         let treeNode = item as! PropertyListTreeNode
-        let tableColumnIdentifier = TableColumnIdentifier(rawValue: tableColumn!.identifier)!
+        let tableColumnIdentifier = tableColumn!.identifier
         let propertyListObject = object as! PropertyListItemConvertible
 
         switch tableColumnIdentifier {
-        case .key:
+        case .keyColumn:
             setKey(object as! String, of: treeNode)
-        case .type:
+        case .typeColumn:
             let type = PropertyListType(typePopUpMenuItemIndex: object as! Int)!
             setType(type, of: treeNode)
-        case .value:
+        case .valueColumn:
             let item: PropertyListItem
 
             // The two cases here are the value being set by a pop-up button or the value being returned directly
@@ -173,6 +175,8 @@ class PropertyListDocument : NSDocument, NSOutlineViewDataSource, NSOutlineViewD
             }
 
             setValue(item, of: treeNode)
+        default:
+            preconditionFailure("Unknown table column")
         }
     }
 
@@ -185,28 +189,32 @@ class PropertyListDocument : NSDocument, NSOutlineViewDataSource, NSOutlineViewD
         }
 
         let treeNode = item as! PropertyListTreeNode
-        let tableColumnIdentifier = TableColumnIdentifier(rawValue: tableColumn.identifier)!
+        let tableColumnIdentifier = tableColumn.identifier
 
         switch tableColumnIdentifier {
-        case .value:
+        case .valueColumn:
             return valueCell(for: treeNode)
-        default:
+        case .keyColumn, .typeColumn:
             return tableColumn.dataCell as? NSCell
+        default:
+            preconditionFailure("Unknown table column")
         }
     }
 
 
     func outlineView(_ outlineView: NSOutlineView, shouldEdit tableColumn: NSTableColumn?, item: Any) -> Bool {
         let treeNode = item as! PropertyListTreeNode
-        let tableColumn = TableColumnIdentifier(rawValue: tableColumn!.identifier)!
+        let tableColumn = tableColumn!.identifier
 
         switch tableColumn {
-        case .key:
+        case .keyColumn:
             return treeNode.parent?.item.propertyListType == .dictionary
-        case .type:
+        case .typeColumn:
             return true
-        case .value:
+        case .valueColumn:
             return !treeNode.item.isCollection
+        default:
+            preconditionFailure("Unknown table column")
         }
     }
 
@@ -219,13 +227,13 @@ class PropertyListDocument : NSDocument, NSOutlineViewDataSource, NSOutlineViewD
         // return true. (This should never happen, but the compiler doesn’t know that)
         let editedRow = propertyListOutlineView.editedRow
         let editedColumn = propertyListOutlineView.editedColumn
-        guard editedRow != -1 && editedColumn != -1, let newString = fieldEditor.string else {
+        guard editedRow != -1 && editedColumn != -1 else {
             return true
         }
-
+        
         // If the column that was being edited wasn’t the Key column, return true
-        let tableColumn = propertyListOutlineView.tableColumns[editedColumn]
-        guard TableColumnIdentifier(rawValue: tableColumn.identifier) == .key else {
+        let tableColumnIdentifier = propertyListOutlineView.tableColumns[editedColumn].identifier
+        if tableColumnIdentifier == .keyColumn {
             return true
         }
 
@@ -238,7 +246,7 @@ class PropertyListDocument : NSDocument, NSOutlineViewDataSource, NSOutlineViewD
         // not already in the dictionary.
         switch parent.item {
         case let .dictionary(dictionary):
-            return !dictionary.containsKey(newString)
+            return !dictionary.containsKey(fieldEditor.string)
         default:
             return true
         }
@@ -247,7 +255,7 @@ class PropertyListDocument : NSDocument, NSOutlineViewDataSource, NSOutlineViewD
 
     private func valueCell(for treeNode: PropertyListTreeNode) -> NSCell {
         let item = treeNode.item
-        let tableColumn = propertyListOutlineView.tableColumn(withIdentifier: TableColumnIdentifier.key.rawValue)!
+        let tableColumn = propertyListOutlineView.tableColumn(withIdentifier: .keyColumn)!
 
         // If we’re a collection, just use a copy of the prototype cell with the disabled text color
         if item.isCollection {
@@ -375,14 +383,14 @@ class PropertyListDocument : NSDocument, NSOutlineViewDataSource, NSOutlineViewD
     private func editTreeNode(_ treeNode: PropertyListTreeNode) {
         let rowIndex = propertyListOutlineView.row(forItem: treeNode)
 
-        let tableColumnIdentifier: TableColumnIdentifier
+        let columnIdentifier: NSUserInterfaceItemIdentifier
         if treeNode.isRootNode {
-            tableColumnIdentifier = .value
+            columnIdentifier = .valueColumn
         } else {
-            tableColumnIdentifier = treeNode.parent!.item.propertyListType == .dictionary ? .key : .value
+            columnIdentifier = treeNode.parent!.item.propertyListType == .dictionary ? .keyColumn : .valueColumn
         }
 
-        let columnIndex = tableColumnIdentifier.indexOfTableColumnWithIdentifier(in: propertyListOutlineView)!
+        let columnIndex = propertyListOutlineView.tableColumns.index(where: { $0.identifier == columnIdentifier })!
         propertyListOutlineView.selectRowIndexes(IndexSet(integer: rowIndex), byExtendingSelection: false)
         propertyListOutlineView.editColumn(columnIndex, row: rowIndex, with: nil, select: true)
 
@@ -639,24 +647,19 @@ class PropertyListDocument : NSDocument, NSOutlineViewDataSource, NSOutlineViewD
 }
 
 
+// MARK: - Nibs
+
+private extension NSNib.Name {
+    static let propertyListDocument = NSNib.Name("PropertyListDocument")
+}
+
+
 // MARK: - Table Column Identifiers
 
-/// The `TableColumn` enum is used to enumerate the different `NSTableColumns` that the instance’s
-/// outline view has. Whenever a table column is added to the outline view, a corresponding case
-/// should be added to this enum. Additionally, the table column’s identifier should be the same as
-/// the case name in this enum. The value of using this approach is that the compiler ensures that
-/// all table column cases are handled by the code.
-private enum TableColumnIdentifier : String {
-    case key
-    case type
-    case value
-
-
-    /// Returns the index of the outline view table column whose identifier matches the instance’s.
-    /// - parameter outlineView: The outline view whose table column is being returned.
-    func indexOfTableColumnWithIdentifier(in outlineView: NSOutlineView) -> Int? {
-        return outlineView.tableColumns.index { $0.identifier == rawValue }
-    }
+private extension NSUserInterfaceItemIdentifier {
+    static let keyColumn = NSUserInterfaceItemIdentifier("key")
+    static let typeColumn = NSUserInterfaceItemIdentifier("type")
+    static let valueColumn = NSUserInterfaceItemIdentifier("value")
 }
 
 
@@ -768,7 +771,7 @@ private enum TreeNodeOperation {
 private extension PropertyListDictionary {
     /// Returns a key that the instance does not contain.
     func unusedKey() -> String {
-        let formatString = NSLocalizedString("PropertyListDocument.KeyForAddingFormat",
+        let formatString = NSLocalizedString("PropertyListDocument.keyColumnForAddingFormat",
                                              comment: "Format string for key generated when adding a dictionary item")
 
         var key: String

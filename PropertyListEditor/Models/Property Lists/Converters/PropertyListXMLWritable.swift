@@ -47,15 +47,18 @@ protocol PropertyListXMLWritable {
 extension PropertyListXMLWritable {
     /// Returns the instance’s data as the root property list type in a property list XML document.
     /// - returns: An `NSData` instance containing the XML 
-    final func propertyListXMLDocumentData() -> Data {
-        let baseXMLString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-            "<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n" +
-            "<plist version=\"1.0\"></plist>"
-
-        let document = try! XMLDocument(xmlString: baseXMLString, options: 0)
+    func propertyListXMLDocumentData() -> Data {
+        let baseXMLString = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+            <plist version="1.0">
+            </plist>
+            """
+        
+        let document = try! XMLDocument(xmlString: baseXMLString, options: XMLNode.Options(rawValue: 0))
         addPropertyListXMLElement(to: document.rootElement()!)
-
-        return document.xmlData(withOptions: Int(XMLDocument.Options.nodePrettyPrint.rawValue | XMLDocument.Options.nodeCompactEmptyElement.rawValue))
+        
+        return document.xmlData(options: [.nodePrettyPrint, .nodeCompactEmptyElement])
     }
 }
 
@@ -92,7 +95,7 @@ extension PropertyListArray : PropertyListXMLWritable {
         for element in elements {
             element.addPropertyListXMLElement(to: arrayXMLElement)
         }
-
+        
         parentXMLElement.addChild(arrayXMLElement)
     }
 }
@@ -105,7 +108,7 @@ extension PropertyListDictionary : PropertyListXMLWritable {
             dictionaryXMLElement.addChild(XMLElement(name: "key", stringValue: keyValuePair.key))
             keyValuePair.value.addPropertyListXMLElement(to: dictionaryXMLElement)
         }
-
+        
         parentXMLElement.addChild(dictionaryXMLElement)
     }
 }
