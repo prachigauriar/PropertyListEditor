@@ -40,13 +40,14 @@ class PropertyListDataFormatter : Formatter {
 
 
     override func string(for obj: Any?) -> String? {
-        if let data = obj as? Data {
+        if let data = obj as? NSData {
             return data.description
         } else {
             return nil
         }
     }
 
+    
     override func getObjectValue(_ obj: AutoreleasingUnsafeMutablePointer<AnyObject?>?,
                                  for string: String,
                                  errorDescription error: AutoreleasingUnsafeMutablePointer<NSString?>?) -> Bool {
