@@ -771,7 +771,7 @@ private enum TreeNodeOperation {
 private extension PropertyListDictionary {
     /// Returns a key that the instance does not contain.
     func unusedKey() -> String {
-        let formatString = NSLocalizedString("PropertyListDocument.keyColumnForAddingFormat",
+        let formatString = NSLocalizedString("PropertyListDocument.KeyForAddingFormat",
                                              comment: "Format string for key generated when adding a dictionary item")
 
         var key: String
