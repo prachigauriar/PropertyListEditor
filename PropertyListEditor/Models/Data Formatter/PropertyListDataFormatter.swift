@@ -40,11 +40,7 @@ class PropertyListDataFormatter : Formatter {
 
 
     override func string(for obj: Any?) -> String? {
-        if let data = obj as? NSData {
-            return data.description
-        } else {
-            return nil
-        }
+        return (obj as? Data).map { $0.hexString }
     }
 
     
@@ -52,7 +48,7 @@ class PropertyListDataFormatter : Formatter {
                                  for string: String,
                                  errorDescription error: AutoreleasingUnsafeMutablePointer<NSString?>?) -> Bool {
         // can use to iterate over each character
-        var characterIterator = string.replacingOccurrences(of: " ", with: "").characters.makeIterator()
+        var characterIterator = string.replacingOccurrences(of: " ", with: "").makeIterator()
 
         // If the string didn’t start with a <, it’s invalid
         guard let firstCharacter = characterIterator.next(), firstCharacter == "<" else {
@@ -101,7 +97,7 @@ class PropertyListDataFormatter : Formatter {
         if scanner.isAtEnd {
             // The string is empty
             return true
-        } else if !scanner.scanString("<", into: nil) {
+        } else if scanner.scanString("<") == nil {
             // The string does not begin with a "<"
             return false
         }
@@ -113,10 +109,10 @@ class PropertyListDataFormatter : Formatter {
         // "<>" in a single code path
         repeat {
             // If we hit a >, we’re done with our loop
-            if scanner.scanString(">", into: nil) {
+            if scanner.scanString(">") != nil {
                 break
             }
-        } while scanner.scanCharacters(from: hexadecimalDigitCharacterSet, into: nil)
+        } while scanner.scanCharacters(from: hexadecimalDigitCharacterSet) != nil
         
         return scanner.isAtEnd
     }

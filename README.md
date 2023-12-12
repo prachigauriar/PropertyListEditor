@@ -27,7 +27,7 @@ Here are the features I did use:
 
 ## Requirements
 
-PropertyListEditor is written using Swift 4. You must be using Xcode 9 or higher to build the
+PropertyListEditor is written using Swift 5. You must be using Xcode 15 or higher to build the
 code.
 
 

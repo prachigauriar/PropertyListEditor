@@ -74,10 +74,11 @@ extension PropertyListCollection {
     }
 
 
-    var hashValue: Int {
-        return count
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(count)
     }
-
+    
+    
 
     var count: Int {
         return elements.count

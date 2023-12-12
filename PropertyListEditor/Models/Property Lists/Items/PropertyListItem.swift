@@ -63,23 +63,24 @@ enum PropertyListItem : CustomStringConvertible, Hashable {
     }
 
 
-    var hashValue: Int {
+    func hash(into hasher: inout Hasher) {
         switch self {
         case let .array(array):
-            return array.hashValue
+            hasher.combine(array)
         case let .boolean(boolean):
-            return boolean.hashValue
+            hasher.combine(boolean)
         case let .data(data):
-            return data.hashValue
+            hasher.combine(data)
         case let .date(date):
-            return date.hashValue
+            hasher.combine(date)
         case let .dictionary(dictionary):
-            return dictionary.hashValue
+            hasher.combine(dictionary)
         case let .number(number):
-            return number.hashValue
+            hasher.combine(number)
         case let .string(string):
-            return string.hashValue
+            hasher.combine(string)
         }
+
     }
 
 

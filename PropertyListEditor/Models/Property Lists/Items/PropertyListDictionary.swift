@@ -42,11 +42,6 @@ struct PropertyListKeyValuePair : CustomStringConvertible, Hashable {
     }
 
 
-    var hashValue: Int {
-        return key.hashValue ^ value.hashValue
-    }
-
-
     /// Returns a new key/value pair instance with the specified key and the value of the instance.
     /// - parameter key: The key of the new instance.
     /// - returns: A copy of the instance with the specified key and the value of the instance.
@@ -61,11 +56,6 @@ struct PropertyListKeyValuePair : CustomStringConvertible, Hashable {
     func settingValue(_ value: PropertyListItem) -> PropertyListKeyValuePair {
         return PropertyListKeyValuePair(key: key, value: value)
     }
-}
-
-
-func ==(lhs: PropertyListKeyValuePair, rhs: PropertyListKeyValuePair) -> Bool {
-    return lhs.key == rhs.key && lhs.value == rhs.value
 }
 
 

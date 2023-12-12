@@ -124,7 +124,7 @@ class PropertyListDocument : NSDocument, NSOutlineViewDataSource, NSOutlineViewD
 
     func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
         if item == nil {
-            return tree.rootNode
+            return tree.rootNode as Any
         }
 
         let treeNode = item as! PropertyListTreeNode
@@ -390,7 +390,7 @@ class PropertyListDocument : NSDocument, NSOutlineViewDataSource, NSOutlineViewD
             columnIdentifier = treeNode.parent!.item.propertyListType == .dictionary ? .keyColumn : .valueColumn
         }
 
-        let columnIndex = propertyListOutlineView.tableColumns.index(where: { $0.identifier == columnIdentifier })!
+        let columnIndex = propertyListOutlineView.tableColumns.firstIndex(where: { $0.identifier == columnIdentifier })!
         propertyListOutlineView.selectRowIndexes(IndexSet(integer: rowIndex), byExtendingSelection: false)
         propertyListOutlineView.editColumn(columnIndex, row: rowIndex, with: nil, select: true)
 
@@ -650,7 +650,7 @@ class PropertyListDocument : NSDocument, NSOutlineViewDataSource, NSOutlineViewD
 // MARK: - Nibs
 
 private extension NSNib.Name {
-    static let propertyListDocument = NSNib.Name("PropertyListDocument")
+    static let propertyListDocument = "PropertyListDocument"
 }
 
 

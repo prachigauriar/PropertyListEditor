@@ -51,7 +51,7 @@ class LenientDateFormatter : Formatter {
             let detector = try NSDataDetector(types: NSTextCheckingResult.CheckingType.date.rawValue)
             let matches = detector.matches(in: string,
                                            options: NSRegularExpression.MatchingOptions(),
-                                           range: NSRange(location: 0, length: string.characters.count))
+                                           range: NSRange(location: 0, length: string.count))
 
             for match in matches where match.date != nil {
                 obj?.pointee = match.date as NSDate?
